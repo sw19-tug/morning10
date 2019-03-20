@@ -8,15 +8,16 @@
 
     <LinearLayout
         android:id="@+id/ll_main"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        android:padding="10dp"
+        android:padding="0dp"
         android:layout_alignParentBottom="true"
         >
         <EditText
             android:id="@+id/tf_input"
             android:text="This is our input field"
+            android:layout_margin="0dp"
             android:layout_weight="1"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
