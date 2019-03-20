@@ -9,6 +9,8 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
+import at.tugraz.ist.swe.cheat.services.BluetoothDeviceProvider;
+
 import static org.junit.Assert.*;
 
 /**
@@ -27,7 +29,7 @@ public class BluetoothAdapterUnitTest {
     @Before
     public void setUp() {
         BluetoothDeviceProvider bluetoothDeviceProvider = new DummyBluetoothDeviceProvider();
-        bluetoothDeviceManager = new bluetoothDeviceManager(bluetoothDeviceProvider);
+        bluetoothDeviceManager = new BluetoothDeviceManager(bluetoothDeviceProvider);
     }
 
     @Test
