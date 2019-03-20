@@ -14,14 +14,23 @@
         android:padding="0dp"
         android:layout_alignParentBottom="true"
         >
+
         <EditText
             android:id="@+id/tf_input"
-            android:text="This is our input field"
-            android:layout_margin="0dp"
-            android:layout_weight="1"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            tools:ignore="ButtonStyle"  />
+            android:layout_margin="0dp"
+            android:layout_weight="10"
+            android:text=""
+            tools:ignore="ButtonStyle" />
+
+        <Button
+            android:id="@+id/bt_send"
+            style="@style/Widget.AppCompat.Button"
+            android:layout_width="42dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="2"
+            android:text="Send" />
 
     </LinearLayout>
 
