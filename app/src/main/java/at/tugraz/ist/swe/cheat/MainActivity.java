@@ -20,6 +20,7 @@ public class MainActivity extends AppCompatActivity {
         // Initialize tfInput and btSend
         final EditText tfInput = findViewById(R.id.tf_input);
         final Button btSend = findViewById(R.id.bt_send);
+        btSend.setEnabled(false);
 
         // TextChangedListener tfInput
         tfInput.addTextChangedListener(new TextWatcher() {
