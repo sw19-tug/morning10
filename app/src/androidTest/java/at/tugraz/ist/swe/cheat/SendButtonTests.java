@@ -11,6 +11,7 @@ import org.junit.runner.RunWith;
 
 import static android.support.test.espresso.Espresso.onView;
 import static android.support.test.espresso.action.ViewActions.click;
+import static android.support.test.espresso.action.ViewActions.replaceText;
 import static android.support.test.espresso.assertion.ViewAssertions.matches;
 import static android.support.test.espresso.matcher.ViewMatchers.isDisplayed;
 import static android.support.test.espresso.matcher.ViewMatchers.isEnabled;
@@ -36,15 +37,13 @@ public class SendButtonTests {
 
     @Test  // Test if the button is disabled when the input is empty
     public void testInputEmptyButtonDisabled() {
-        EditText tfInput = mainActivityTestRule.getActivity().findViewById(R.id.tf_input);
-        tfInput.setText("", TextView.BufferType.EDITABLE);
+        onView(withId(R.id.tf_input)).perform(replaceText(""));
         onView(withId(R.id.bt_send)).check(matches(not(isEnabled())));
     }
 
     @Test  // Test if the button is enabled when the input is not empty
     public void testInputNotEmptyButtonEnabled() {
-        EditText tfInput = mainActivityTestRule.getActivity().findViewById(R.id.tf_input);
-        tfInput.setText("Some Message!", TextView.BufferType.EDITABLE);
+        onView(withId(R.id.tf_input)).perform(replaceText("Some Message!"));
         onView(withId(R.id.bt_send)).check(matches(isEnabled()));
     }
 
