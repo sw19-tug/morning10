@@ -52,4 +52,9 @@ public class SendButtonTests {
         onView(withId(R.id.bt_send)).perform(click());
         onView(withId(R.id.tf_input)).check(matches((withText(""))));
     }
+
+    @Test  // Test that the button starts disabled
+    public void testStartButtonDisabled() {
+        onView(withId(R.id.bt_send)).check(matches(not(isEnabled())));
+    }
 }
