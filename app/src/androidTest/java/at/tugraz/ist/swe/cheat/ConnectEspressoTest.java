@@ -29,6 +29,7 @@ public class ConnectEspressoTest {
     public ActivityTestRule<MainActivity> mainActivityTestRule = new ActivityTestRule<>(MainActivity.class);
 
     //there must be a connect button
+    @Test
     public void connectButtonVisible() {
         onView(withId(R.id.bt_connect)).check(matches(isDisplayed()));
     }
