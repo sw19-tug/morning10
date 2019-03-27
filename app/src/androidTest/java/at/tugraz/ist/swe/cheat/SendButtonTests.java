@@ -49,6 +49,7 @@ public class SendButtonTests {
 
     @Test  // Test if the input is cleared when the button is clicked
     public void testButtonClickClearsInput() {
+        onView(withId(R.id.tf_input)).perform(replaceText("Some Message!"));
         onView(withId(R.id.bt_send)).perform(click());
         onView(withId(R.id.tf_input)).check(matches((withText(""))));
     }
