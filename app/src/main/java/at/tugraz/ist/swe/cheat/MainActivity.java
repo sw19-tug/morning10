@@ -8,6 +8,7 @@ import android.view.MenuInflater;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.KeyEvent;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -19,12 +20,13 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        Toolbar myToolbar = (Toolbar) findViewById(R.id.menu);
+        final Toolbar myToolbar = (Toolbar) findViewById(R.id.menu);
         setSupportActionBar(myToolbar);
       
         // Initialize tfInput and btSend
         final EditText tfInput = findViewById(R.id.tf_input);
         final Button btSend = findViewById(R.id.bt_send);
+        final MenuItem btConnect = findViewById(R.id.bt_connect);
         btSend.setEnabled(false);
 
         // TextChangedListener tfInput
@@ -59,5 +61,22 @@ public class MainActivity extends AppCompatActivity {
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.menu, menu);
         return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        final Toolbar myToolbar = (Toolbar) findViewById(R.id.menu);
+
+        switch (item.getItemId()) {
+            case R.id.bt_connect:
+                myToolbar.setBackgroundColor(0xff66bb6a);
+                return true;
+
+            default:
+                // If we got here, the user's action was not recognized.
+                // Invoke the superclass to handle it.
+                return super.onOptionsItemSelected(item);
+
+        }
     }
 }
