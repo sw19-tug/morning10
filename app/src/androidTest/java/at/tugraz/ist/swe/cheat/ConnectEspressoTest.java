@@ -1,10 +1,13 @@
 package at.tugraz.ist.swe.cheat;
 
+import android.content.Context;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
+import android.graphics.drawable.Drawable;
 import android.support.test.rule.ActivityTestRule;
 import android.support.test.runner.AndroidJUnit4;
 import android.support.v7.widget.Toolbar;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
 
@@ -45,16 +48,25 @@ public class ConnectEspressoTest {
     public void appBarColorChange() {
 
         Toolbar myToolbar = (Toolbar) mainActivityTestRule.getActivity().findViewById(R.id.menu);
+        MenuItem btConnect =  (MenuItem)myToolbar.getMenu().findItem(R.id.bt_connect);
 
         assertEquals(((ColorDrawable)myToolbar.getBackground()).getColor(), 0xffffffff);
 
         onView(withId(R.id.bt_connect)).perform(click());
+
+        Context context = myToolbar.findViewById(R.id.menu).getContext();
+        Drawable connected = context.getResources().getDrawable(R.drawable.ic_wifi_tethering_black_24dp);
+        Drawable notConnected = context.getResources().getDrawable(R.drawable.ic_portable_wifi_off_black_24dp);
 
         assertEquals(((ColorDrawable)myToolbar.getBackground()).getColor(), 0xff66bb6a);
 
+        assertEquals(btConnect.getIcon().getConstantState(), connected.getConstantState());
+
         onView(withId(R.id.bt_connect)).perform(click());
 
         assertEquals(((ColorDrawable)myToolbar.getBackground()).getColor(), 0xffffffff);
+
+        assertEquals(btConnect.getIcon().getConstantState(), notConnected.getConstantState());
     }
 
 }
