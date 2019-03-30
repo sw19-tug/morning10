@@ -1,5 +1,6 @@
 package at.tugraz.ist.swe.cheat;
 
+import android.graphics.drawable.ColorDrawable;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
@@ -69,7 +70,11 @@ public class MainActivity extends AppCompatActivity {
 
         switch (item.getItemId()) {
             case R.id.bt_connect:
-                myToolbar.setBackgroundColor(0xff66bb6a);
+                if(((ColorDrawable)myToolbar.getBackground()).getColor() == 0xff66bb6a) {
+                    myToolbar.setBackgroundColor(0xffffffff);
+                } else {
+                    myToolbar.setBackgroundColor(0xff66bb6a);
+                }
                 return true;
 
             default:
