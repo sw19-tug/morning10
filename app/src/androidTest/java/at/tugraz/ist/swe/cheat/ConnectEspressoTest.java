@@ -51,6 +51,10 @@ public class ConnectEspressoTest {
         onView(withId(R.id.bt_connect)).perform(click());
 
         assertEquals(((ColorDrawable)myToolbar.getBackground()).getColor(), 0xff66bb6a);
+
+        onView(withId(R.id.bt_connect)).perform(click());
+
+        assertEquals(((ColorDrawable)myToolbar.getBackground()).getColor(), 0xffffffff);
     }
 
 }
