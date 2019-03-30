@@ -9,7 +9,7 @@
         android:id="@+id/menu"
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
-        android:background="#66bb6a"
+        android:background="#ffffffff"
         android:elevation="4dp"
         android:theme="@style/ThemeOverlay.AppCompat.ActionBar"
         app:popupTheme="@style/ThemeOverlay.AppCompat.Light" />
