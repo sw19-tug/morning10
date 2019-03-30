@@ -2,6 +2,9 @@ package at.tugraz.ist.swe.cheat;
 
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.Toolbar;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.KeyEvent;
@@ -16,7 +19,9 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
+        Toolbar myToolbar = (Toolbar) findViewById(R.id.menu);
+        setSupportActionBar(myToolbar);
+      
         // Initialize tfInput and btSend
         final EditText tfInput = findViewById(R.id.tf_input);
         final Button btSend = findViewById(R.id.bt_send);
@@ -48,5 +53,11 @@ public class MainActivity extends AppCompatActivity {
             }
         });
     }
-
+  
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.menu, menu);
+        return true;
+    }
 }
