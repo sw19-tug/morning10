@@ -42,13 +42,4 @@ public class TextFieldEspressoTest {
     public void testTextFieldEnabled() {
         onView(withId(R.id.tf_input)).check(matches(isEnabled()));
     }
-
-    //the text field must have full width
-    @Test
-    public void testTextFieldFullWidth() {
-        EditText tf =  mainActivityTestRule.getActivity().findViewById(R.id.tf_input);
-        View view =  mainActivityTestRule.getActivity().findViewById(R.id.ll_main);
-        assertEquals(tf.getMeasuredWidth(), view.getMeasuredWidth());
-    }
-
 }
