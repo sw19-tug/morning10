@@ -4,6 +4,6 @@
     <item
         android:id="@+id/bt_connect"
         android:title="@string/connect"
-        android:icon="@drawable/ic_wifi_tethering_black_24dp"
+        android:icon="@drawable/ic_portable_wifi_off_black_24dp"
         app:showAsAction="ifRoom"/>
 </menu>

@@ -50,6 +50,7 @@ public class ConnectEspressoTest {
         Toolbar myToolbar = (Toolbar) mainActivityTestRule.getActivity().findViewById(R.id.menu);
         MenuItem btConnect =  (MenuItem)myToolbar.getMenu().findItem(R.id.bt_connect);
 
+        // toolbar color should be white at first (not connected)
         assertEquals(((ColorDrawable)myToolbar.getBackground()).getColor(), 0xffffffff);
 
         onView(withId(R.id.bt_connect)).perform(click());
@@ -58,14 +59,14 @@ public class ConnectEspressoTest {
         Drawable connected = context.getResources().getDrawable(R.drawable.ic_wifi_tethering_black_24dp);
         Drawable notConnected = context.getResources().getDrawable(R.drawable.ic_portable_wifi_off_black_24dp);
 
+        // after click on connect button toolbar should be green and connected icon should be shown
         assertEquals(((ColorDrawable)myToolbar.getBackground()).getColor(), 0xff66bb6a);
-
         assertEquals(btConnect.getIcon().getConstantState(), connected.getConstantState());
 
         onView(withId(R.id.bt_connect)).perform(click());
 
+        // after click on connect button toolbar should be white and notConnected button shown again
         assertEquals(((ColorDrawable)myToolbar.getBackground()).getColor(), 0xffffffff);
-
         assertEquals(btConnect.getIcon().getConstantState(), notConnected.getConstantState());
     }
 

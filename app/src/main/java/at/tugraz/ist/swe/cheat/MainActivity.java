@@ -27,7 +27,6 @@ public class MainActivity extends AppCompatActivity {
         // Initialize tfInput and btSend
         final EditText tfInput = findViewById(R.id.tf_input);
         final Button btSend = findViewById(R.id.bt_send);
-        final MenuItem btConnect = findViewById(R.id.bt_connect);
         btSend.setEnabled(false);
 
         // TextChangedListener tfInput
@@ -66,14 +65,17 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        final Toolbar myToolbar = (Toolbar) findViewById(R.id.menu);
+        final Toolbar myToolbar = (Toolbar)findViewById(R.id.menu);
+        final MenuItem btConnect =  (MenuItem)myToolbar.getMenu().findItem(R.id.bt_connect);
 
         switch (item.getItemId()) {
             case R.id.bt_connect:
                 if(((ColorDrawable)myToolbar.getBackground()).getColor() == 0xff66bb6a) {
                     myToolbar.setBackgroundColor(0xffffffff);
+                    btConnect.setIcon(R.drawable.ic_portable_wifi_off_black_24dp);
                 } else {
                     myToolbar.setBackgroundColor(0xff66bb6a);
+                    btConnect.setIcon(R.drawable.ic_wifi_tethering_black_24dp);
                 }
                 return true;
 
