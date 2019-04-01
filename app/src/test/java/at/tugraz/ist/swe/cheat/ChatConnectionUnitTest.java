@@ -1,5 +1,6 @@
 package at.tugraz.ist.swe.cheat;
 
+import org.junit.Before;
 import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
@@ -7,18 +8,25 @@ import static org.junit.Assert.assertTrue;
 
 public class ChatConnectionUnitTest {
 
+    private ChatController chatController;
+
+    @Before
+    public void setUp() {
+        chatController = new ChatController();
+    }
+
     @Test
     public void chatListenTest()
     {
-        ChatController chatController = new ChatController();
+
+        assertEquals(chatController.getConnectionState(), ChatController.ConnectionState.NONE);
         chatController.start();
         assertEquals(chatController.getConnectionState(), ChatController.ConnectionState.LISTEN);
     }
 
     @Test
-    public void chatConnectTest()
+    public void chatConnectingTest()
     {
-        ChatController chatController = new ChatController();
         chatController.connect();
         assertEquals(chatController.getConnectionState(), ChatController.ConnectionState.CONNECTING);
     }
@@ -26,15 +34,14 @@ public class ChatConnectionUnitTest {
     @Test
     public void chatConnectedTest()
     {
-        ChatController chatController = new ChatController();
         chatController.connected();
         assertEquals(chatController.getConnectionState(), ChatController.ConnectionState.CONNECTED);
+
     }
 
     @Test
     public void chatStopTest()
     {
-        ChatController chatController = new ChatController();
         chatController.stop();
         assertEquals(chatController.getConnectionState(), ChatController.ConnectionState.NONE);
     }
@@ -42,7 +49,6 @@ public class ChatConnectionUnitTest {
     @Test
     public void chatConnectionLostTest()
     {
-        ChatController chatController = new ChatController();
         chatController.connectionLost();
         assertEquals(chatController.getConnectionState(), ChatController.ConnectionState.LISTEN);
     }
@@ -50,10 +56,11 @@ public class ChatConnectionUnitTest {
     @Test
     public void chatConnectionFaildTest()
     {
-        ChatController chatController = new ChatController();
         chatController.connectionFailed();
         assertEquals(chatController.getConnectionState(), ChatController.ConnectionState.LISTEN);
     }
+
+
 
 
 }

@@ -32,7 +32,6 @@ public class BluetoothAdapterUnitTest {
     @Before
     public void setUp() {
         bluetoothDeviceManager = new BluetoothDeviceManager(new DummyBluetoothDeviceProvider());
-
     }
 
     @Test
