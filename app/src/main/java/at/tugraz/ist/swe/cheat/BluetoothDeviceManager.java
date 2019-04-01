@@ -17,4 +17,8 @@ public class BluetoothDeviceManager {
         return this.active;
     }
 
+    public BluetoothDeviceProvider getBluetoothDeviceProvider() {
+        return bluetoothDeviceProvider;
+    }
+
 }

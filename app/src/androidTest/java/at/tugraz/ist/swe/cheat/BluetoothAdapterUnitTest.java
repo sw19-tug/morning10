@@ -35,13 +35,21 @@ public class BluetoothAdapterUnitTest {
 
     @Test
     public void bluetoothOn() {
-        BluetoothDeviceProvider bluetoothDeviceProvider = bluetoothDeviceManager.getBluetoothDeviceProvider());
-        bluetoothDeviceProvider.setStatus(true);
+        BluetoothDeviceProvider bluetoothDeviceProvider = bluetoothDeviceManager.getBluetoothDeviceProvider();
+        bluetoothDeviceProvider.setEnabled(true);
         assertTrue(bluetoothDeviceManager.isOn());
+        assertEquals(bluetoothDeviceManager.getState(),BTState.ON);
     }
     public void bluetoothOff() {
-        BluetoothDeviceProvider bluetoothDeviceProvider = bluetoothDeviceManager.getBluetoothDeviceProvider());
-        bluetoothDeviceProvider.setStatus(false);
+        BluetoothDeviceProvider bluetoothDeviceProvider = bluetoothDeviceManager.getBluetoothDeviceProvider();
+        bluetoothDeviceProvider.setEnabled(false);
         assertFalse(bluetoothDeviceManager.isOn());
+        assertEquals(bluetoothDeviceManager.getState(),BTState.OFF);
     }
+
+    
+
+
+
+
 }
