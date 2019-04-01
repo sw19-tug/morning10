@@ -1,6 +1,8 @@
 package at.tugraz.ist.swe.cheat;
 
+import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
+import android.content.Intent;
 import android.support.test.runner.AndroidJUnit4;
 import android.support.test.rule.ActivityTestRule;
 
@@ -28,12 +30,18 @@ public class BluetoothAdapterUnitTest {
 
     @Before
     public void setUp() {
-        BluetoothDeviceProvider bluetoothDeviceProvider = new DummyBluetoothDeviceProvider();
-        bluetoothDeviceManager = new BluetoothDeviceManager(bluetoothDeviceProvider);
+        bluetoothDeviceManager = new BluetoothDeviceManager(new DummyBluetoothDeviceProvider());
     }
 
     @Test
     public void bluetoothOn() {
+        BluetoothDeviceProvider bluetoothDeviceProvider = bluetoothDeviceManager.getBluetoothDeviceProvider());
+        bluetoothDeviceProvider.setStatus(true);
         assertTrue(bluetoothDeviceManager.isOn());
+    }
+    public void bluetoothOff() {
+        BluetoothDeviceProvider bluetoothDeviceProvider = bluetoothDeviceManager.getBluetoothDeviceProvider());
+        bluetoothDeviceProvider.setStatus(false);
+        assertFalse(bluetoothDeviceManager.isOn());
     }
 }
