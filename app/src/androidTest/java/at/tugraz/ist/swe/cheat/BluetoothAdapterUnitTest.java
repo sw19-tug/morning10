@@ -34,22 +34,37 @@ public class BluetoothAdapterUnitTest {
     }
 
     @Test
-    public void bluetoothOn() {
+    public void bluetoothOnTest() {
         BluetoothDeviceProvider bluetoothDeviceProvider = bluetoothDeviceManager.getBluetoothDeviceProvider();
         bluetoothDeviceProvider.setEnabled(true);
         assertTrue(bluetoothDeviceManager.isOn());
-        assertEquals(bluetoothDeviceManager.getState(),BTState.ON);
+        assertEquals(bluetoothDeviceManager.getBtState(), BluetoothDeviceManager.BtState.ON);
     }
-    public void bluetoothOff() {
+
+    @Test
+    public void bluetoothOffTest() {
         BluetoothDeviceProvider bluetoothDeviceProvider = bluetoothDeviceManager.getBluetoothDeviceProvider();
         bluetoothDeviceProvider.setEnabled(false);
         assertFalse(bluetoothDeviceManager.isOn());
-        assertEquals(bluetoothDeviceManager.getState(),BTState.OFF);
+        assertEquals(bluetoothDeviceManager.getBtState(), BluetoothDeviceManager.BtState.OFF);
     }
 
-    
+    @Test
+    public void scanTest(){
+        bluetoothDeviceManager.startScanning();
+        assertEquals(bluetoothDeviceManager.getBtState(), BluetoothDeviceManager.BtState.SCAN);
+        assertEquals(bluetoothDeviceManager.getBluetoothDeviceProvider().getState(), BluetoothDeviceProvider.State.SCAN);
+    }
 
+    @Test
+    public void stopScanTest()
+    {
+        bluetoothDeviceManager.startScanning();
+        assertEquals(bluetoothDeviceManager.getBtState(), BluetoothDeviceManager.BtState.SCAN);
+        assertEquals(bluetoothDeviceManager.getBluetoothDeviceProvider().getState(), BluetoothDeviceProvider.State.SCAN);
 
-
-
+        bluetoothDeviceManager.stopScanning();
+        assertEquals(bluetoothDeviceManager.getBtState(), BluetoothDeviceManager.BtState.ON);
+        assertEquals(bluetoothDeviceManager.getBluetoothDeviceProvider().getState(), BluetoothDeviceProvider.State.STOP_SCAN);
+    }
 }
