@@ -7,12 +7,13 @@ import at.tugraz.ist.swe.cheat.serviceimpl.RealBluetoothDeviceProvider;
 
 public class MainActivity extends AppCompatActivity {
 
-    BluetoothDeviceManager bluetoothDeviceManager;
+    //private BluetoothDeviceManager bluetoothDeviceManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        bluetoothDeviceManager = new BluetoothDeviceManager(new RealBluetoothDeviceProvider());
+        //bluetoothDeviceManager = new BluetoothDeviceManager(new RealBluetoothDeviceProvider());
     }
+
 }

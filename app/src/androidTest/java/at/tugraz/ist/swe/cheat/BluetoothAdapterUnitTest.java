@@ -11,6 +11,7 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
+import at.tugraz.ist.swe.BluetoothDeviceState;
 import at.tugraz.ist.swe.cheat.services.BluetoothDeviceProvider;
 
 import static org.junit.Assert.*;
@@ -31,6 +32,7 @@ public class BluetoothAdapterUnitTest {
     @Before
     public void setUp() {
         bluetoothDeviceManager = new BluetoothDeviceManager(new DummyBluetoothDeviceProvider());
+
     }
 
     @Test
@@ -53,7 +55,7 @@ public class BluetoothAdapterUnitTest {
     public void scanTest(){
         bluetoothDeviceManager.startScanning();
         assertEquals(bluetoothDeviceManager.getBtState(), BluetoothDeviceManager.BtState.SCAN);
-        assertEquals(bluetoothDeviceManager.getBluetoothDeviceProvider().getState(), BluetoothDeviceProvider.State.SCAN);
+        assertEquals(bluetoothDeviceManager.getBluetoothDeviceProvider().getState(), BluetoothDeviceState.SCAN);
     }
 
     @Test
@@ -61,10 +63,12 @@ public class BluetoothAdapterUnitTest {
     {
         bluetoothDeviceManager.startScanning();
         assertEquals(bluetoothDeviceManager.getBtState(), BluetoothDeviceManager.BtState.SCAN);
-        assertEquals(bluetoothDeviceManager.getBluetoothDeviceProvider().getState(), BluetoothDeviceProvider.State.SCAN);
+        assertEquals(bluetoothDeviceManager.getBluetoothDeviceProvider().getState(), BluetoothDeviceState.SCAN);
 
         bluetoothDeviceManager.stopScanning();
         assertEquals(bluetoothDeviceManager.getBtState(), BluetoothDeviceManager.BtState.ON);
-        assertEquals(bluetoothDeviceManager.getBluetoothDeviceProvider().getState(), BluetoothDeviceProvider.State.STOP_SCAN);
+        assertEquals(bluetoothDeviceManager.getBluetoothDeviceProvider().getState(), BluetoothDeviceState.STOPSCAN);
     }
+
+
 }
