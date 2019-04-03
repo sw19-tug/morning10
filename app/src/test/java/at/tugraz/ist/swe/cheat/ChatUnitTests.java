@@ -24,24 +24,15 @@ import static org.mockito.MockitoAnnotations.initMocks;
 @RunWith(MockitoJUnitRunner.class)
 public class ChatUnitTests {
 
-    private static final String DEVICE_ADDRESS = "00:d0a:95:9d:68:16";
-    private static final String DEVICE_NAME = "Falco's Blackberry";
-
-    @Mock
-    BluetoothDevice sender;
-
-    @Before
-    public void setUp() {
-        initMocks(this);
-        when(sender.getAddress()).thenReturn(DEVICE_ADDRESS);
-        when(sender.getName()).thenReturn(DEVICE_NAME);
-    }
+    private static final String SENDER_ADDRESS = "00:d0a:95:9d:68:16";
 
     @Test
     public void messageConstructor() {
         final String MESSAGE = "Hello Receiver!";
-        ChatMessage messageObj = new ChatMessage(sender, MESSAGE);
-        assertEquals(sender, messageObj.getSender());
+        final int MESSAGE_ID = 0;
+        ChatMessage messageObj = new ChatMessage(MESSAGE_ID, SENDER_ADDRESS, MESSAGE);
+        assertEquals(MESSAGE_ID, messageObj.getId());
+        assertEquals(SENDER_ADDRESS, messageObj.getSenderAddress());
         assertEquals(MESSAGE, messageObj.getMessage());
     }
 }
