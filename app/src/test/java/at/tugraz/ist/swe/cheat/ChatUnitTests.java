@@ -27,7 +27,8 @@ public class ChatUnitTests {
     private static final String DEVICE_ADDRESS = "00:d0a:95:9d:68:16";
     private static final String DEVICE_NAME = "Falco's Blackberry";
 
-    @Mock BluetoothDevice sender;
+    @Mock
+    BluetoothDevice sender;
 
     @Before
     public void setUp() {
@@ -39,15 +40,8 @@ public class ChatUnitTests {
     @Test
     public void messageConstructor() {
         final String MESSAGE = "Hello Receiver!";
-        Message messageObj = new Message(sender, MESSAGE);
+        ChatMessage messageObj = new ChatMessage(sender, MESSAGE);
         assertEquals(sender, messageObj.getSender());
         assertEquals(MESSAGE, messageObj.getMessage());
-    }
-
-    @Test
-    public void messageImplementsParcelable() {
-        final String MESSAGE = "Hello Receiver!";
-        Message messageObj = new Message(sender, MESSAGE);
-        assertTrue(messageObj instanceof Parcelable);
     }
 }
