@@ -50,7 +50,7 @@ public class MainActivity extends AppCompatActivity {
             public void afterTextChanged(Editable s) {
                 btSend.setEnabled(s.toString().isEmpty() ? false : true);
             }
-        });>>>>>>> develop
+        });
 
         // OnClickListener sendButton
         btSend.setOnClickListener(new View.OnClickListener() {
