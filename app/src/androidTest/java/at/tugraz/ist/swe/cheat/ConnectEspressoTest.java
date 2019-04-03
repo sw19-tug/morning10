@@ -11,6 +11,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
 
+import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -37,10 +38,26 @@ public class ConnectEspressoTest {
     @Rule
     public ActivityTestRule<MainActivity> mainActivityTestRule = new ActivityTestRule<>(MainActivity.class);
 
+    BluetoothDeviceManager bluetoothDeviceManager;
+    @Before
+    public void setUp() {
+        bluetoothDeviceManager = new BluetoothDeviceManager(new DummyBluetoothDeviceProvider());
+    }
+
     //there must be a connect button
     @Test
     public void connectButtonVisible() {
         onView(withId(R.id.bt_connect)).check(matches(isDisplayed()));
+    }
+
+    //bluetooth must be in state ON if connect button is clicked
+    @Test
+    public void connectButtonBluetoothOn() {
+        Toolbar myToolbar = (Toolbar) mainActivityTestRule.getActivity().findViewById(R.id.menu);
+        MenuItem btConnect =  (MenuItem)myToolbar.getMenu().findItem(R.id.bt_connect);
+
+        onView(withId(R.id.bt_connect)).perform(click());
+        assertEquals(BluetoothDeviceManager.BtState.ON, bluetoothDeviceManager.getBtState());
     }
 
     //there color of the app bar must change if a connection is established
