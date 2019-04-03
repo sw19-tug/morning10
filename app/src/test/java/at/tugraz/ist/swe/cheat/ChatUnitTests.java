@@ -45,14 +45,6 @@ public class ChatUnitTests {
     }
 
     @Test
-    public void messageConstructor() {
-        final String MESSAGE = "Hello Receiver!";
-        Message messageObj = new Message(sender, MESSAGE);
-        assertEquals(sender, messageObj.getSender());
-        assertEquals(MESSAGE, messageObj.getMessage());
-    }
-
-    @Test
     public void messageImplementsParcelable() {
         final String MESSAGE = "Hello Receiver!";
         Message messageObj = new Message(sender, MESSAGE);
