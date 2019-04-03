@@ -1,23 +1,26 @@
 package at.tugraz.ist.swe.cheat;
 
-import android.bluetooth.BluetoothDevice;
-
-
 public class ChatMessage {
 
-    BluetoothDevice sender;
+    int message_id;
+    String address;
     String message;
 
-    public ChatMessage(BluetoothDevice sender, String message) {
+    public ChatMessage(int message_id, String address, String message) {
         this.message  = message;
-        this.sender =  sender;
+        this.address =  address;
+        this.message_id =  message_id;
     }
 
     public String getMessage() {
         return this.message;
     }
 
-    public BluetoothDevice getSender()  {
-        return this.sender;
+    public String getSenderAddress() {
+        return this.address;
+    }
+
+    public int getId() {
+        return this.message_id;
     }
 }
