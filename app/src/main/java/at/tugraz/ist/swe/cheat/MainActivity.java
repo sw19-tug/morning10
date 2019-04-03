@@ -15,12 +15,17 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
+import at.tugraz.ist.swe.cheat.serviceimpl.RealBluetoothDeviceProvider;
+
 public class MainActivity extends AppCompatActivity {
+
+    //private BluetoothDeviceManager bluetoothDeviceManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
         final Toolbar myToolbar = (Toolbar) findViewById(R.id.menu);
         setSupportActionBar(myToolbar);
       
@@ -45,7 +50,7 @@ public class MainActivity extends AppCompatActivity {
             public void afterTextChanged(Editable s) {
                 btSend.setEnabled(s.toString().isEmpty() ? false : true);
             }
-        });
+        });>>>>>>> develop
 
         // OnClickListener sendButton
         btSend.setOnClickListener(new View.OnClickListener() {
@@ -86,4 +91,5 @@ public class MainActivity extends AppCompatActivity {
 
         }
     }
+
 }
