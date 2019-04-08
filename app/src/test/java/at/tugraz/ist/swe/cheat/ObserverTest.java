@@ -17,6 +17,9 @@ import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 import org.mockito.runners.MockitoJUnitRunner;
 
+import at.tugraz.ist.swe.cheat.observable.ObservedClient;
+import at.tugraz.ist.swe.cheat.observer.ObserverServer;
+
 import static org.junit.Assert.assertEquals;
 
 
@@ -36,6 +39,7 @@ public class ObserverTest {
             Object[] args = invocationOnMock.getArguments();
             Runnable r = (Runnable) args[0];
             r.run();
+            return null;
         }).when(handler).post(Matchers.any());
         Mockito.when(bluetoothDevice.getAddress()).thenReturn(DEVICE_ADDRESS);
         Mockito.when(bluetoothDevice.getName()).thenReturn("RICK");
@@ -50,7 +54,7 @@ public class ObserverTest {
 
        obserable.addObserver(observer);
        obserable.setMessage("Connecting ...");
-       assertEquals(observer.getMessage(), "Connecting ...");
+       assertEquals((String)observer.getMessage(), "Connecting ...");
     }
 
     @Test
@@ -61,7 +65,7 @@ public class ObserverTest {
 
        obserable.addObserver(observer);
        obserable.setMessage("Connecting to " + bluetoothDevice.getName());
-       assertEquals(observer.getMessage(), "Connecting to " + "RICK");
+       assertEquals((String)observer.getMessage(), "Connecting to " + "RICK");
     }
     @Test
     public void TestDisconnect()
@@ -71,7 +75,7 @@ public class ObserverTest {
 
        obserable.addObserver(observer);
        obserable.setMessage("Disconnected");
-       assertEquals(observer.getMessage(), "Disconnected");
+       assertEquals((String) observer.getMessage(), "Disconnected");
     }
 
     @Test
@@ -84,12 +88,10 @@ public class ObserverTest {
        obserableA.addObserver(observer);
        obserableB.addObserver(observer);
        obserableA.setMessage("Hallo B");
-       assertEquals(observer.getMessage(), "Hallo B");
+       assertEquals((String) observer.getMessage(), "Hallo B");
        obserableB.setMessage("Hallo A");
-       assertEquals(observer.getMessage(), "Hallo A");
-
+       assertEquals((String) observer.getMessage(), "Hallo A");
     }
-
 
 
 }
