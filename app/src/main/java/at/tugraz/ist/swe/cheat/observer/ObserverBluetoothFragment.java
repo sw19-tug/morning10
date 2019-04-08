@@ -13,23 +13,23 @@ import at.tugraz.ist.swe.cheat.MainActivity;
 public class ObserverBluetoothFragment extends Fragment implements Observer {
 
     MainActivity mainActivity;
-    private ArrayAdapter<String> pairedDevices;
+    private ArrayAdapter<String> devices;
 
     @Override
     public void update(Observable o, Object arg) {
         Device device = (Device) arg;
-        pairedDevices.add(device.getDevice_name() + "\n" + device.getDevice_address());
+        devices.add(device.getDevice_name() + "\n" + device.getDevice_address());
     }
 
     public MainActivity getMainActivity() {
         return mainActivity;
     }
 
-    public ArrayAdapter<String> getPairedDevices() {
-        return pairedDevices;
+    public ArrayAdapter<String> getDevices() {
+        return devices;
     }
 
-    public void setPairedDevices(ArrayAdapter<String> pairedDevices) {
-        this.pairedDevices = pairedDevices;
+    public void setDevices(ArrayAdapter<String> devices) {
+        this.devices = devices;
     }
 }

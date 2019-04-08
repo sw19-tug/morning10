@@ -75,24 +75,34 @@ public class BluetoothAdapterUnitTest {
 
 
     @Test
-    public void capturePairedDevices()
+    public void captureDevices()
     {
         //Open Dialog
 
         OBluetoothClient obserableA = new OBluetoothClient();
-        ObserverBluetoothFragment observerFragment = new ObserverBluetoothFragment();
-        observerFragment.setPairedDevices(new ArrayAdapter<>(mainActivityTestRule.getActivity(), android.R.layout.simple_list_item_1));
+        ObserverBluetoothFragment observerPairedFragment = new ObserverBluetoothFragment();
+        observerPairedFragment.setDevices(new ArrayAdapter<>(mainActivityTestRule.getActivity(), android.R.layout.simple_list_item_1));
 
-        obserableA.addObserver(observerFragment);
+        obserableA.addObserver(observerPairedFragment);
         obserableA.addDevice(new Device("Device AAA","1234"));
         obserableA.addDevice(new Device("Device BBB","1234"));
-        assertEquals(observerFragment.getPairedDevices().getCount(),2);
+        assertEquals(observerPairedFragment.getDevices().getCount(),2);
 
+
+        OBluetoothClient obserableB = new OBluetoothClient();
+        ObserverBluetoothFragment observerDiscoveredFragment = new ObserverBluetoothFragment();
+        observerDiscoveredFragment.setDevices(new ArrayAdapter<>(mainActivityTestRule.getActivity(), android.R.layout.simple_list_item_1));
+
+        obserableB.addObserver(observerDiscoveredFragment);
+        obserableB.addDevice(new Device("Device AAA","1234"));
+        obserableB.addDevice(new Device("Device BBB","1234"));
+        obserableB.addDevice(new Device("Device AAA","1234"));
+        obserableB.addDevice(new Device("Device BBB","1234"));
+        obserableB.addDevice(new Device("Device CCC","4321"));
+
+        assertEquals(observerDiscoveredFragment.getDevices().getCount(),2);
         //Close Dialog
     }
-
-
-
 
 
 }

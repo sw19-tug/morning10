@@ -1,6 +1,11 @@
 package at.tugraz.ist.swe.cheat;
 
+import android.Manifest;
+import android.content.pm.PackageManager;
 import android.graphics.drawable.ColorDrawable;
+import android.os.Build;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
@@ -19,12 +24,24 @@ import at.tugraz.ist.swe.cheat.serviceimpl.RealBluetoothDeviceProvider;
 
 public class MainActivity extends AppCompatActivity {
 
+    private static final int MY_PERMISSION_RESPONSE = 2;
+
     //private BluetoothDeviceManager bluetoothDeviceManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        if (Build.VERSION.SDK_INT >= 23) {
+            if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION)
+                    != PackageManager.PERMISSION_GRANTED) {
+
+                ActivityCompat.requestPermissions(this,
+                        new String[]{Manifest.permission.ACCESS_COARSE_LOCATION},
+                        MY_PERMISSION_RESPONSE);
+            }
+        }
 
         final Toolbar myToolbar = (Toolbar) findViewById(R.id.menu);
         setSupportActionBar(myToolbar);
