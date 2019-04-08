@@ -12,6 +12,9 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import at.tugraz.ist.swe.BluetoothDeviceState;
+import at.tugraz.ist.swe.cheat.observable.ObservedClient;
+import at.tugraz.ist.swe.cheat.observer.OBluetoothServer;
+import at.tugraz.ist.swe.cheat.observer.OBluetoothServerFragment;
 import at.tugraz.ist.swe.cheat.services.BluetoothDeviceProvider;
 
 import static org.junit.Assert.*;
@@ -68,6 +71,25 @@ public class BluetoothAdapterUnitTest {
         assertEquals(bluetoothDeviceManager.getBtState(), BluetoothDeviceManager.BtState.ON);
         assertEquals(bluetoothDeviceManager.getBluetoothDeviceProvider().getState(), BluetoothDeviceState.STOPSCAN);
     }
+
+
+    @Test
+    public void capturePairedDevices()
+    {
+
+        ObservedClient obserableA = new ObservedClient();
+        OBluetoothServerFragment observerFragment = new OBluetoothServerFragment();
+
+        //obserableA.addObserver(observer);
+        obserableA.addObserver(observerFragment);
+        obserableA.addDevice(new Device("Device AAA","1234");
+        obserableA.addDevice(new Device("Device BBB","1234");
+
+        assertEquals(observerFragment.getPairedDevices().size(),2);
+
+    }
+
+
 
 
 }
