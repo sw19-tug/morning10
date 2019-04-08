@@ -5,6 +5,7 @@ import android.bluetooth.BluetoothDevice;
 import android.content.Intent;
 import android.support.test.runner.AndroidJUnit4;
 import android.support.test.rule.ActivityTestRule;
+import android.widget.ArrayAdapter;
 
 import org.junit.Before;
 import org.junit.Rule;
@@ -12,9 +13,12 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import at.tugraz.ist.swe.BluetoothDeviceState;
+import at.tugraz.ist.swe.cheat.DTO.Device;
+import at.tugraz.ist.swe.cheat.observable.OBluetoothClient;
 import at.tugraz.ist.swe.cheat.observable.ObservedClient;
 import at.tugraz.ist.swe.cheat.observer.OBluetoothServer;
 import at.tugraz.ist.swe.cheat.observer.OBluetoothServerFragment;
+import at.tugraz.ist.swe.cheat.observer.ObserverBluetoothFragment;
 import at.tugraz.ist.swe.cheat.services.BluetoothDeviceProvider;
 
 import static org.junit.Assert.*;
@@ -77,15 +81,15 @@ public class BluetoothAdapterUnitTest {
     public void capturePairedDevices()
     {
 
-        ObservedClient obserableA = new ObservedClient();
-        OBluetoothServerFragment observerFragment = new OBluetoothServerFragment();
+        OBluetoothClient obserableA = new OBluetoothClient();
+        ObserverBluetoothFragment observerFragment = new ObserverBluetoothFragment();
+        observerFragment.setPairedDevices(new ArrayAdapter<T>(this, android.R.layout.simple_list_item_1));
 
         //obserableA.addObserver(observer);
         obserableA.addObserver(observerFragment);
         obserableA.addDevice(new Device("Device AAA","1234");
         obserableA.addDevice(new Device("Device BBB","1234");
-
-        assertEquals(observerFragment.getPairedDevices().size(),2);
+        assertEquals(observerFragment.getPairedDevices().getCount(),2);
 
     }
 
