@@ -14,6 +14,7 @@ import android.text.TextWatcher;
 import android.view.KeyEvent;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
@@ -25,6 +26,8 @@ public class MainActivity extends AppCompatActivity {
     //private BluetoothDeviceManager bluetoothDeviceManager;
     AlertDialog.Builder devicesDialogBuilder;
     AlertDialog devicesDialog;
+
+    ArrayAdapter<String> deviceListAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -41,6 +44,13 @@ public class MainActivity extends AppCompatActivity {
             .setNegativeButton(android.R.string.no, null);
 
         devicesDialogBuilder.create();
+
+        deviceListAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1);
+        deviceListAdapter.add("Davids iPhone");
+        deviceListAdapter.add("Stefans iPhone");
+        deviceListAdapter.add("Matzes GalaxyS7Edge");
+        deviceListAdapter.add("Patricks iPhone");
+        deviceListAdapter.add("Oskars iPhone");
 
 
         final Toolbar myToolbar = (Toolbar) findViewById(R.id.menu);
