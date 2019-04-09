@@ -11,6 +11,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
 
+import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -24,6 +25,7 @@ import static android.support.test.espresso.matcher.ViewMatchers.isDisplayed;
 import static android.support.test.espresso.matcher.ViewMatchers.isEnabled;
 import static android.support.test.espresso.matcher.ViewMatchers.withId;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 /**aa
  * Instrumented test, which will execute on an Android device.
@@ -37,6 +39,14 @@ public class ConnectEspressoTest {
     @Rule
     public ActivityTestRule<MainActivity> mainActivityTestRule = new ActivityTestRule<>(MainActivity.class);
 
+    Toolbar myToolbar;
+    MenuItem btConnect;
+    @Before
+    public void setUp() {
+        myToolbar = (Toolbar) mainActivityTestRule.getActivity().findViewById(R.id.menu);
+        btConnect =  (MenuItem)myToolbar.getMenu().findItem(R.id.bt_connect);
+    }
+
     //there must be a connect button
     @Test
     public void connectButtonVisible() {
@@ -44,12 +54,8 @@ public class ConnectEspressoTest {
     }
 
     //there color of the app bar must change if a connection is established
-    @Test
+/*    @Test
     public void appBarColorChange() {
-
-        Toolbar myToolbar = (Toolbar) mainActivityTestRule.getActivity().findViewById(R.id.menu);
-        MenuItem btConnect =  (MenuItem)myToolbar.getMenu().findItem(R.id.bt_connect);
-
         // toolbar color should be white at first (not connected)
         assertEquals(((ColorDrawable)myToolbar.getBackground()).getColor(), 0xffffffff);
 
@@ -68,6 +74,22 @@ public class ConnectEspressoTest {
         // after click on connect button toolbar should be white and notConnected button shown again
         assertEquals(((ColorDrawable)myToolbar.getBackground()).getColor(), 0xffffffff);
         assertEquals(btConnect.getIcon().getConstantState(), notConnected.getConstantState());
+    }*/
+
+    //the devices selection dialog must be visable if connect button is clicked
+    @Test
+    public void devicesListDialogVisible() {
+        onView(withId(R.id.bt_connect)).perform(click());
+        assertTrue(mainActivityTestRule.getActivity().devicesDialog.isShowing());
+        mainActivityTestRule.getActivity().devicesDialog.dismiss();
+    }
+
+    //the devices selection dialog must contain the correct elements
+    @Test
+    public void devicesListDialogShowsCorrectElements() {
+        onView(withId(R.id.bt_connect)).perform(click());
+        assertEquals(mainActivityTestRule.getActivity().devicesDialog.getListView().getAdapter(),
+                     mainActivityTestRule.getActivity().deviceListAdapter);
     }
 
 }

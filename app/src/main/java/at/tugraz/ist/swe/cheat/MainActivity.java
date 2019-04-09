@@ -1,6 +1,9 @@
 package at.tugraz.ist.swe.cheat;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.graphics.drawable.ColorDrawable;
+import android.app.DialogFragment;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
@@ -11,6 +14,7 @@ import android.text.TextWatcher;
 import android.view.KeyEvent;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
@@ -20,14 +24,39 @@ import at.tugraz.ist.swe.cheat.serviceimpl.RealBluetoothDeviceProvider;
 public class MainActivity extends AppCompatActivity {
 
     //private BluetoothDeviceManager bluetoothDeviceManager;
+    AlertDialog.Builder devicesDialogBuilder;
+    AlertDialog devicesDialog;
+
+    ArrayAdapter<String> deviceListAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        final Toolbar myToolbar = (Toolbar) findViewById(R.id.menu);
+        devicesDialogBuilder = new AlertDialog.Builder(this)
+            .setTitle("Choose your cheating partner")
+            .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                public void onClick(DialogInterface dialog, int id) {
+                }
+            })
+            .setNegativeButton(android.R.string.no, null);
+
+        devicesDialogBuilder.create();
+
+        deviceListAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1);
+
+        final Toolbar myToolbar = (Toolbar)findViewById(R.id.menu);
+
         setSupportActionBar(myToolbar);
+
+        devicesDialogBuilder.setAdapter(deviceListAdapter, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                myToolbar.setBackgroundColor(0xff66bb6a);
+                dialog.dismiss();
+            }
+        });
       
         // Initialize tfInput and btSend
         final EditText tfInput = findViewById(R.id.tf_input);
@@ -79,7 +108,13 @@ public class MainActivity extends AppCompatActivity {
                     myToolbar.setBackgroundColor(0xffffffff);
                     btConnect.setIcon(R.drawable.ic_portable_wifi_off_black_24dp);
                 } else {
-                    myToolbar.setBackgroundColor(0xff66bb6a);
+                    deviceListAdapter.add("Davids iPhone");
+                    deviceListAdapter.add("Stefans iPhone");
+                    deviceListAdapter.add("Matzes GalaxyS7Edge");
+                    deviceListAdapter.add("Patricks iPhone");
+                    deviceListAdapter.add("Oskars iPhone");
+
+                    devicesDialog = devicesDialogBuilder.show();
                     btConnect.setIcon(R.drawable.ic_wifi_tethering_black_24dp);
                 }
                 return true;
