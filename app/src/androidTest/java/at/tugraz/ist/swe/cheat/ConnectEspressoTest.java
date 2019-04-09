@@ -81,12 +81,15 @@ public class ConnectEspressoTest {
     public void devicesListDialogVisible() {
         onView(withId(R.id.bt_connect)).perform(click());
         assertTrue(mainActivityTestRule.getActivity().devicesDialog.isShowing());
+        mainActivityTestRule.getActivity().devicesDialog.dismiss();
     }
 
     //the devices selection dialog must contain the correct elements
     @Test
     public void devicesListDialogShowsCorrectElements() {
-        mainActivityTestRule.getActivity().devicesDialog.getListView().getAdapter().equals(mainActivityTestRule.getActivity().deviceListAdapter);
+        onView(withId(R.id.bt_connect)).perform(click());
+        assertEquals(mainActivityTestRule.getActivity().devicesDialog.getListView().getAdapter(),
+                     mainActivityTestRule.getActivity().deviceListAdapter);
     }
 
 }

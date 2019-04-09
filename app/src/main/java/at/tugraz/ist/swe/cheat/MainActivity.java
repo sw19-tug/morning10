@@ -36,7 +36,6 @@ public class MainActivity extends AppCompatActivity {
 
         devicesDialogBuilder = new AlertDialog.Builder(this)
             .setTitle("Choose your cheating partner")
-            .setMessage("Devices available")
             .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
                 public void onClick(DialogInterface dialog, int id) {
                 }
@@ -46,12 +45,13 @@ public class MainActivity extends AppCompatActivity {
         devicesDialogBuilder.create();
 
         deviceListAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1);
-        deviceListAdapter.add("Davids iPhone");
-        deviceListAdapter.add("Stefans iPhone");
-        deviceListAdapter.add("Matzes GalaxyS7Edge");
-        deviceListAdapter.add("Patricks iPhone");
-        deviceListAdapter.add("Oskars iPhone");
 
+        devicesDialogBuilder.setAdapter(deviceListAdapter, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.dismiss();
+            }
+        });
 
         final Toolbar myToolbar = (Toolbar) findViewById(R.id.menu);
         setSupportActionBar(myToolbar);
@@ -106,6 +106,12 @@ public class MainActivity extends AppCompatActivity {
                     myToolbar.setBackgroundColor(0xffffffff);
                     btConnect.setIcon(R.drawable.ic_portable_wifi_off_black_24dp);
                 } else {
+                    deviceListAdapter.add("Davids iPhone");
+                    deviceListAdapter.add("Stefans iPhone");
+                    deviceListAdapter.add("Matzes GalaxyS7Edge");
+                    deviceListAdapter.add("Patricks iPhone");
+                    deviceListAdapter.add("Oskars iPhone");
+
                     devicesDialog = devicesDialogBuilder.show();
                     myToolbar.setBackgroundColor(0xff66bb6a);
                     btConnect.setIcon(R.drawable.ic_wifi_tethering_black_24dp);
