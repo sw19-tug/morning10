@@ -1,6 +1,9 @@
 package at.tugraz.ist.swe.cheat;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.graphics.drawable.ColorDrawable;
+import android.app.DialogFragment;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
@@ -20,11 +23,25 @@ import at.tugraz.ist.swe.cheat.serviceimpl.RealBluetoothDeviceProvider;
 public class MainActivity extends AppCompatActivity {
 
     //private BluetoothDeviceManager bluetoothDeviceManager;
+    AlertDialog.Builder devicesDialogBuilder;
+    AlertDialog devicesDialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        devicesDialogBuilder = new AlertDialog.Builder(this)
+            .setTitle("Choose your cheating partner")
+            .setMessage("Devices available")
+            .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                public void onClick(DialogInterface dialog, int id) {
+                }
+            })
+            .setNegativeButton(android.R.string.no, null);
+
+        devicesDialogBuilder.create();
+
 
         final Toolbar myToolbar = (Toolbar) findViewById(R.id.menu);
         setSupportActionBar(myToolbar);
@@ -79,6 +96,7 @@ public class MainActivity extends AppCompatActivity {
                     myToolbar.setBackgroundColor(0xffffffff);
                     btConnect.setIcon(R.drawable.ic_portable_wifi_off_black_24dp);
                 } else {
+                    devicesDialog = devicesDialogBuilder.show();
                     myToolbar.setBackgroundColor(0xff66bb6a);
                     btConnect.setIcon(R.drawable.ic_wifi_tethering_black_24dp);
                 }
