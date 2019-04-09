@@ -46,15 +46,17 @@ public class MainActivity extends AppCompatActivity {
 
         deviceListAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1);
 
+        final Toolbar myToolbar = (Toolbar)findViewById(R.id.menu);
+
+        setSupportActionBar(myToolbar);
+
         devicesDialogBuilder.setAdapter(deviceListAdapter, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
+                myToolbar.setBackgroundColor(0xff66bb6a);
                 dialog.dismiss();
             }
         });
-
-        final Toolbar myToolbar = (Toolbar) findViewById(R.id.menu);
-        setSupportActionBar(myToolbar);
       
         // Initialize tfInput and btSend
         final EditText tfInput = findViewById(R.id.tf_input);
@@ -113,7 +115,6 @@ public class MainActivity extends AppCompatActivity {
                     deviceListAdapter.add("Oskars iPhone");
 
                     devicesDialog = devicesDialogBuilder.show();
-                    myToolbar.setBackgroundColor(0xff66bb6a);
                     btConnect.setIcon(R.drawable.ic_wifi_tethering_black_24dp);
                 }
                 return true;
