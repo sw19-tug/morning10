@@ -21,6 +21,7 @@ import android.widget.Button;
 import android.widget.EditText;
 
 import java.util.ArrayList;
+import java.util.Date;
 
 import at.tugraz.ist.swe.cheat.serviceimpl.RealBluetoothDeviceProvider;
 
@@ -66,10 +67,10 @@ public class MainActivity extends AppCompatActivity implements RecyclerViewMessa
 
         // Dummy dataset for messages
         ArrayList<ChatMessage> messages = new ArrayList<>();
-        messages.add(new ChatMessage(1, "00-00-00-00-00-00", "Bonjour" ));
-        messages.add(new ChatMessage(2, "00-00-00-00-00-00", "Hola" ));
-        messages.add(new ChatMessage(3, "00-00-00-00-00-00", "Nǐn hǎo" ));
-        messages.add(new ChatMessage(4, "00-00-00-00-00-00", "Anyoung haseyo" ));
+        messages.add(new ChatMessage(1, "00-00-00-00-00-00", "Bonjour", new Date() ));
+        messages.add(new ChatMessage(2, "00-00-00-00-00-00", "Hola", new Date()));
+        messages.add(new ChatMessage(3, "00-00-00-00-00-00", "Nǐn hǎo", new Date() ));
+        messages.add(new ChatMessage(4, "00-00-00-00-00-00", "Anyoung haseyo", new Date() ));
 
         // Set up the RecyclerView to display messages (history)
         RecyclerView recyclerView = findViewById(R.id.rv_messages);
