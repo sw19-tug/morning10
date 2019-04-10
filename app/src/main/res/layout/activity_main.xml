@@ -13,6 +13,16 @@
         android:elevation="4dp"
         android:theme="@style/ThemeOverlay.AppCompat.ActionBar"
         app:popupTheme="@style/ThemeOverlay.AppCompat.Light" />
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/rv_messages"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/ll_main"
+        android:layout_below="@+id/menu"
+        android:layout_marginTop="0dp"
+        android:layout_marginBottom="0dp" />
+
     <LinearLayout
         android:id="@+id/ll_main"
         android:layout_width="match_parent"
