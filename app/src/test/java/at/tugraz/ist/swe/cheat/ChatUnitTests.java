@@ -12,6 +12,8 @@ import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
+import java.util.Date;
+
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.when;
 import static org.mockito.MockitoAnnotations.initMocks;
@@ -30,9 +32,11 @@ public class ChatUnitTests {
     public void messageConstructor() {
         final String MESSAGE = "Hello Receiver!";
         final int MESSAGE_ID = 0;
-        ChatMessage messageObj = new ChatMessage(MESSAGE_ID, SENDER_ADDRESS, MESSAGE);
+        final Date timeStamp = new Date();
+        ChatMessage messageObj = new ChatMessage(MESSAGE_ID, SENDER_ADDRESS, MESSAGE, timeStamp);
         assertEquals(MESSAGE_ID, messageObj.getId());
         assertEquals(SENDER_ADDRESS, messageObj.getSenderAddress());
         assertEquals(MESSAGE, messageObj.getMessage());
+        assertEquals(timeStamp, messageObj.getTimeStep());
     }
 }
