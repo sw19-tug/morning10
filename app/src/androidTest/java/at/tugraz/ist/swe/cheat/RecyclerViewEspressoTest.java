@@ -3,9 +3,12 @@ package at.tugraz.ist.swe.cheat;
 import android.support.test.runner.AndroidJUnit4;
 import android.support.test.rule.ActivityTestRule;
 
+import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+
+import java.util.Date;
 
 import static android.support.test.espresso.Espresso.onView;
 import static android.support.test.espresso.action.ViewActions.click;
@@ -30,15 +33,31 @@ public class RecyclerViewEspressoTest {
 
     // Check if RecyclerView contains elements
     @Test
-    public void testRecyclerViewElements() {
-        onView(allOf(withId(R.id.tv_message), withText("Bonjour"))).check(matches(isDisplayed()));
+    public void testRecyclerAddMessage() {
+        final int id = 1;
+        final String senderAddress = "00:11:22:33:44";
+        final String message = "Hello World";
+        final Date timeStamp = new Date();
+        ChatMessage messageObj = new ChatMessage(id, senderAddress, message, timeStamp);
+
+        mainActivityTestRule.getActivity().adapter.addMessage(messageObj);
+
+        onView(allOf(withId(R.id.tv_message), withText(message))).check(matches(isDisplayed()));
     }
 
     // Check if Click on RecyclerView element triggers an action (toast)
     @Test
     public void testRecyclerViewElementClick() {
-        onView(allOf(withId(R.id.tv_message), withText("Bonjour"))).perform(click());
-        onView(withId(R.id.tf_input)).check(matches((withText("Bonjour"))));
+        final int id = 1;
+        final String senderAddress = "00:11:22:33:44";
+        final String message = "Hello World";
+        final Date timeStamp = new Date();
+        ChatMessage messageObj = new ChatMessage(id, senderAddress, message, timeStamp);
+
+        mainActivityTestRule.getActivity().adapter.addMessage(messageObj);
+
+        onView(allOf(withId(R.id.tv_message), withText(message))).perform(click());
+        onView(withId(R.id.tf_input)).check(matches((withText(message))));
     }
 
 }
