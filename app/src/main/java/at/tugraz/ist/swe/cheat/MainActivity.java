@@ -3,7 +3,6 @@ package at.tugraz.ist.swe.cheat;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.graphics.drawable.ColorDrawable;
-import android.app.DialogFragment;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
@@ -11,13 +10,11 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.view.KeyEvent;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.TextView;
 
 import at.tugraz.ist.swe.cheat.serviceimpl.RealBluetoothDeviceProvider;
 
@@ -108,6 +105,7 @@ public class MainActivity extends AppCompatActivity {
                     myToolbar.setBackgroundColor(0xffffffff);
                     btConnect.setIcon(R.drawable.ic_portable_wifi_off_black_24dp);
                 } else {
+                    deviceListAdapter.clear();
                     deviceListAdapter.add("Davids iPhone");
                     deviceListAdapter.add("Stefans iPhone");
                     deviceListAdapter.add("Matzes GalaxyS7Edge");
@@ -126,5 +124,4 @@ public class MainActivity extends AppCompatActivity {
 
         }
     }
-
 }
