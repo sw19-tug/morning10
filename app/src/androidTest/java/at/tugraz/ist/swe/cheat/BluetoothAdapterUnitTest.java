@@ -1,8 +1,5 @@
 package at.tugraz.ist.swe.cheat;
 
-import android.bluetooth.BluetoothAdapter;
-import android.bluetooth.BluetoothDevice;
-import android.content.Intent;
 import android.support.test.runner.AndroidJUnit4;
 import android.support.test.rule.ActivityTestRule;
 
@@ -12,6 +9,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import at.tugraz.ist.swe.BluetoothDeviceState;
+import at.tugraz.ist.swe.cheat.serviceimpl.DummyBluetoothDeviceProvider;
 import at.tugraz.ist.swe.cheat.services.BluetoothDeviceProvider;
 
 import static org.junit.Assert.*;

@@ -1,9 +1,9 @@
-package at.tugraz.ist.swe.cheat;
+package at.tugraz.ist.swe.cheat.serviceimpl;
 
 import at.tugraz.ist.swe.BluetoothDeviceState;
 import at.tugraz.ist.swe.cheat.services.BluetoothDeviceProvider;
 
-class DummyBluetoothDeviceProvider implements BluetoothDeviceProvider {
+public class DummyBluetoothDeviceProvider implements BluetoothDeviceProvider {
 
     private boolean enabled;
     private BluetoothDeviceState state = BluetoothDeviceState.STOPSCAN;

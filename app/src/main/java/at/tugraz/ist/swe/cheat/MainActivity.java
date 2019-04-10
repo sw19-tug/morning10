@@ -3,6 +3,7 @@ package at.tugraz.ist.swe.cheat;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.graphics.drawable.ColorDrawable;
+import android.os.Build;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
@@ -20,11 +21,12 @@ import android.widget.EditText;
 import java.util.ArrayList;
 import java.util.Date;
 
+import at.tugraz.ist.swe.cheat.serviceimpl.DummyBluetoothDeviceProvider;
 import at.tugraz.ist.swe.cheat.serviceimpl.RealBluetoothDeviceProvider;
 
 public class MainActivity extends AppCompatActivity implements RecyclerViewMessagesAdapter.ItemClickListener {
 
-    //private BluetoothDeviceManager bluetoothDeviceManager;
+    BluetoothDeviceManager bluetoothDeviceManager;
     AlertDialog.Builder devicesDialogBuilder;
     AlertDialog devicesDialog;
 
@@ -34,6 +36,11 @@ public class MainActivity extends AppCompatActivity implements RecyclerViewMessa
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        if (Build.FINGERPRINT.contains("generic")) {
+            bluetoothDeviceManager = new BluetoothDeviceManager(new DummyBluetoothDeviceProvider());
+        } else {
+            bluetoothDeviceManager = new BluetoothDeviceManager(new RealBluetoothDeviceProvider());
+        }
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);

@@ -47,6 +47,13 @@ public class ConnectEspressoTest {
         onView(withId(R.id.bt_connect)).check(matches(isDisplayed()));
     }
 
+    //bluetooth must be in state SCAN if connect button is clicked
+    @Test
+    public void connectButtonBluetoothOn() {
+        onView(withId(R.id.bt_connect)).perform(click());
+        assertEquals(BluetoothDeviceManager.BtState.SCAN, mainActivityTestRule.getActivity().bluetoothDeviceManager.getBtState());
+    }
+
     //the devices selection dialog must be visable if connect button is clicked
     @Test
     public void devicesListDialogVisible() {
