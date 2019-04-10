@@ -6,6 +6,8 @@ import android.graphics.drawable.ColorDrawable;
 import android.app.DialogFragment;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -17,11 +19,12 @@ import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.TextView;
+
+import java.util.ArrayList;
 
 import at.tugraz.ist.swe.cheat.serviceimpl.RealBluetoothDeviceProvider;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements RecyclerViewMessagesAdapter.ItemClickListener {
 
     //private BluetoothDeviceManager bluetoothDeviceManager;
     AlertDialog.Builder devicesDialogBuilder;
@@ -29,8 +32,11 @@ public class MainActivity extends AppCompatActivity {
 
     ArrayAdapter<String> deviceListAdapter;
 
+    RecyclerViewMessagesAdapter adapter;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
@@ -57,7 +63,21 @@ public class MainActivity extends AppCompatActivity {
                 dialog.dismiss();
             }
         });
-      
+
+        // Dummy dataset for messages
+        ArrayList<ChatMessage> messages = new ArrayList<>();
+        messages.add(new ChatMessage(1, "00-00-00-00-00-00", "Bonjour" ));
+        messages.add(new ChatMessage(2, "00-00-00-00-00-00", "Hola" ));
+        messages.add(new ChatMessage(3, "00-00-00-00-00-00", "Nǐn hǎo" ));
+        messages.add(new ChatMessage(4, "00-00-00-00-00-00", "Anyoung haseyo" ));
+
+        // Set up the RecyclerView to display messages (history)
+        RecyclerView recyclerView = findViewById(R.id.rv_messages);
+        recyclerView.setLayoutManager(new LinearLayoutManager(this));
+        adapter = new RecyclerViewMessagesAdapter(this, messages);
+        adapter.setClickListener(this);
+        recyclerView.setAdapter(adapter);
+
         // Initialize tfInput and btSend
         final EditText tfInput = findViewById(R.id.tf_input);
         final Button btSend = findViewById(R.id.bt_send);
@@ -123,8 +143,12 @@ public class MainActivity extends AppCompatActivity {
                 // If we got here, the user's action was not recognized.
                 // Invoke the superclass to handle it.
                 return super.onOptionsItemSelected(item);
-
         }
     }
 
+    @Override
+    public void onItemClick(View view, int position) {
+        final EditText tfInput = findViewById(R.id.tf_input);
+        tfInput.setText(adapter.getItem(position));
+    }
 }
