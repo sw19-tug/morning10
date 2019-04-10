@@ -11,12 +11,12 @@ import java.util.List;
 
 public class RecyclerViewMessagesAdapter extends RecyclerView.Adapter<RecyclerViewMessagesAdapter.ViewHolder> {
 
-    private List<String> messageData; // to be replaced by List<Message>
+    private List<ChatMessage> messageData; // to be replaced by List<Message>
     private LayoutInflater inflater;
     private ItemClickListener clickListener;
 
     // Constructor takes context and data
-    RecyclerViewMessagesAdapter(Context context, List<String> data) {
+    RecyclerViewMessagesAdapter(Context context, List<ChatMessage> data) {
         this.inflater = LayoutInflater.from(context);
         this.messageData = data;
     }
@@ -31,7 +31,7 @@ public class RecyclerViewMessagesAdapter extends RecyclerView.Adapter<RecyclerVi
     // Bind data to fields -> tvMessage (TextView field)
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
-        String message = messageData.get(position);
+        String message = messageData.get(position).getMessage();
         holder.tvMessage.setText(message);
     }
 
@@ -60,7 +60,7 @@ public class RecyclerViewMessagesAdapter extends RecyclerView.Adapter<RecyclerVi
 
     // Get data at click position (for convenience)
     String getItem(int id) {
-        return messageData.get(id);
+        return messageData.get(id).getMessage();
     }
 
     // Allow click events to be caught

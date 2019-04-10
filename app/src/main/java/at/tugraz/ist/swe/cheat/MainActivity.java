@@ -65,11 +65,11 @@ public class MainActivity extends AppCompatActivity implements RecyclerViewMessa
         });
 
         // Dummy dataset for messages
-        ArrayList<String> messages = new ArrayList<>();
-        messages.add("Bonjour");
-        messages.add("Hola");
-        messages.add("Nǐn hǎo");
-        messages.add("Anyoung haseyo");
+        ArrayList<ChatMessage> messages = new ArrayList<>();
+        messages.add(new ChatMessage(1, "00-00-00-00-00-00", "Bonjour" ));
+        messages.add(new ChatMessage(2, "00-00-00-00-00-00", "Hola" ));
+        messages.add(new ChatMessage(3, "00-00-00-00-00-00", "Nǐn hǎo" ));
+        messages.add(new ChatMessage(4, "00-00-00-00-00-00", "Anyoung haseyo" ));
 
         // Set up the RecyclerView to display messages (history)
         RecyclerView recyclerView = findViewById(R.id.rv_messages);

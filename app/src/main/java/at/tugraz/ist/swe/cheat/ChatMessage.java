@@ -5,6 +5,8 @@ public class ChatMessage {
     int message_id;
     String address;
     String message;
+    // timestamp
+    // modified
 
     public ChatMessage(int message_id, String address, String message) {
         this.message  = message;
