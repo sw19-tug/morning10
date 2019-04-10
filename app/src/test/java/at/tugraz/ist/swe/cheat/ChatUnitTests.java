@@ -37,6 +37,6 @@ public class ChatUnitTests {
         assertEquals(MESSAGE_ID, messageObj.getId());
         assertEquals(SENDER_ADDRESS, messageObj.getSenderAddress());
         assertEquals(MESSAGE, messageObj.getMessage());
-        assertEquals(timeStamp, messageObj.getTimeStep());
+        assertEquals(timeStamp, messageObj.getTimeStamp());
     }
 }
