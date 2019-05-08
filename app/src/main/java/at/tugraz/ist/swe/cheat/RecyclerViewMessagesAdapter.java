@@ -7,7 +7,10 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Observable;
+import java.util.Observer;
 
 public class RecyclerViewMessagesAdapter extends RecyclerView.Adapter<RecyclerViewMessagesAdapter.ViewHolder> {
 
@@ -16,9 +19,9 @@ public class RecyclerViewMessagesAdapter extends RecyclerView.Adapter<RecyclerVi
     private ItemClickListener clickListener;
 
     // Constructor takes context and data
-    RecyclerViewMessagesAdapter(Context context, List<ChatMessage> data) {
+    RecyclerViewMessagesAdapter(Context context) {
         this.inflater = LayoutInflater.from(context);
-        this.messageData = data;
+        this.messageData = new ArrayList<>();
     }
 
     // Inflate rv_message layout when needed
@@ -40,7 +43,6 @@ public class RecyclerViewMessagesAdapter extends RecyclerView.Adapter<RecyclerVi
     public int getItemCount() {
         return messageData.size();
     }
-
 
     // Store and recycle views as they are scrolled off screen
     public class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
@@ -71,5 +73,11 @@ public class RecyclerViewMessagesAdapter extends RecyclerView.Adapter<RecyclerVi
     // Interface for parent activity to respond to click events (inner function)
     public interface ItemClickListener {
         void onItemClick(View view, int position);
+    }
+    //addMessage
+    public void addMessage(ChatMessage message)
+    {
+        messageData.add(message);
+        notifyDataSetChanged();
     }
 }
