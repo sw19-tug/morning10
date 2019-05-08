@@ -1,6 +1,7 @@
 package at.tugraz.ist.swe.cheat;
 
 import android.app.AlertDialog;
+import android.content.ContentResolver;
 import android.content.DialogInterface;
 import android.graphics.drawable.ColorDrawable;
 import android.app.DialogFragment;
@@ -9,6 +10,7 @@ import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.text.Editable;
@@ -21,6 +23,7 @@ import android.widget.Button;
 import android.widget.EditText;
 
 import java.util.ArrayList;
+import java.util.Date;
 
 import at.tugraz.ist.swe.cheat.serviceimpl.RealBluetoothDeviceProvider;
 
@@ -69,6 +72,7 @@ public class MainActivity extends AppCompatActivity implements RecyclerViewMessa
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         adapter = new RecyclerViewMessagesAdapter(this);
         adapter.setClickListener(this);
+
         recyclerView.setAdapter(adapter);
 
         // Initialize tfInput and btSend
@@ -98,6 +102,7 @@ public class MainActivity extends AppCompatActivity implements RecyclerViewMessa
         btSend.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                adapter.addMessage(new ChatMessage(1, "temporaryadressermagherd", tfInput.getText().toString(), new Date()));
                 tfInput.setText("");
             }
         });
