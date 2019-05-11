@@ -1,11 +1,8 @@
 package at.tugraz.ist.swe.cheat;
 
-import android.support.test.annotation.UiThreadTest;
 import android.support.test.runner.AndroidJUnit4;
 import android.support.test.rule.ActivityTestRule;
-import android.util.Log;
 
-import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -33,7 +30,7 @@ public class RecyclerViewEspressoTest {
     // Check if RecyclerView is displayed
     @Test
     public void testRecyclerViewVisibility() {
-        onView(withId(R.id.rv_messages)).check(matches(isDisplayed()));
+        onView(withId(R.id.rv_chat_history)).check(matches(isDisplayed()));
     }
 
     // Check if RecyclerView contains elements
