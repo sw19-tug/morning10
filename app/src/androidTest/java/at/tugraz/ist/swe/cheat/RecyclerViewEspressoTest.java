@@ -17,7 +17,9 @@ import static android.support.test.espresso.action.ViewActions.click;
 import static android.support.test.espresso.action.ViewActions.replaceText;
 import static android.support.test.espresso.assertion.ViewAssertions.matches;
 import static android.support.test.espresso.matcher.ViewMatchers.isDisplayed;
+import static android.support.test.espresso.matcher.ViewMatchers.withChild;
 import static android.support.test.espresso.matcher.ViewMatchers.withId;
+import static android.support.test.espresso.matcher.ViewMatchers.withResourceName;
 import static android.support.test.espresso.matcher.ViewMatchers.withText;
 import static org.hamcrest.Matchers.allOf;
 
@@ -42,7 +44,7 @@ public class RecyclerViewEspressoTest {
         onView(withId(R.id.tv_message)).check(matches(isDisplayed()));
     }
 
-    // Check if Click on RecyclerView element triggers an action (toast)
+    // Check if Click on RecyclerView element triggers an action
     @Test
     public void testRecyclerViewElementClick() {
         final int id = 1;
@@ -55,6 +57,26 @@ public class RecyclerViewEspressoTest {
 
         onView(allOf(withId(R.id.tv_message), withText(message))).perform(click());
         onView(withId(R.id.tf_input)).check(matches((withText(message))));
+    }
+
+    // Check if RecyclerView elements have different background colors
+    @Test
+    public void testRecyclerViewElementBackgroundColors() {
+        final String text_1 = "Hola";
+        final String text_2 = "Bonjour";
+
+        ChatMessage message_1 =
+                new ChatMessage(1, "00:11:22:33:44", text_1, new Date());
+        ChatMessage message_2 =
+                new ChatMessage(2, "00:00:00:00:00", text_2, new Date());
+
+        mainActivityTestRule.getActivity().adapter.addMessage(message_1);
+        mainActivityTestRule.getActivity().adapter.addMessage(message_2);
+
+        onView(withChild(allOf(withId(R.id.tv_message), withText(text_1)))).check(
+                matches(withResourceName("rv_message_recieved")));
+        onView(withChild(allOf(withId(R.id.tv_message), withText(text_2)))).check(
+                matches(withResourceName("rv_message_sent")));
     }
 
 }
