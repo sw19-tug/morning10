@@ -15,6 +15,8 @@ import static android.support.test.espresso.matcher.ViewMatchers.isDisplayed;
 import static android.support.test.espresso.matcher.ViewMatchers.isEnabled;
 import static android.support.test.espresso.matcher.ViewMatchers.withId;
 import static android.support.test.espresso.matcher.ViewMatchers.withText;
+import static androidx.test.espresso.intent.Intents.intended;
+import static androidx.test.espresso.intent.matcher.IntentMatchers.toPackage;
 import static org.hamcrest.Matchers.not;
 
 /**
@@ -31,5 +33,11 @@ public class SendImageTests {
     @Test  // Test if the button is displayed
     public void testButtonVisible() {
         onView(withId(R.id.bt_sendImage)).check(matches(isDisplayed()));
+    }
+
+    @Test  // Test if gallery intend is shown
+    public void testGalleryIntend() {
+        onView(withId(R.id.bt_sendImage)).perform(click());
+        intended(toPackage("com.android.gallery"));
     }
 }
