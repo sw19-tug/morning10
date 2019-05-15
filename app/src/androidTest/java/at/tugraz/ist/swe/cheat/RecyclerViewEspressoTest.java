@@ -7,6 +7,7 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
+import java.text.DateFormat;
 import java.util.Date;
 
 import static android.support.test.espresso.Espresso.onView;
@@ -74,6 +75,21 @@ public class RecyclerViewEspressoTest {
                 matches(withResourceName("rv_message_recieved")));
         onView(withChild(allOf(withId(R.id.tv_message), withText(text_2)))).check(
                 matches(withResourceName("rv_message_sent")));
+    }
+
+    // Check if RecyclerView displays timestamp
+    @Test
+    public void testRecyclerViewElementBackgroundColors() {
+        final String text_1 = "Hello";
+        Date date =  new Date();
+        String date_string = DateFormat.getDateTimeInstance().format(date);
+
+        ChatMessage message_1 =
+                new ChatMessage(1, "00:11:22:33:44", text_1, date);
+
+        mainActivityTestRule.getActivity().adapter.addMessage(message_1);
+
+        onView(withChild(allOf(withId(R.id.tv_message), withText(text_1)))).check(matches(date_string));
     }
 
 }
