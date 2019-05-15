@@ -8,6 +8,10 @@ public class DummyBluetoothDeviceProvider implements BluetoothDeviceProvider {
     private boolean enabled;
     private BluetoothDeviceState state = BluetoothDeviceState.STOPSCAN;
 
+    public DummyBluetoothDeviceProvider() {
+        this.enabled = true;
+    }
+
     @Override
     public boolean isEnabled() {
         return enabled;
