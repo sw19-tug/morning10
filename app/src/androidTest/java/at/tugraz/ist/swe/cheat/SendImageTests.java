@@ -1,5 +1,7 @@
 package at.tugraz.ist.swe.cheat;
 
+import android.content.Intent;
+import android.support.test.espresso.intent.rule.IntentsTestRule;
 import android.support.test.rule.ActivityTestRule;
 import android.support.test.runner.AndroidJUnit4;
 
@@ -11,12 +13,12 @@ import static android.support.test.espresso.Espresso.onView;
 import static android.support.test.espresso.action.ViewActions.click;
 import static android.support.test.espresso.action.ViewActions.replaceText;
 import static android.support.test.espresso.assertion.ViewAssertions.matches;
+import static android.support.test.espresso.intent.Intents.intended;
+import static android.support.test.espresso.intent.matcher.IntentMatchers.hasAction;
 import static android.support.test.espresso.matcher.ViewMatchers.isDisplayed;
 import static android.support.test.espresso.matcher.ViewMatchers.isEnabled;
 import static android.support.test.espresso.matcher.ViewMatchers.withId;
 import static android.support.test.espresso.matcher.ViewMatchers.withText;
-import static androidx.test.espresso.intent.Intents.intended;
-import static androidx.test.espresso.intent.matcher.IntentMatchers.toPackage;
 import static org.hamcrest.Matchers.not;
 
 /**
@@ -28,7 +30,7 @@ import static org.hamcrest.Matchers.not;
 public class SendImageTests {
 
     @Rule
-    public ActivityTestRule<MainActivity> mainActivityTestRule = new ActivityTestRule<>(MainActivity.class);
+    public IntentsTestRule<MainActivity> mainActivityTestRule = new IntentsTestRule<>(MainActivity.class);
 
     @Test  // Test if the button is displayed
     public void testButtonVisible() {
@@ -38,6 +40,6 @@ public class SendImageTests {
     @Test  // Test if gallery intend is shown
     public void testGalleryIntend() {
         onView(withId(R.id.bt_sendImage)).perform(click());
-        intended(toPackage("com.android.gallery"));
+        intended(hasAction(Intent.ACTION_PICK));
     }
 }
