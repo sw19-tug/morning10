@@ -2,6 +2,7 @@ package at.tugraz.ist.swe.cheat;
 
 import android.app.AlertDialog;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.graphics.drawable.ColorDrawable;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -32,6 +33,7 @@ public class MainActivity extends AppCompatActivity implements ChatHistoryAdapte
     ChatHistoryAdapter adapter;
 
     boolean messageColor = true;
+    final int RESULT_IMAGE_SELECTED = 42;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -110,6 +112,15 @@ public class MainActivity extends AppCompatActivity implements ChatHistoryAdapte
 
                 adapter.addMessage(new ChatMessage(1, address, tfInput.getText().toString(), new Date()));
                 tfInput.setText("");
+            }
+        });
+
+        final Button btSendImage = findViewById(R.id.bt_sendImage);
+        btSendImage.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent i = new Intent(Intent.ACTION_PICK,android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+                startActivityForResult(i, RESULT_IMAGE_SELECTED);
             }
         });
     }
