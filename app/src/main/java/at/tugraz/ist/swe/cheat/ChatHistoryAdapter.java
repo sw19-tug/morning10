@@ -7,7 +7,10 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 public class ChatHistoryAdapter extends RecyclerView.Adapter<ChatHistoryAdapter.ViewHolder> {
@@ -67,7 +70,10 @@ public class ChatHistoryAdapter extends RecyclerView.Adapter<ChatHistoryAdapter.
     public void onBindViewHolder(ViewHolder holder, int position) {
         ChatMessage message = messageData.get(position);
         String message_text = message.getMessage();
+        SimpleDateFormat formatter = new SimpleDateFormat("hh:mm");
+        String message_timestamp = formatter.format(message.getTimeStamp());
         holder.tv_message.setText(message_text);
+        holder.tv_timestamp.setText(message_timestamp);
     }
 
     // Return total number of data sets
@@ -79,10 +85,12 @@ public class ChatHistoryAdapter extends RecyclerView.Adapter<ChatHistoryAdapter.
     // Store and recycle views as they are scrolled off screen
     public class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
         TextView tv_message;
+        TextView tv_timestamp;
 
         ViewHolder(View itemView) {
             super(itemView);
             tv_message = itemView.findViewById(R.id.tv_message);
+            tv_timestamp = itemView.findViewById(R.id.tv_timestamp);
             itemView.setOnClickListener(this);
         }
 
