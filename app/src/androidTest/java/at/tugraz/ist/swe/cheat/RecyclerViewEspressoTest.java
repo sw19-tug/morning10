@@ -7,6 +7,8 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 
 import static android.support.test.espresso.Espresso.onView;
@@ -24,56 +26,62 @@ import static org.hamcrest.Matchers.allOf;
 @RunWith(AndroidJUnit4.class)
 public class RecyclerViewEspressoTest {
 
-    @Rule
-    public ActivityTestRule<MainActivity> mainActivityTestRule = new ActivityTestRule<>(MainActivity.class);
+        @Rule
+        public ActivityTestRule<MainActivity> mainActivityTestRule = new ActivityTestRule<>(MainActivity.class);
 
-    // Check if RecyclerView is displayed
-    @Test
-    public void testRecyclerViewVisibility() {
-        onView(withId(R.id.rv_chat_history)).check(matches(isDisplayed()));
-    }
+        // Check if RecyclerView is displayed
+        @Test
+        public void testRecyclerViewVisibility () {
+            onView(withId(R.id.rv_chat_history)).check(matches(isDisplayed()));
+        }
 
-    // Check if RecyclerView contains elements
-    @Test
-    public void testRecyclerAddMessage() {
-        onView(withId(R.id.tf_input)).perform(replaceText("Dude where's my car?!"));
-        onView(withId(R.id.bt_send)).perform(click());
-        onView(withId(R.id.tv_message)).check(matches(isDisplayed()));
-    }
+        // Check if RecyclerView contains elements
+        @Test
+        public void testRecyclerAddMessage () {
+            onView(withId(R.id.tf_input)).perform(replaceText("Dude where's my car?!"));
+            onView(withId(R.id.bt_send)).perform(click());
+            onView(withId(R.id.tv_message)).check(matches(isDisplayed()));
+        }
 
-    // Check if Click on RecyclerView element triggers an action
-    @Test
-    public void testRecyclerViewElementClick() {
-        final int id = 1;
-        final String senderAddress = "00:11:22:33:44";
-        final String message = "Hello World";
-        final Date timeStamp = new Date();
-        ChatMessage messageObj = new ChatMessage(id, senderAddress, message, timeStamp);
+        // Check if Click on RecyclerView element triggers an action
+        @Test
+        public void testRecyclerViewElementClick () {
+            final String message = "Hello World";
 
-        mainActivityTestRule.getActivity().adapter.addMessage(messageObj);
+            onView(withId(R.id.tf_input)).perform(replaceText(message));
+            onView(withId(R.id.bt_send)).perform(click());
 
-        onView(allOf(withId(R.id.tv_message), withText(message))).perform(click());
-        onView(withId(R.id.tf_input)).check(matches((withText(message))));
-    }
+            onView(allOf(withId(R.id.tv_message), withText(message))).perform(click());
+            onView(withId(R.id.tf_input)).check(matches((withText(message))));
+        }
 
-    // Check if RecyclerView elements have different background colors
-    @Test
-    public void testRecyclerViewElementBackgroundColors() {
-        final String text_1 = "Hola";
-        final String text_2 = "Bonjour";
+        // Check if RecyclerView elements have different background colors
+        @Test
+        public void testRecyclerViewElementBackgroundColors () {
+            final String text_1 = "Hola";
+            final String text_2 = "Bonjour";
 
-        ChatMessage message_1 =
-                new ChatMessage(1, "00:11:22:33:44", text_1, new Date());
-        ChatMessage message_2 =
-                new ChatMessage(2, "00:00:00:00:00", text_2, new Date());
+            onView(withId(R.id.tf_input)).perform(replaceText(text_1));
+            onView(withId(R.id.bt_send)).perform(click());
+            onView(withId(R.id.tf_input)).perform(replaceText(text_2));
+            onView(withId(R.id.bt_send)).perform(click());
 
-        mainActivityTestRule.getActivity().adapter.addMessage(message_1);
-        mainActivityTestRule.getActivity().adapter.addMessage(message_2);
+            onView(withChild(allOf(withId(R.id.tv_message), withText(text_1)))).check(
+                    matches(withResourceName("rv_message_sent")));
+            onView(withChild(allOf(withId(R.id.tv_message), withText(text_2)))).check(
+                    matches(withResourceName("rv_message_recieved")));
+        }
 
-        onView(withChild(allOf(withId(R.id.tv_message), withText(text_1)))).check(
-                matches(withResourceName("rv_message_recieved")));
-        onView(withChild(allOf(withId(R.id.tv_message), withText(text_2)))).check(
-                matches(withResourceName("rv_message_sent")));
-    }
+        // Check if RecyclerView displays timestamp
+        @Test
+        public void testRecyclerViewElementTimeStamp () {
+            Date date = new Date();
+            SimpleDateFormat formatter = new SimpleDateFormat("hh:mm");
+            String date_string = formatter.format(date);
 
+            onView(withId(R.id.tf_input)).perform(replaceText("Dude where's my car?!"));
+            onView(withId(R.id.bt_send)).perform(click());
+
+            onView(withChild(allOf(withId(R.id.tv_timestamp), withText(date_string)))).check(matches(isDisplayed()));
+        }
 }

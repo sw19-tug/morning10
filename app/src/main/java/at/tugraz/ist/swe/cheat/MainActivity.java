@@ -26,9 +26,7 @@ public class MainActivity extends AppCompatActivity implements ChatHistoryAdapte
     //private BluetoothDeviceManager bluetoothDeviceManager;
     AlertDialog.Builder devicesDialogBuilder;
     AlertDialog devicesDialog;
-
     ArrayAdapter<String> deviceListAdapter;
-
     ChatHistoryAdapter adapter;
 
     boolean messageColor = true;
@@ -66,9 +64,12 @@ public class MainActivity extends AppCompatActivity implements ChatHistoryAdapte
         // Set up the RecyclerView to display messages (history)
         ArrayList<ChatMessage> messages = null;
         final RecyclerView recyclerView = findViewById(R.id.rv_chat_history);
-        recyclerView.setLayoutManager(new LinearLayoutManager(this));
-        adapter = new ChatHistoryAdapter(messages, "00:00:00:00:00:00");
+        LinearLayoutManager layoutManager = new LinearLayoutManager(this);
+        layoutManager.setStackFromEnd(true);
+        recyclerView.setLayoutManager(layoutManager);
+        adapter = new ChatHistoryAdapter(messages, "00:00:00:00:00:00", layoutManager);
         adapter.setClickListener(this);
+        recyclerView.setAdapter(adapter);
         recyclerView.setAdapter(adapter);
 
         // Initialize tfInput and btSend
