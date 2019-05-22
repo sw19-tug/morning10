@@ -36,6 +36,7 @@ import at.tugraz.ist.swe.cheat.btobservable.DeviceObservable;
 import at.tugraz.ist.swe.cheat.serviceimpl.DummyBluetoothDeviceProvider;
 import at.tugraz.ist.swe.cheat.serviceimpl.RealBluetoothDeviceProvider;
 import at.tugraz.ist.swe.cheat.viewfragments.DeviceListFragment;
+import at.tugraz.ist.swe.cheat.viewfragments.ToastFragment;
 
 public class MainActivity extends AppCompatActivity implements RecyclerViewMessagesAdapter.ItemClickListener {
 
@@ -149,6 +150,11 @@ public class MainActivity extends AppCompatActivity implements RecyclerViewMessa
                 tfInput.setText("");
             }
         });
+
+        ToastFragment toastFragment = new ToastFragment();
+        toastFragment.setMainActivity(this);
+
+        bluetoothDeviceManager.getBluetoothDeviceProvider().addObserver(toastFragment);
     }
   
     @Override

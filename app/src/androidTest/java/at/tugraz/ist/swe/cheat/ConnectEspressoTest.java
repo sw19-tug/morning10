@@ -27,6 +27,8 @@ import static android.support.test.espresso.matcher.RootMatchers.withDecorView;
 import static android.support.test.espresso.matcher.ViewMatchers.isDisplayed;
 import static android.support.test.espresso.matcher.ViewMatchers.withId;
 import static android.support.test.espresso.matcher.ViewMatchers.withText;
+import static at.tugraz.ist.swe.cheat.dto.Provider.STATE_CONNECTED;
+import static at.tugraz.ist.swe.cheat.dto.Provider.STATE_CONNECTING;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.not;
 import static org.junit.Assert.assertEquals;
@@ -128,7 +130,7 @@ public class ConnectEspressoTest {
         InstrumentationRegistry.getInstrumentation().runOnMainSync(new Runnable() {
             @Override
             public void run() {
-                CustomMessage customMessage = new CustomMessage(5,new Device("Dummy Device","00:11:22:AA:BB:CC"));
+                CustomMessage customMessage = new CustomMessage(STATE_CONNECTING,new Device("Dummy Device","00:11:22:AA:BB:CC"));
                 deviceObservable.setDevice(customMessage);
             }
         });
@@ -136,7 +138,22 @@ public class ConnectEspressoTest {
         onView(withText(mainActivityTestRule.getActivity().deviceListAdapter.getItem(0))).perform(click());
 
 
-        onView(withText("is connected to 00:11:22:AA:BB:CC")).inRoot(withDecorView(not(is(mainActivityTestRule.getActivity().getWindow().getDecorView())))).check(matches(isDisplayed()));
+        onView(withText("connecting to Dummy Device")).inRoot(withDecorView(not(is(mainActivityTestRule.getActivity().getWindow().getDecorView())))).check(matches(isDisplayed()));
     }
 
+
+    @Test
+    public void showConnectedToast()
+    {
+
+        InstrumentationRegistry.getInstrumentation().runOnMainSync(new Runnable() {
+            @Override
+            public void run() {
+                CustomMessage customMessage = new CustomMessage(STATE_CONNECTED,new Device("Dummy Device","00:11:22:AA:BB:CC"));
+                deviceObservable.setDevice(customMessage);
+            }
+        });
+
+        onView(withText("is connected to Dummy Device")).inRoot(withDecorView(not(is(mainActivityTestRule.getActivity().getWindow().getDecorView())))).check(matches(isDisplayed()));
+    }
 }
