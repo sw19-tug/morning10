@@ -1,9 +1,19 @@
 package at.tugraz.ist.swe.cheat;
 
+import android.Manifest;
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.database.Cursor;
+import android.graphics.BitmapFactory;
 import android.graphics.drawable.ColorDrawable;
+import android.net.Uri;
+import android.os.Build;
+import android.provider.MediaStore;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
@@ -35,6 +45,9 @@ public class MainActivity extends AppCompatActivity implements ChatHistoryAdapte
     boolean messageColor = true;
     final int RESULT_IMAGE_SELECTED = 42;
 
+    private static final int LOCATION_PERMISSION_RESPONSE = 2;
+    private static final int READ_PERMISSION_RESPONSE = 3;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
@@ -48,6 +61,23 @@ public class MainActivity extends AppCompatActivity implements ChatHistoryAdapte
                 }
             })
             .setNegativeButton(android.R.string.no, null);
+
+        if (Build.VERSION.SDK_INT >= 23) {
+            if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION)
+                    != PackageManager.PERMISSION_GRANTED) {
+
+                ActivityCompat.requestPermissions(this,
+                        new String[]{Manifest.permission.ACCESS_COARSE_LOCATION},
+                        LOCATION_PERMISSION_RESPONSE);
+            }
+            if (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE)
+                    != PackageManager.PERMISSION_GRANTED) {
+
+                ActivityCompat.requestPermissions(this,
+                        new String[]{Manifest.permission.READ_EXTERNAL_STORAGE},
+                        READ_PERMISSION_RESPONSE);
+            }
+        }
 
         devicesDialogBuilder.create();
 
@@ -120,6 +150,7 @@ public class MainActivity extends AppCompatActivity implements ChatHistoryAdapte
             @Override
             public void onClick(View v) {
                 Intent i = new Intent(Intent.ACTION_PICK,android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+                i.setType("image/*");
                 startActivityForResult(i, RESULT_IMAGE_SELECTED);
             }
         });
@@ -166,5 +197,36 @@ public class MainActivity extends AppCompatActivity implements ChatHistoryAdapte
     public void onItemClick(View view, int position) {
         final EditText tfInput = findViewById(R.id.tf_input);
         tfInput.setText(adapter.getItem(position));
+    }
+
+    public void onActivityResult(int requestCode,int resultCode,Intent data){
+
+        if (resultCode == Activity.RESULT_OK)
+            switch (requestCode){
+                case RESULT_IMAGE_SELECTED:
+                    Uri selectedImage = data.getData();
+                    String[] filePathColumn = { MediaStore.Images.Media.DATA };
+                    // Get the cursor
+                    Cursor cursor = getContentResolver().query(selectedImage, filePathColumn, null, null, null);
+                    // Move to first row
+                    cursor.moveToFirst();
+                    int columnIndex = cursor.getColumnIndex(filePathColumn[0]);
+                    //Gets the String value in the column
+                    String imgDecodableString = cursor.getString(columnIndex);
+                    cursor.close();
+                    // Set the Image in ImageView after decoding the String
+                    String address;
+                    if (messageColor) {
+                        messageColor = false;
+                        address = "00:00:00:00:00:00";
+                    }
+                    else {
+                        messageColor = true;
+                        address = "11:00:00:00:00:00";
+                    }
+                    adapter.addMessage(new ChatMessage(1, address, BitmapFactory.decodeFile(imgDecodableString), new Date()));
+                    break;
+            }
+
     }
 }

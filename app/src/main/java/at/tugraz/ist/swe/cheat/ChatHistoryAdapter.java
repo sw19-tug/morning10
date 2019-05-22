@@ -5,6 +5,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import java.util.ArrayList;
@@ -67,7 +68,13 @@ public class ChatHistoryAdapter extends RecyclerView.Adapter<ChatHistoryAdapter.
     public void onBindViewHolder(ViewHolder holder, int position) {
         ChatMessage message = messageData.get(position);
         String message_text = message.getMessage();
-        holder.tv_message.setText(message_text);
+        if(message_text.isEmpty()) {
+            holder.tv_message_img.setImageBitmap(message.getImage());
+            holder.tv_message_img.setVisibility(View.VISIBLE);
+        }
+        else {
+            holder.tv_message.setText(message_text);
+        }
     }
 
     // Return total number of data sets
@@ -79,10 +86,13 @@ public class ChatHistoryAdapter extends RecyclerView.Adapter<ChatHistoryAdapter.
     // Store and recycle views as they are scrolled off screen
     public class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
         TextView tv_message;
+        ImageView tv_message_img;
 
         ViewHolder(View itemView) {
             super(itemView);
             tv_message = itemView.findViewById(R.id.tv_message);
+            tv_message_img = itemView.findViewById(R.id.tv_message_img);
+
             itemView.setOnClickListener(this);
         }
 
