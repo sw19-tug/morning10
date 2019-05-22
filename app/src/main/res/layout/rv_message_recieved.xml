@@ -14,10 +14,10 @@
         android:layout_height="wrap_content"
         android:textSize="20sp"
         android:background="@drawable/rounded_rectangle_white"
-        app:layout_constraintBottom_toBottomOf="@id/rv_message_recieved"
-        app:layout_constraintTop_toTopOf="@id/rv_message_recieved"
         android:paddingHorizontal="20dp"
-        android:paddingVertical="10dp"/>
+        android:paddingVertical="10dp"
+        app:layout_constraintBottom_toBottomOf="@id/rv_message_recieved"
+        app:layout_constraintTop_toTopOf="@id/rv_message_recieved"/>
 
     <TextView
         android:id="@+id/tv_timestamp"
@@ -25,6 +25,8 @@
         android:layout_height="wrap_content"
         android:layout_above="@+id/rv_message_recieved"
         android:layout_marginTop="0dp"
+        android:paddingHorizontal="20dp"
+        android:textSize="12sp"
         app:layout_constraintBottom_toBottomOf="@id/rv_message_recieved"
         app:layout_constraintTop_toBottomOf="@+id/tv_message" />
 

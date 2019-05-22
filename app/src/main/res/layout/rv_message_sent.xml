@@ -27,6 +27,8 @@
         android:layout_height="wrap_content"
         android:layout_above="@id/rv_message_sent"
         android:layout_marginTop="0dp"
+        android:textSize="12sp"
+        android:paddingHorizontal="20dp"
         app:layout_constraintBottom_toBottomOf="@id/rv_message_sent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/tv_message" />

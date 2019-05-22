@@ -1,16 +1,13 @@
 package at.tugraz.ist.swe.cheat;
 
-import android.content.Context;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 public class ChatHistoryAdapter extends RecyclerView.Adapter<ChatHistoryAdapter.ViewHolder> {
@@ -23,10 +20,13 @@ public class ChatHistoryAdapter extends RecyclerView.Adapter<ChatHistoryAdapter.
     private List<ChatMessage> messageData;
     private ItemClickListener clickListener;
 
+    private RecyclerView.LayoutManager manager;
+
     // Constructor takes context and data
-    ChatHistoryAdapter(List<ChatMessage> data, String device) {
+    ChatHistoryAdapter(List<ChatMessage> data, String device, RecyclerView.LayoutManager lm) {
         this.messageData = new ArrayList<>();
         this.currentDevice = device;
+        this.manager = lm;
     }
 
     // Determine the appropriate ViewType according to the sender
@@ -115,10 +115,11 @@ public class ChatHistoryAdapter extends RecyclerView.Adapter<ChatHistoryAdapter.
         void onItemClick(View view, int position);
     }
 
-    //addMessage
+    // Add message to recycler view
     public void addMessage(ChatMessage message)
     {
         messageData.add(message);
-        notifyDataSetChanged();
+        notifyItemInserted(messageData.size());
+        manager.scrollToPosition(getItemCount() - 1);
     }
 }
