@@ -52,6 +52,8 @@ public class MainActivity extends AppCompatActivity implements RecyclerViewMessa
     BluetoothDiscover bluetoothDiscover = new BluetoothDiscover(deviceObservable);
     ToastFragment toastFragment = new ToastFragment();
 
+    ChatController chatController;
+
 
     public static final int REQUEST_ENABLE_BLUETOOTH = 1;
     private static final int MY_PERMISSION_RESPONSE = 2;
@@ -168,6 +170,7 @@ public class MainActivity extends AppCompatActivity implements RecyclerViewMessa
         toastFragment.setMainActivity(this);
 
         bluetoothDeviceManager.getBluetoothDeviceProvider().addObserver(toastFragment);
+        chatController = new ChatController(bluetoothDeviceManager.getBluetoothDeviceProvider());
     }
   
     @Override

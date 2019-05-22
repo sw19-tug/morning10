@@ -198,6 +198,8 @@ public class RealBluetoothDeviceProvider extends Provider implements BluetoothDe
             while (currentState != STATE_CONNECTED) {
                 try {
                     accepted = serverSocket.accept();
+
+
                 } catch (IOException e) {
                     break;
                 }
@@ -209,6 +211,8 @@ public class RealBluetoothDeviceProvider extends Provider implements BluetoothDe
                             case STATE_LISTEN:
                             case STATE_CONNECTING:
                                 // start the connected thread.
+                                System.out.println("Accepted Thread to device " + accepted.getRemoteDevice());
+                                device = accepted.getRemoteDevice();
                                 connected();
                                 break;
                             case STATE_NONE:
