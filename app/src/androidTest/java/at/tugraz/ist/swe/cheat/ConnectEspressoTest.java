@@ -19,6 +19,7 @@ import org.junit.runner.RunWith;
 import at.tugraz.ist.swe.cheat.btobservable.DeviceObservable;
 import at.tugraz.ist.swe.cheat.dto.CustomMessage;
 import at.tugraz.ist.swe.cheat.dto.Device;
+import at.tugraz.ist.swe.cheat.viewfragments.ToastFragment;
 
 import static android.support.test.espresso.Espresso.onView;
 import static android.support.test.espresso.action.ViewActions.click;
@@ -48,12 +49,17 @@ public class ConnectEspressoTest {
     Toolbar myToolbar;
     MenuItem btConnect;
     DeviceObservable deviceObservable;
+    ToastFragment toastFragment;
+    BluetoothDeviceManager bluetoothDeviceManager;
 
     @Before
     public void setUp() {
         myToolbar = (Toolbar) mainActivityTestRule.getActivity().findViewById(R.id.menu);
         btConnect =  (MenuItem)myToolbar.getMenu().findItem(R.id.bt_connect);
         deviceObservable = mainActivityTestRule.getActivity().deviceObservable;
+        toastFragment = mainActivityTestRule.getActivity().toastFragment;
+        bluetoothDeviceManager = mainActivityTestRule.getActivity().bluetoothDeviceManager;
+
     }
 
     //there must be a connect button
@@ -98,7 +104,7 @@ public class ConnectEspressoTest {
         InstrumentationRegistry.getInstrumentation().runOnMainSync(new Runnable() {
             @Override
             public void run() {
-                CustomMessage customMessage = new CustomMessage(5,new Device("Dummy Device","00:11:22:AA:BB:CC"));
+                CustomMessage customMessage = new CustomMessage(STATE_CONNECTED,new Device("Dummy Device","00:11:22:AA:BB:CC"));
                 deviceObservable.setDevice(customMessage);
             }
         });
@@ -130,15 +136,16 @@ public class ConnectEspressoTest {
         InstrumentationRegistry.getInstrumentation().runOnMainSync(new Runnable() {
             @Override
             public void run() {
-                CustomMessage customMessage = new CustomMessage(STATE_CONNECTING,new Device("Dummy Device","00:11:22:AA:BB:CC"));
+                CustomMessage customMessage = new CustomMessage(STATE_CONNECTED,new Device("Dummy Device","00:11:22:AA:BB:CC"));
                 deviceObservable.setDevice(customMessage);
             }
         });
         //Thread.sleep(100);
         onView(withText(mainActivityTestRule.getActivity().deviceListAdapter.getItem(0))).perform(click());
 
-
-        onView(withText("connecting to Dummy Device")).inRoot(withDecorView(not(is(mainActivityTestRule.getActivity().getWindow().getDecorView())))).check(matches(isDisplayed()));
+        assertEquals("Dummy Device", toastFragment.getMessage().getDevice().getDevice_name());
+        assertEquals(STATE_CONNECTING, toastFragment.getMessage().getState());
+        //onView(withText("connecting to Dummy Device")).inRoot(withDecorView(not(is(mainActivityTestRule.getActivity().getWindow().getDecorView())))).check(matches(isDisplayed()));
     }
 
 
@@ -149,11 +156,13 @@ public class ConnectEspressoTest {
         InstrumentationRegistry.getInstrumentation().runOnMainSync(new Runnable() {
             @Override
             public void run() {
-                CustomMessage customMessage = new CustomMessage(STATE_CONNECTED,new Device("Dummy Device","00:11:22:AA:BB:CC"));
-                deviceObservable.setDevice(customMessage);
+                bluetoothDeviceManager.getBluetoothDeviceProvider().connectToDevice("00:11:22:AA:BB:CC");
+                bluetoothDeviceManager.getBluetoothDeviceProvider().connected();
             }
         });
 
-        onView(withText("is connected to Dummy Device")).inRoot(withDecorView(not(is(mainActivityTestRule.getActivity().getWindow().getDecorView())))).check(matches(isDisplayed()));
+        assertEquals("Dummy Device", toastFragment.getMessage().getDevice().getDevice_name());
+        assertEquals(STATE_CONNECTED, toastFragment.getMessage().getState());
+
     }
 }

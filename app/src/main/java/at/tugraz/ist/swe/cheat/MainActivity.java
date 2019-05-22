@@ -18,6 +18,7 @@ import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.text.Editable;
@@ -49,6 +50,7 @@ public class MainActivity extends AppCompatActivity implements RecyclerViewMessa
     RecyclerViewMessagesAdapter adapter;
     DeviceObservable deviceObservable = new DeviceObservable();
     BluetoothDiscover bluetoothDiscover = new BluetoothDiscover(deviceObservable);
+    ToastFragment toastFragment = new ToastFragment();
 
 
     public static final int REQUEST_ENABLE_BLUETOOTH = 1;
@@ -98,10 +100,22 @@ public class MainActivity extends AppCompatActivity implements RecyclerViewMessa
         devicesDialogBuilder.setAdapter(deviceListAdapter, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
+                String strName = deviceListAdapter.getItem(which);
+                if(strName != null)
+                {
+                    bluetoothDeviceManager.stopScanning();
+                    String info = strName;
+                    String address = info.substring(info.length() - 17);
+
+                    bluetoothDeviceManager.connectToDevice(address);
+                    Log.d("#######","Show name "+ strName);
+                    Log.d("#######","Show address "+ address);
+                }
+
                 myToolbar.setBackgroundColor(0xff66bb6a);
                 bluetoothDeviceManager.stopScanning();
-                //TODO DEVICE
-                //TODO Connect to device
+                unregisterReceiver(bluetoothDiscover);
+
                 dialog.dismiss();
             }
         });
@@ -151,7 +165,6 @@ public class MainActivity extends AppCompatActivity implements RecyclerViewMessa
             }
         });
 
-        ToastFragment toastFragment = new ToastFragment();
         toastFragment.setMainActivity(this);
 
         bluetoothDeviceManager.getBluetoothDeviceProvider().addObserver(toastFragment);

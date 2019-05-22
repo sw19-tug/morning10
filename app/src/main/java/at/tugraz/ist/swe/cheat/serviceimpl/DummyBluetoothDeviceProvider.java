@@ -9,7 +9,7 @@ import at.tugraz.ist.swe.cheat.services.BluetoothDeviceProvider;
 public class DummyBluetoothDeviceProvider extends Provider implements BluetoothDeviceProvider {
 
     class DeviceDummy {
-        private String name = "TEST DUMMY";
+        private String name = "Dummy Device";
         private String address;
 
         public String getName() {
