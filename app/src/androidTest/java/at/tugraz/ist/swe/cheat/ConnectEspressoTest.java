@@ -17,13 +17,18 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import at.tugraz.ist.swe.cheat.btobservable.DeviceObservable;
+import at.tugraz.ist.swe.cheat.dto.CustomMessage;
+import at.tugraz.ist.swe.cheat.dto.Device;
 
 import static android.support.test.espresso.Espresso.onView;
 import static android.support.test.espresso.action.ViewActions.click;
 import static android.support.test.espresso.assertion.ViewAssertions.matches;
+import static android.support.test.espresso.matcher.RootMatchers.withDecorView;
 import static android.support.test.espresso.matcher.ViewMatchers.isDisplayed;
 import static android.support.test.espresso.matcher.ViewMatchers.withId;
 import static android.support.test.espresso.matcher.ViewMatchers.withText;
+import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.not;
 import static org.junit.Assert.assertEquals;
 
 /**aa
@@ -91,7 +96,8 @@ public class ConnectEspressoTest {
         InstrumentationRegistry.getInstrumentation().runOnMainSync(new Runnable() {
             @Override
             public void run() {
-                deviceObservable.setDevice("Devices");
+                CustomMessage customMessage = new CustomMessage(5,new Device("Dummy Device","00:11:22:AA:BB:CC"));
+                deviceObservable.setDevice(customMessage);
             }
         });
         //Thread.sleep(100);
@@ -110,6 +116,27 @@ public class ConnectEspressoTest {
         // after click on connect button toolbar should be white and notConnected button shown again
         assertEquals(((ColorDrawable)myToolbar.getBackground()).getColor(), 0xffffffff);
         assertEquals(btConnect.getIcon().getConstantState(), notConnected.getConstantState());
+    }
+
+
+    @Test
+    public void showConnectingToast()
+    {
+        onView(withId(R.id.bt_connect)).perform(click());
+
+
+        InstrumentationRegistry.getInstrumentation().runOnMainSync(new Runnable() {
+            @Override
+            public void run() {
+                CustomMessage customMessage = new CustomMessage(5,new Device("Dummy Device","00:11:22:AA:BB:CC"));
+                deviceObservable.setDevice(customMessage);
+            }
+        });
+        //Thread.sleep(100);
+        onView(withText(mainActivityTestRule.getActivity().deviceListAdapter.getItem(0))).perform(click());
+
+
+        onView(withText("is connected to 00:11:22:AA:BB:CC")).inRoot(withDecorView(not(is(mainActivityTestRule.getActivity().getWindow().getDecorView())))).check(matches(isDisplayed()));
     }
 
 }

@@ -4,12 +4,14 @@ package at.tugraz.ist.swe.cheat;
 import org.junit.Before;
 import org.junit.Test;
 
-import java.util.Observable;
-
+import at.tugraz.ist.swe.cheat.btobserver.BasicObserver;
+import at.tugraz.ist.swe.cheat.dto.CustomMessage;
 import at.tugraz.ist.swe.cheat.serviceimpl.DummyBluetoothDeviceProvider;
 
-import static android.bluetooth.BluetoothProfile.STATE_CONNECTED;
-import static android.bluetooth.BluetoothProfile.STATE_CONNECTING;
+import static at.tugraz.ist.swe.cheat.dto.Provider.STATE_CONNECTED;
+import static at.tugraz.ist.swe.cheat.dto.Provider.STATE_CONNECTING;
+import static at.tugraz.ist.swe.cheat.dto.Provider.STATE_LISTEN;
+import static junit.framework.TestCase.assertEquals;
 
 
 public class BluetoothObserverTest {
@@ -40,6 +42,7 @@ public class BluetoothObserverTest {
     @Test
     public void listenDevice()
     {
+        this.provider.connectToDevice("00:11:22:AA:BB:CC");
         this.provider.connected();
         CustomMessage message  = this.basicObserver.getMessage();
 

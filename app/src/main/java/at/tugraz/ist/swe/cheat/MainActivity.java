@@ -3,8 +3,10 @@ package at.tugraz.ist.swe.cheat;
 import android.Manifest;
 import android.app.AlertDialog;
 import android.bluetooth.BluetoothAdapter;
+import android.bluetooth.BluetoothDevice;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.pm.PackageManager;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Build;
@@ -45,6 +47,8 @@ public class MainActivity extends AppCompatActivity implements RecyclerViewMessa
 
     RecyclerViewMessagesAdapter adapter;
     DeviceObservable deviceObservable = new DeviceObservable();
+    BluetoothDiscover bluetoothDiscover = new BluetoothDiscover(deviceObservable);
+
 
     public static final int REQUEST_ENABLE_BLUETOOTH = 1;
     private static final int MY_PERMISSION_RESPONSE = 2;
@@ -173,8 +177,15 @@ public class MainActivity extends AppCompatActivity implements RecyclerViewMessa
                     DeviceListFragment deviceListFragment = new DeviceListFragment(deviceListAdapter);
                     deviceObservable.addObserver(deviceListFragment);
 
-                    //This is called by the bluetoothDeviceManager
-                    //deviceObservable.setDevice("Dummy Device");
+
+                    // Register for broadcasts when a device is discovered
+                    IntentFilter filter = new IntentFilter(BluetoothDevice.ACTION_FOUND);
+                    registerReceiver(bluetoothDiscover, filter);
+
+                    // Register for broadcasts when discovery has finished
+                    filter = new IntentFilter(BluetoothAdapter.ACTION_DISCOVERY_FINISHED);
+                    registerReceiver(bluetoothDiscover, filter);
+
 
                     //Show Devices
                     //listen to observer to

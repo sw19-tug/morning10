@@ -13,6 +13,7 @@ import java.util.Observable;
 import java.util.Observer;
 
 import at.tugraz.ist.swe.cheat.MainActivity;
+import at.tugraz.ist.swe.cheat.dto.CustomMessage;
 
 public class DeviceListFragment  implements Observer {
 
@@ -25,12 +26,11 @@ public class DeviceListFragment  implements Observer {
     }
 
 
-
-
     @Override
     public void update(Observable o, Object message) {
-        String device = (String) message;
-        deviceListAdapter.add(device);
+        CustomMessage customMessage = (CustomMessage) message;
+        deviceListAdapter.add(customMessage.getDevice().getDevice_name()+"\n"
+                +customMessage.getDevice().getDevice_address());
 
     }
 }
