@@ -198,7 +198,10 @@ public class MainActivity extends AppCompatActivity implements ChatHistoryAdapte
         final Toolbar myToolbar = (Toolbar)findViewById(R.id.menu);
         final MenuItem btConnect =  (MenuItem)myToolbar.getMenu().findItem(R.id.bt_connect);
 
+        Log.d("#######","Show Current State "+ bluetoothDeviceManager.getBluetoothDeviceProvider().getCurrentState());
+
         switch (item.getItemId()) {
+
             case R.id.bt_connect:
                 //TODO
                 if(bluetoothDeviceManager.getBluetoothDeviceProvider().getCurrentState() == Provider.STATE_CONNECTED || bluetoothDeviceManager.getBluetoothDeviceProvider().getCurrentState() == Provider.STATE_CONNECTING) {
@@ -211,7 +214,7 @@ public class MainActivity extends AppCompatActivity implements ChatHistoryAdapte
                     }
                     myToolbar.setBackgroundColor(0xffffffff);
                     btConnect.setIcon(R.drawable.ic_portable_wifi_off_black_24dp);
-                } else {
+                } else if(bluetoothDeviceManager.getBluetoothDeviceProvider().getCurrentState() == Provider.STATE_LISTEN ) {
                     bluetoothDeviceManager.startScanning();
 
                     //TODO start scanning

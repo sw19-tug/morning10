@@ -177,7 +177,7 @@ public class RealBluetoothDeviceProvider extends Provider implements BluetoothDe
 
     @Override
     public int getCurrentState() {
-        return 0;
+        return currentState;
     }
 
 
@@ -198,10 +198,9 @@ public class RealBluetoothDeviceProvider extends Provider implements BluetoothDe
         public void run() {
             setName("AcceptThread");
             System.out.println("Accepted Thread to device ");
-            BluetoothSocket accepted;
             while (currentState != STATE_CONNECTED) {
                 try {
-                    accepted = serverSocket.accept();
+                    socket = serverSocket.accept();
 
 
                 } catch (IOException e) {
@@ -209,14 +208,14 @@ public class RealBluetoothDeviceProvider extends Provider implements BluetoothDe
                 }
 
                 // If a connection was accepted
-                if (accepted != null) {
+                if (socket != null) {
                     synchronized (this) {
                         switch (currentState) {
                             case STATE_LISTEN:
                             case STATE_CONNECTING:
                                 // start the connected thread.
-                                System.out.println("Accepted Thread to device " + accepted.getRemoteDevice());
-                                device = accepted.getRemoteDevice();
+                                System.out.println("Accepted Thread to device " + socket.getRemoteDevice());
+                                device = socket.getRemoteDevice();
                                 connected();
                                 break;
                             case STATE_NONE:
@@ -224,7 +223,7 @@ public class RealBluetoothDeviceProvider extends Provider implements BluetoothDe
                                 // Either not ready or already connected. Terminate
                                 // new socket.
                                 try {
-                                    accepted.close();
+                                    socket.close();
                                 } catch (IOException e) {
                                 }
                                 break;
@@ -306,8 +305,6 @@ public class RealBluetoothDeviceProvider extends Provider implements BluetoothDe
         notifyObservers(message);
 
         setCurrentState(STATE_LISTEN);
-
-
 
     }
 

@@ -12,12 +12,14 @@ import at.tugraz.ist.swe.cheat.dto.Device;
 
 import static at.tugraz.ist.swe.cheat.dto.Provider.STATE_CONNECTED;
 import static at.tugraz.ist.swe.cheat.dto.Provider.STATE_CONNECTING;
+import static at.tugraz.ist.swe.cheat.dto.Provider.STATE_LISTEN;
 
 
 public class ToastFragment extends Fragment implements Observer {
 
-    MainActivity mainActivity;
-    CustomMessage message;
+    private MainActivity mainActivity;
+    private CustomMessage message;
+    private String toastString = "";
 
     @Override
     public void update(Observable o, final Object message) {
@@ -28,7 +30,7 @@ public class ToastFragment extends Fragment implements Observer {
             {
                 public void run()
                 {
-                    String toastString = "";
+
                     switch (((CustomMessage) message).getState())
                     {
                         case STATE_CONNECTED:
@@ -36,6 +38,9 @@ public class ToastFragment extends Fragment implements Observer {
                             break;
                         case STATE_CONNECTING:
                             toastString = "connecting to ";
+                            break;
+                        case STATE_LISTEN:
+                            toastString = "is disconnected from ";
                             break;
                     }
                     toastString += (String) ((CustomMessage) message).getDevice().getDevice_name();
@@ -64,4 +69,9 @@ public class ToastFragment extends Fragment implements Observer {
     public void setMessage(CustomMessage message) {
         this.message = message;
     }
+
+    public String getToastString() {
+        return toastString;
+    }
+
 }
