@@ -76,4 +76,9 @@ public abstract class Provider extends Observable implements BluetoothDeviceProv
     public void connectionFailed() {
 
     }
+
+    @Override
+    public int getCurrentState() {
+        return 0;
+    }
 }

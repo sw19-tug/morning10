@@ -99,7 +99,7 @@ public class RealBluetoothDeviceProvider extends Provider implements BluetoothDe
 
         setChanged();
         notifyObservers(message);
-
+        setCurrentState(STATE_LISTEN);
     }
 
 
@@ -175,6 +175,10 @@ public class RealBluetoothDeviceProvider extends Provider implements BluetoothDe
         this.start();
     }
 
+    @Override
+    public int getCurrentState() {
+        return currentState;
+    }
 
 
     /**Accept Thread**/
@@ -194,10 +198,9 @@ public class RealBluetoothDeviceProvider extends Provider implements BluetoothDe
         public void run() {
             setName("AcceptThread");
             System.out.println("Accepted Thread to device ");
-            BluetoothSocket accepted;
             while (currentState != STATE_CONNECTED) {
                 try {
-                    accepted = serverSocket.accept();
+                    socket = serverSocket.accept();
 
 
                 } catch (IOException e) {
@@ -205,14 +208,14 @@ public class RealBluetoothDeviceProvider extends Provider implements BluetoothDe
                 }
 
                 // If a connection was accepted
-                if (accepted != null) {
+                if (socket != null) {
                     synchronized (this) {
                         switch (currentState) {
                             case STATE_LISTEN:
                             case STATE_CONNECTING:
                                 // start the connected thread.
-                                System.out.println("Accepted Thread to device " + accepted.getRemoteDevice());
-                                device = accepted.getRemoteDevice();
+                                System.out.println("Accepted Thread to device " + socket.getRemoteDevice());
+                                device = socket.getRemoteDevice();
                                 connected();
                                 break;
                             case STATE_NONE:
@@ -220,7 +223,7 @@ public class RealBluetoothDeviceProvider extends Provider implements BluetoothDe
                                 // Either not ready or already connected. Terminate
                                 // new socket.
                                 try {
-                                    accepted.close();
+                                    socket.close();
                                 } catch (IOException e) {
                                 }
                                 break;
@@ -290,6 +293,19 @@ public class RealBluetoothDeviceProvider extends Provider implements BluetoothDe
             } catch (IOException e) {
             }
         }
+    }
+
+    @Override
+    public void disconnected() throws IOException {
+        CustomMessage message = new CustomMessage(STATE_LISTEN, new Device(device.getName(), device.getAddress()));
+
+        socket.close();
+
+        setChanged();
+        notifyObservers(message);
+
+        setCurrentState(STATE_LISTEN);
+
     }
 
 }

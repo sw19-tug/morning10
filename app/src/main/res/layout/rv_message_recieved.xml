@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:id="@+id/rv_message_recieved"
-    xmlns:tools="http://schemas.android.com/tools"
     android:orientation="horizontal"
     android:padding="10dp">
 
@@ -30,5 +30,15 @@
         app:layout_constraintBottom_toBottomOf="@id/rv_message_recieved"
         app:layout_constraintTop_toBottomOf="@+id/tv_message" />
 
+
+    <ImageView
+        android:id="@+id/tv_message_img"
+        android:layout_width="300dp"
+        android:layout_height="300dp"
+        android:background="@drawable/rounded_rectangle_white"
+        android:paddingHorizontal="10dp"
+        android:paddingVertical="5dp"
+        android:visibility="invisible"
+        app:layout_constraintRight_toRightOf="parent" />
 
 </android.support.constraint.ConstraintLayout>

@@ -1,14 +1,20 @@
 package at.tugraz.ist.swe.cheat;
 
 import android.Manifest;
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.IntentFilter;
 import android.content.pm.PackageManager;
+import android.database.Cursor;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.drawable.ColorDrawable;
+import android.net.Uri;
+import android.provider.MediaStore;
+import android.content.IntentFilter;
 import android.os.Build;
 import android.os.Handler;
 import android.support.v4.app.ActivityCompat;
@@ -29,6 +35,7 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.Observable;
@@ -36,6 +43,7 @@ import java.util.Observer;
 
 
 import at.tugraz.ist.swe.cheat.btobservable.DeviceObservable;
+import at.tugraz.ist.swe.cheat.dto.Provider;
 import at.tugraz.ist.swe.cheat.serviceimpl.DummyBluetoothDeviceProvider;
 import at.tugraz.ist.swe.cheat.serviceimpl.RealBluetoothDeviceProvider;
 import at.tugraz.ist.swe.cheat.viewfragments.DeviceListFragment;
@@ -61,6 +69,10 @@ public class MainActivity extends AppCompatActivity implements ChatHistoryAdapte
     public static final int REQUEST_ENABLE_BLUETOOTH = 1;
     private static final int MY_PERMISSION_RESPONSE = 2;
     boolean messageColor = true;
+    final int RESULT_IMAGE_SELECTED = 42;
+
+    private static final int LOCATION_PERMISSION_RESPONSE = 2;
+    private static final int READ_PERMISSION_RESPONSE = 3;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -94,6 +106,23 @@ public class MainActivity extends AppCompatActivity implements ChatHistoryAdapte
                 }
             })
             .setNegativeButton(android.R.string.no, null);
+
+        if (Build.VERSION.SDK_INT >= 23) {
+            if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION)
+                    != PackageManager.PERMISSION_GRANTED) {
+
+                ActivityCompat.requestPermissions(this,
+                        new String[]{Manifest.permission.ACCESS_COARSE_LOCATION},
+                        LOCATION_PERMISSION_RESPONSE);
+            }
+            if (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE)
+                    != PackageManager.PERMISSION_GRANTED) {
+
+                ActivityCompat.requestPermissions(this,
+                        new String[]{Manifest.permission.READ_EXTERNAL_STORAGE},
+                        READ_PERMISSION_RESPONSE);
+            }
+        }
 
         devicesDialogBuilder.create();
 
@@ -189,6 +218,15 @@ public class MainActivity extends AppCompatActivity implements ChatHistoryAdapte
             }
         });
 
+        final Button btSendImage = findViewById(R.id.bt_sendImage);
+        btSendImage.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent i = new Intent(Intent.ACTION_PICK,android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+                i.setType("image/*");
+                startActivityForResult(i, RESULT_IMAGE_SELECTED);
+            }
+        });
         toastFragment.setMainActivity(this);
 
         bluetoothDeviceManager.getBluetoothDeviceProvider().addObserver(toastFragment);
@@ -207,14 +245,23 @@ public class MainActivity extends AppCompatActivity implements ChatHistoryAdapte
         final Toolbar myToolbar = (Toolbar)findViewById(R.id.menu);
         final MenuItem btConnect =  (MenuItem)myToolbar.getMenu().findItem(R.id.bt_connect);
 
+        Log.d("#######","Show Current State "+ bluetoothDeviceManager.getBluetoothDeviceProvider().getCurrentState());
+
         switch (item.getItemId()) {
+
             case R.id.bt_connect:
-                if(((ColorDrawable)myToolbar.getBackground()).getColor() == 0xff66bb6a) {
+                //TODO
+                if(bluetoothDeviceManager.getBluetoothDeviceProvider().getCurrentState() == Provider.STATE_CONNECTED || bluetoothDeviceManager.getBluetoothDeviceProvider().getCurrentState() == Provider.STATE_CONNECTING) {
                     //bluetoothDeviceManager.startScanning();
                     //TODO STOP Connection
+                    try {
+                        bluetoothDeviceManager.getBluetoothDeviceProvider().disconnected();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
                     myToolbar.setBackgroundColor(0xffffffff);
                     btConnect.setIcon(R.drawable.ic_portable_wifi_off_black_24dp);
-                } else {
+                } else if(bluetoothDeviceManager.getBluetoothDeviceProvider().getCurrentState() == Provider.STATE_LISTEN ) {
                     bluetoothDeviceManager.startScanning();
 
                     //TODO start scanning
@@ -249,15 +296,27 @@ public class MainActivity extends AppCompatActivity implements ChatHistoryAdapte
     }
 
 
-
-    // No action on single click
     @Override
     public void onItemClick(View view, int position) {
-        //final EditText tfInput = findViewById(R.id.tf_input);
-        //tfInput.setText(adapter.getItem(position));
+        if(view.findViewById(R.id.tv_message).getBackground().getConstantState() == getResources().getDrawable(R.drawable.rounded_rectangle_orange).getConstantState())
+        {
+            if(view.findViewById(R.id.rv_message_sent) == null)
+            {
+                view.findViewById(R.id.tv_message).setBackground(getResources().getDrawable(R.drawable.rounded_rectangle_white));
+                view.findViewById(R.id.tv_message).setTag(R.drawable.rounded_rectangle_white);
+            }
+            else
+            {
+                view.findViewById(R.id.tv_message).setBackground(getResources().getDrawable(R.drawable.rounded_rectangle_blue));
+                view.findViewById(R.id.tv_message).setTag(R.drawable.rounded_rectangle_blue);
+            }
+        }
+        else{
+            view.findViewById(R.id.tv_message).setBackground(getResources().getDrawable(R.drawable.rounded_rectangle_orange));
+            view.findViewById(R.id.tv_message).setTag(R.drawable.rounded_rectangle_orange);
+        }
     }
 
-    // No action on long click
     @Override
     public void onItemLongClick(View view, final int position) {
 
@@ -288,10 +347,33 @@ public class MainActivity extends AppCompatActivity implements ChatHistoryAdapte
             }
         });
         builder.show();
-
-        System.out.println("Long press was performed.");
     }
 
+    public void onActivityResult(int requestCode,int resultCode,Intent data){
+
+        if (resultCode == Activity.RESULT_OK)
+            switch (requestCode){
+                case RESULT_IMAGE_SELECTED:
+                    Uri selectedImage = data.getData();
+                    try {
+                        Bitmap bitmap = MediaStore.Images.Media.getBitmap(this.getContentResolver(), selectedImage);
+                        String address;
+                        if (messageColor) {
+                            messageColor = false;
+                            address = "00:00:00:00:00:00";
+                        }
+                        else {
+                            messageColor = true;
+                            address = "11:00:00:00:00:00";
+                        }
+                        adapter.addMessage(new ChatMessage(1, address, bitmap, new Date()));
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                    break;
+            }
+
+    }
 
     @Override
     public void onStart() {
