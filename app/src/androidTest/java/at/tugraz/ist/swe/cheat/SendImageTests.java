@@ -6,15 +6,21 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
+import android.graphics.drawable.BitmapDrawable;
 import android.net.Uri;
 import android.provider.MediaStore;
 import android.support.test.espresso.intent.rule.IntentsTestRule;
 import android.support.test.rule.ActivityTestRule;
 import android.support.test.runner.AndroidJUnit4;
+import android.view.View;
+import android.widget.ImageView;
 
+import org.hamcrest.Matcher;
+import org.hamcrest.TypeSafeMatcher;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
+import org.junit.runner.Description;
 import org.junit.runner.RunWith;
 
 import java.io.File;
@@ -33,7 +39,9 @@ import static android.support.test.espresso.matcher.ViewMatchers.isDisplayed;
 import static android.support.test.espresso.matcher.ViewMatchers.isEnabled;
 import static android.support.test.espresso.matcher.ViewMatchers.withId;
 import static android.support.test.espresso.matcher.ViewMatchers.withText;
+import static at.tugraz.ist.swe.cheat.BitmapMatcher.withBitmap;
 import static org.hamcrest.Matchers.not;
+
 
 /**
  * Instrumented test, which will execute on an Android device.
@@ -46,6 +54,8 @@ public class SendImageTests {
     @Rule
     public IntentsTestRule<MainActivity> mainActivityTestRule = new IntentsTestRule<>(MainActivity.class);
 
+    private Bitmap mockedImage;
+
     @Before
     public void setUp() {
         createMockedImage();
@@ -53,14 +63,14 @@ public class SendImageTests {
     }
 
     private void createMockedImage() {
-        Bitmap bm = Bitmap.createBitmap(64, 64, Bitmap.Config.ARGB_8888);
-        bm.eraseColor(Color.MAGENTA);
+        mockedImage = Bitmap.createBitmap(64, 64, Bitmap.Config.ARGB_8888);
+        mockedImage.eraseColor(Color.MAGENTA);
         File dir = mainActivityTestRule.getActivity().getExternalCacheDir();
         File file = new File(dir.getPath(), "mockedImage.jpeg");
         FileOutputStream outStream;
         try {
             outStream = new FileOutputStream(file);
-            bm.compress(Bitmap.CompressFormat.JPEG, 100, outStream);
+            mockedImage.compress(Bitmap.CompressFormat.JPEG, 100, outStream);
             outStream.flush();
             outStream.close();
 
@@ -92,4 +102,11 @@ public class SendImageTests {
         onView(withId(R.id.bt_sendImage)).perform(click());
         intended(hasAction(Intent.ACTION_PICK));
     }
+
+    @Test  // Test sent images displayed
+    public void testSentImageDisplayed () {
+        onView(withId(R.id.bt_sendImage)).perform(click());
+        onView(withId(R.id.tv_message_img)).check(matches(withBitmap(mockedImage)));
+    }
+
 }
