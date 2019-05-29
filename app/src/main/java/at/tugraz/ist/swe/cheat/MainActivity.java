@@ -169,6 +169,7 @@ public class MainActivity extends AppCompatActivity implements ChatHistoryAdapte
             public void onClick(View v) {
                 if (btSend.getText() == "Edit")
                 {
+
                     adapter.deleteMessage(editPosition);
                 }
 
@@ -258,12 +259,36 @@ public class MainActivity extends AppCompatActivity implements ChatHistoryAdapte
 
     // No action on long click
     @Override
-    public void onItemLongClick(View view, int position) {
-        editPosition = position;
-        final EditText tfInput = findViewById(R.id.tf_input);
-        tfInput.setText(adapter.getItem(position));
-        final Button btSend = findViewById(R.id.bt_send);
-        btSend.setText("Edit");
+    public void onItemLongClick(View view, final int position) {
+
+        String[] colors = {"Edit", "Delete"};
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+
+        builder.setTitle("Choose an action");
+        builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int id) { }
+        });
+        builder.setItems(colors, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                switch (which)
+                {
+                    case 0:
+                        System.out.println("Edit");
+                        editPosition = position;
+                        final EditText tfInput = findViewById(R.id.tf_input);
+                        tfInput.setText(adapter.getItem(position));
+                        final Button btSend = findViewById(R.id.bt_send);
+                        btSend.setText("Edit");
+                        break;
+                    default:
+                        break;
+                }
+            }
+        });
+        builder.show();
+
         System.out.println("Long press was performed.");
     }
 
