@@ -31,6 +31,8 @@ public class DummyBluetoothDeviceProvider extends Provider implements BluetoothD
 
     private boolean enabled;
     private BluetoothDeviceState state = BluetoothDeviceState.STOPSCAN;
+    private int currentState;
+
 
     private DeviceDummy device;
 
@@ -39,8 +41,8 @@ public class DummyBluetoothDeviceProvider extends Provider implements BluetoothD
     }
 
     @Override
-    public void setCurrentState(int state) {
-
+    public synchronized void setCurrentState(int state) {
+        this.currentState = state;
     }
 
     @Override
@@ -123,5 +125,10 @@ public class DummyBluetoothDeviceProvider extends Provider implements BluetoothD
 
         // Start the service over to restart listening mode
         this.start();
+    }
+
+    @Override
+    public int getCurrentState() {
+        return currentState;
     }
 }

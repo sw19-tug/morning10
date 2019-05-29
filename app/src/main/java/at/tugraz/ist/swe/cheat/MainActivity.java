@@ -36,6 +36,7 @@ import java.util.Observer;
 
 
 import at.tugraz.ist.swe.cheat.btobservable.DeviceObservable;
+import at.tugraz.ist.swe.cheat.dto.Provider;
 import at.tugraz.ist.swe.cheat.serviceimpl.DummyBluetoothDeviceProvider;
 import at.tugraz.ist.swe.cheat.serviceimpl.RealBluetoothDeviceProvider;
 import at.tugraz.ist.swe.cheat.viewfragments.DeviceListFragment;
@@ -198,7 +199,8 @@ public class MainActivity extends AppCompatActivity implements ChatHistoryAdapte
 
         switch (item.getItemId()) {
             case R.id.bt_connect:
-                if(((ColorDrawable)myToolbar.getBackground()).getColor() == 0xff66bb6a) {
+                //TODO
+                if(bluetoothDeviceManager.getBluetoothDeviceProvider().getCurrentState() == Provider.STATE_CONNECTED) {
                     //bluetoothDeviceManager.startScanning();
                     //TODO STOP Connection
                     myToolbar.setBackgroundColor(0xffffffff);

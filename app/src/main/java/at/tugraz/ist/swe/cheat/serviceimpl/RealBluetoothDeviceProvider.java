@@ -175,6 +175,10 @@ public class RealBluetoothDeviceProvider extends Provider implements BluetoothDe
         this.start();
     }
 
+    @Override
+    public int getCurrentState() {
+        return 0;
+    }
 
 
     /**Accept Thread**/

@@ -19,6 +19,7 @@ import org.junit.runner.RunWith;
 import at.tugraz.ist.swe.cheat.btobservable.DeviceObservable;
 import at.tugraz.ist.swe.cheat.dto.CustomMessage;
 import at.tugraz.ist.swe.cheat.dto.Device;
+import at.tugraz.ist.swe.cheat.dto.Provider;
 import at.tugraz.ist.swe.cheat.viewfragments.ToastFragment;
 
 import static android.support.test.espresso.Espresso.onView;
@@ -165,4 +166,36 @@ public class ConnectEspressoTest {
         assertEquals(STATE_CONNECTED, toastFragment.getMessage().getState());
 
     }
+
+    @Test
+    public void appDisconnected() throws InterruptedException {
+        // toolbar color should be white at first (not connected)
+
+        onView(withId(R.id.bt_connect)).perform(click());
+
+
+        InstrumentationRegistry.getInstrumentation().runOnMainSync(new Runnable() {
+            @Override
+            public void run() {
+                CustomMessage customMessage = new CustomMessage(STATE_CONNECTED,new Device("Dummy Device","00:11:22:AA:BB:CC"));
+                deviceObservable.setDevice(customMessage);
+            }
+        });
+        //Thread.sleep(100);
+        onView(withText(mainActivityTestRule.getActivity().deviceListAdapter.getItem(0))).perform(click());
+
+
+
+        onView(withId(R.id.bt_connect)).perform(click());
+        assertEquals(bluetoothDeviceManager.getBluetoothDeviceProvider().getCurrentState(), Provider.STATE_LISTEN);
+
+
+
+    }
+
+
+
+
+
+
 }
