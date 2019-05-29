@@ -288,8 +288,24 @@ public class MainActivity extends AppCompatActivity implements ChatHistoryAdapte
 
     @Override
     public void onItemClick(View view, int position) {
-        final EditText tfInput = findViewById(R.id.tf_input);
-        tfInput.setText(adapter.getItem(position));
+        if(view.findViewById(R.id.tv_message).getBackground().getConstantState() == getResources().getDrawable(R.drawable.rounded_rectangle_orange).getConstantState())
+        {
+            if(view.findViewById(R.id.rv_message_sent) == null)
+            {
+                view.findViewById(R.id.tv_message).setBackground(getResources().getDrawable(R.drawable.rounded_rectangle_white));
+                view.findViewById(R.id.tv_message).setTag(R.drawable.rounded_rectangle_white);
+            }
+            else
+            {
+                view.findViewById(R.id.tv_message).setBackground(getResources().getDrawable(R.drawable.rounded_rectangle_blue));
+                view.findViewById(R.id.tv_message).setTag(R.drawable.rounded_rectangle_blue);
+            }
+        }
+        else{
+            view.findViewById(R.id.tv_message).setBackground(getResources().getDrawable(R.drawable.rounded_rectangle_orange));
+            view.findViewById(R.id.tv_message).setTag(R.drawable.rounded_rectangle_orange);
+        }
+
     }
 
     public void onActivityResult(int requestCode,int resultCode,Intent data){
