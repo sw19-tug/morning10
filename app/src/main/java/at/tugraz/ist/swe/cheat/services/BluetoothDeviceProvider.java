@@ -1,5 +1,7 @@
 package at.tugraz.ist.swe.cheat.services;
 
+import java.io.IOException;
+
 import at.tugraz.ist.swe.BluetoothDeviceState;
 
 public interface BluetoothDeviceProvider {
@@ -31,4 +33,8 @@ public interface BluetoothDeviceProvider {
     void connected();
 
     void connectionFailed();
+
+    int getCurrentState();
+
+    void disconnected() throws IOException;
 }

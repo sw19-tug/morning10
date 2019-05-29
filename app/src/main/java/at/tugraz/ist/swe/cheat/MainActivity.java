@@ -29,6 +29,7 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.Observable;
@@ -36,6 +37,7 @@ import java.util.Observer;
 
 
 import at.tugraz.ist.swe.cheat.btobservable.DeviceObservable;
+import at.tugraz.ist.swe.cheat.dto.Provider;
 import at.tugraz.ist.swe.cheat.serviceimpl.DummyBluetoothDeviceProvider;
 import at.tugraz.ist.swe.cheat.serviceimpl.RealBluetoothDeviceProvider;
 import at.tugraz.ist.swe.cheat.viewfragments.DeviceListFragment;
@@ -196,14 +198,23 @@ public class MainActivity extends AppCompatActivity implements ChatHistoryAdapte
         final Toolbar myToolbar = (Toolbar)findViewById(R.id.menu);
         final MenuItem btConnect =  (MenuItem)myToolbar.getMenu().findItem(R.id.bt_connect);
 
+        Log.d("#######","Show Current State "+ bluetoothDeviceManager.getBluetoothDeviceProvider().getCurrentState());
+
         switch (item.getItemId()) {
+
             case R.id.bt_connect:
-                if(((ColorDrawable)myToolbar.getBackground()).getColor() == 0xff66bb6a) {
+                //TODO
+                if(bluetoothDeviceManager.getBluetoothDeviceProvider().getCurrentState() == Provider.STATE_CONNECTED || bluetoothDeviceManager.getBluetoothDeviceProvider().getCurrentState() == Provider.STATE_CONNECTING) {
                     //bluetoothDeviceManager.startScanning();
                     //TODO STOP Connection
+                    try {
+                        bluetoothDeviceManager.getBluetoothDeviceProvider().disconnected();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
                     myToolbar.setBackgroundColor(0xffffffff);
                     btConnect.setIcon(R.drawable.ic_portable_wifi_off_black_24dp);
-                } else {
+                } else if(bluetoothDeviceManager.getBluetoothDeviceProvider().getCurrentState() == Provider.STATE_LISTEN ) {
                     bluetoothDeviceManager.startScanning();
 
                     //TODO start scanning
