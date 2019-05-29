@@ -1,6 +1,5 @@
 package at.tugraz.ist.swe.cheat;
 
-import android.content.Context;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -8,6 +7,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -21,10 +21,13 @@ public class ChatHistoryAdapter extends RecyclerView.Adapter<ChatHistoryAdapter.
     private List<ChatMessage> messageData;
     private ItemClickListener clickListener;
 
+    private RecyclerView.LayoutManager manager;
+
     // Constructor takes context and data
-    ChatHistoryAdapter(List<ChatMessage> data, String device) {
+    ChatHistoryAdapter(List<ChatMessage> data, String device, RecyclerView.LayoutManager lm) {
         this.messageData = new ArrayList<>();
         this.currentDevice = device;
+        this.manager = lm;
     }
 
     // Determine the appropriate ViewType according to the sender
@@ -75,6 +78,9 @@ public class ChatHistoryAdapter extends RecyclerView.Adapter<ChatHistoryAdapter.
         else {
             holder.tv_message.setText(message_text);
         }
+        SimpleDateFormat formatter = new SimpleDateFormat("hh:mm");
+        String message_timestamp = formatter.format(message.getTimeStamp());
+        holder.tv_timestamp.setText(message_timestamp);
     }
 
     // Return total number of data sets
@@ -87,12 +93,13 @@ public class ChatHistoryAdapter extends RecyclerView.Adapter<ChatHistoryAdapter.
     public class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
         TextView tv_message;
         ImageView tv_message_img;
+        TextView tv_timestamp;
 
         ViewHolder(View itemView) {
             super(itemView);
             tv_message = itemView.findViewById(R.id.tv_message);
             tv_message_img = itemView.findViewById(R.id.tv_message_img);
-
+            tv_timestamp = itemView.findViewById(R.id.tv_timestamp);
             itemView.setOnClickListener(this);
         }
 
@@ -117,10 +124,11 @@ public class ChatHistoryAdapter extends RecyclerView.Adapter<ChatHistoryAdapter.
         void onItemClick(View view, int position);
     }
 
-    //addMessage
+    // Add message to recycler view
     public void addMessage(ChatMessage message)
     {
         messageData.add(message);
-        notifyDataSetChanged();
+        notifyItemInserted(messageData.size());
+        manager.scrollToPosition(getItemCount() - 1);
     }
 }
