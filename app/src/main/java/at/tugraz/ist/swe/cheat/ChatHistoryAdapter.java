@@ -4,6 +4,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -20,6 +21,7 @@ public class ChatHistoryAdapter extends RecyclerView.Adapter<ChatHistoryAdapter.
 
     private List<ChatMessage> messageData;
     private ItemClickListener clickListener;
+    private ItemLongClickListener longClickListener;
 
     private RecyclerView.LayoutManager manager;
 
@@ -90,7 +92,7 @@ public class ChatHistoryAdapter extends RecyclerView.Adapter<ChatHistoryAdapter.
     }
 
     // Store and recycle views as they are scrolled off screen
-    public class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
+    public class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener, View.OnLongClickListener {
         TextView tv_message;
         ImageView tv_message_img;
         TextView tv_timestamp;
@@ -101,11 +103,23 @@ public class ChatHistoryAdapter extends RecyclerView.Adapter<ChatHistoryAdapter.
             tv_message_img = itemView.findViewById(R.id.tv_message_img);
             tv_timestamp = itemView.findViewById(R.id.tv_timestamp);
             itemView.setOnClickListener(this);
+            itemView.setOnLongClickListener(this);
         }
 
+        // Handle simple click
         @Override
         public void onClick(View view) {
+            System.out.println("# Message " + getAdapterPosition() + " pressed normally.");
             if (clickListener != null) clickListener.onItemClick(view, getAdapterPosition());
+        }
+
+        // Handle long click
+        @Override
+        public boolean onLongClick(View view) {
+            System.out.println("# Message " + getAdapterPosition() + " pressed long.");
+            if (longClickListener != null) longClickListener.onItemLongClick(view, getAdapterPosition());
+            // Return true to indicate the click was handled
+            return true;
         }
     }
 
@@ -119,16 +133,30 @@ public class ChatHistoryAdapter extends RecyclerView.Adapter<ChatHistoryAdapter.
         this.clickListener = itemClickListener;
     }
 
+    // Allow long click events to be caught
+    void setLongClickListener(ItemLongClickListener itemLongClickListener) {
+        this.longClickListener = itemLongClickListener;
+    }
+
     // Interface for parent activity to respond to click events (inner function)
     public interface ItemClickListener {
         void onItemClick(View view, int position);
     }
 
+    public interface ItemLongClickListener {
+        void onItemLongClick(View view, int position);
+    }
+
     // Add message to recycler view
-    public void addMessage(ChatMessage message)
-    {
+    public void addMessage(ChatMessage message) {
         messageData.add(message);
         notifyItemInserted(messageData.size());
         manager.scrollToPosition(getItemCount() - 1);
+    }
+
+    // Delete message from recycler view
+    public void deleteMessage(int id) {
+        messageData.remove(messageData.get(id));
+        notifyItemRemoved(messageData.size());
     }
 }

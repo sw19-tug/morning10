@@ -49,7 +49,7 @@ import at.tugraz.ist.swe.cheat.serviceimpl.RealBluetoothDeviceProvider;
 import at.tugraz.ist.swe.cheat.viewfragments.DeviceListFragment;
 import at.tugraz.ist.swe.cheat.viewfragments.ToastFragment;
 
-public class MainActivity extends AppCompatActivity implements ChatHistoryAdapter.ItemClickListener {
+public class MainActivity extends AppCompatActivity implements ChatHistoryAdapter.ItemClickListener, ChatHistoryAdapter.ItemLongClickListener {
 
 
     BluetoothDeviceManager bluetoothDeviceManager;
@@ -63,6 +63,7 @@ public class MainActivity extends AppCompatActivity implements ChatHistoryAdapte
     ToastFragment toastFragment = new ToastFragment();
 
     ChatController chatController;
+    int editPosition;
 
 
     public static final int REQUEST_ENABLE_BLUETOOTH = 1;
@@ -160,8 +161,11 @@ public class MainActivity extends AppCompatActivity implements ChatHistoryAdapte
         LinearLayoutManager layoutManager = new LinearLayoutManager(this);
         layoutManager.setStackFromEnd(true);
         recyclerView.setLayoutManager(layoutManager);
+
+
         adapter = new ChatHistoryAdapter(messages, "00:00:00:00:00:00", layoutManager);
         adapter.setClickListener(this);
+        adapter.setLongClickListener(this);
         recyclerView.setAdapter(adapter);
         recyclerView.setAdapter(adapter);
 
@@ -192,7 +196,13 @@ public class MainActivity extends AppCompatActivity implements ChatHistoryAdapte
         btSend.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String address;
+                if (btSend.getText() == "Edit")
+                {
+
+                    adapter.deleteMessage(editPosition);
+                }
+
+                    String address;
                 if (messageColor) {
                     messageColor = false;
                     address = "00:00:00:00:00:00";
@@ -204,6 +214,7 @@ public class MainActivity extends AppCompatActivity implements ChatHistoryAdapte
 
                 adapter.addMessage(new ChatMessage(1, address, tfInput.getText().toString(), new Date()));
                 tfInput.setText("");
+                btSend.setText("Send");
             }
         });
 
@@ -285,7 +296,6 @@ public class MainActivity extends AppCompatActivity implements ChatHistoryAdapte
     }
 
 
-
     @Override
     public void onItemClick(View view, int position) {
         if(view.findViewById(R.id.tv_message).getBackground().getConstantState() == getResources().getDrawable(R.drawable.rounded_rectangle_orange).getConstantState())
@@ -305,7 +315,38 @@ public class MainActivity extends AppCompatActivity implements ChatHistoryAdapte
             view.findViewById(R.id.tv_message).setBackground(getResources().getDrawable(R.drawable.rounded_rectangle_orange));
             view.findViewById(R.id.tv_message).setTag(R.drawable.rounded_rectangle_orange);
         }
+    }
 
+    @Override
+    public void onItemLongClick(View view, final int position) {
+
+        String[] colors = {"Edit", "Delete"};
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+
+        builder.setTitle("Choose an action");
+        builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int id) { }
+        });
+        builder.setItems(colors, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                switch (which)
+                {
+                    case 0:
+                        System.out.println("Edit");
+                        editPosition = position;
+                        final EditText tfInput = findViewById(R.id.tf_input);
+                        tfInput.setText(adapter.getItem(position));
+                        final Button btSend = findViewById(R.id.bt_send);
+                        btSend.setText("Edit");
+                        break;
+                    default:
+                        break;
+                }
+            }
+        });
+        builder.show();
     }
 
     public void onActivityResult(int requestCode,int resultCode,Intent data){
