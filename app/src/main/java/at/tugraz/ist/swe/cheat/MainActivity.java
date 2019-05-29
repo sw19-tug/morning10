@@ -50,7 +50,6 @@ public class MainActivity extends AppCompatActivity implements ChatHistoryAdapte
     ArrayAdapter<String> deviceListAdapter;
     ChatHistoryAdapter adapter;
 
-    RecyclerViewMessagesAdapter adapter;
     DeviceObservable deviceObservable = new DeviceObservable();
     BluetoothDiscover bluetoothDiscover = new BluetoothDiscover(deviceObservable);
     ToastFragment toastFragment = new ToastFragment();
