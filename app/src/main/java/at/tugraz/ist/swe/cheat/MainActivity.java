@@ -41,7 +41,7 @@ import at.tugraz.ist.swe.cheat.serviceimpl.RealBluetoothDeviceProvider;
 import at.tugraz.ist.swe.cheat.viewfragments.DeviceListFragment;
 import at.tugraz.ist.swe.cheat.viewfragments.ToastFragment;
 
-public class MainActivity extends AppCompatActivity implements ChatHistoryAdapter.ItemClickListener {
+public class MainActivity extends AppCompatActivity implements ChatHistoryAdapter.ItemClickListener, ChatHistoryAdapter.ItemLongClickListener {
 
 
     BluetoothDeviceManager bluetoothDeviceManager;
@@ -131,8 +131,11 @@ public class MainActivity extends AppCompatActivity implements ChatHistoryAdapte
         LinearLayoutManager layoutManager = new LinearLayoutManager(this);
         layoutManager.setStackFromEnd(true);
         recyclerView.setLayoutManager(layoutManager);
+
+
         adapter = new ChatHistoryAdapter(messages, "00:00:00:00:00:00", layoutManager);
         adapter.setClickListener(this);
+        adapter.setLongClickListener(this);
         recyclerView.setAdapter(adapter);
         recyclerView.setAdapter(adapter);
 
@@ -163,6 +166,7 @@ public class MainActivity extends AppCompatActivity implements ChatHistoryAdapte
         btSend.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+
                 String address;
                 if (messageColor) {
                     messageColor = false;
@@ -175,6 +179,7 @@ public class MainActivity extends AppCompatActivity implements ChatHistoryAdapte
 
                 adapter.addMessage(new ChatMessage(1, address, tfInput.getText().toString(), new Date()));
                 tfInput.setText("");
+                btSend.setText("Send");
             }
         });
 
@@ -239,10 +244,21 @@ public class MainActivity extends AppCompatActivity implements ChatHistoryAdapte
 
 
 
+    // No action on single click
     @Override
     public void onItemClick(View view, int position) {
+        //final EditText tfInput = findViewById(R.id.tf_input);
+        //tfInput.setText(adapter.getItem(position));
+    }
+
+    // No action on long click
+    @Override
+    public void onItemLongClick(View view, int position) {
         final EditText tfInput = findViewById(R.id.tf_input);
         tfInput.setText(adapter.getItem(position));
+        final Button btSend = findViewById(R.id.bt_send);
+        btSend.setText("Edit");
+        System.out.println("Long press was performed.");
     }
 
 

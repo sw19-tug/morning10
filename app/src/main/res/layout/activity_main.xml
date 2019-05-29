@@ -21,7 +21,8 @@
         android:layout_above="@+id/ll_main"
         android:layout_below="@+id/menu"
         android:layout_marginTop="0dp"
-        android:layout_marginBottom="0dp" />
+        android:layout_marginBottom="0dp"
+        android:longClickable="true"/>
 
     <LinearLayout
         android:id="@+id/ll_main"
