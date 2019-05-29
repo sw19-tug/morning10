@@ -99,7 +99,7 @@ public class RealBluetoothDeviceProvider extends Provider implements BluetoothDe
 
         setChanged();
         notifyObservers(message);
-
+        setCurrentState(STATE_LISTEN);
     }
 
 
