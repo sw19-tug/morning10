@@ -131,4 +131,15 @@ public class DummyBluetoothDeviceProvider extends Provider implements BluetoothD
     public int getCurrentState() {
         return currentState;
     }
+
+    @Override
+    public void disconnected() {
+        CustomMessage message = new CustomMessage(STATE_LISTEN, new Device(device.getName(), device.getAddress()));
+
+        setChanged();
+        notifyObservers(message);
+
+        setCurrentState(STATE_LISTEN);
+
+    }
 }

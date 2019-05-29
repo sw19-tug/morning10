@@ -296,4 +296,19 @@ public class RealBluetoothDeviceProvider extends Provider implements BluetoothDe
         }
     }
 
+    @Override
+    public void disconnected() throws IOException {
+        CustomMessage message = new CustomMessage(STATE_LISTEN, new Device(device.getName(), device.getAddress()));
+
+        socket.close();
+
+        setChanged();
+        notifyObservers(message);
+
+        setCurrentState(STATE_LISTEN);
+
+
+
+    }
+
 }

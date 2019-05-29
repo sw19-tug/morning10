@@ -77,5 +77,8 @@ public abstract class Provider extends Observable implements BluetoothDeviceProv
 
     }
 
-    public abstract int getCurrentState();
+    @Override
+    public int getCurrentState() {
+        return 0;
+    }
 }

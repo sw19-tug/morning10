@@ -29,6 +29,7 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.Observable;
@@ -200,9 +201,14 @@ public class MainActivity extends AppCompatActivity implements ChatHistoryAdapte
         switch (item.getItemId()) {
             case R.id.bt_connect:
                 //TODO
-                if(bluetoothDeviceManager.getBluetoothDeviceProvider().getCurrentState() == Provider.STATE_CONNECTED) {
+                if(bluetoothDeviceManager.getBluetoothDeviceProvider().getCurrentState() == Provider.STATE_CONNECTED || bluetoothDeviceManager.getBluetoothDeviceProvider().getCurrentState() == Provider.STATE_CONNECTING) {
                     //bluetoothDeviceManager.startScanning();
                     //TODO STOP Connection
+                    try {
+                        bluetoothDeviceManager.getBluetoothDeviceProvider().disconnected();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
                     myToolbar.setBackgroundColor(0xffffffff);
                     btConnect.setIcon(R.drawable.ic_portable_wifi_off_black_24dp);
                 } else {

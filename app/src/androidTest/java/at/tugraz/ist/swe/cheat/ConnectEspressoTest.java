@@ -31,6 +31,7 @@ import static android.support.test.espresso.matcher.ViewMatchers.withId;
 import static android.support.test.espresso.matcher.ViewMatchers.withText;
 import static at.tugraz.ist.swe.cheat.dto.Provider.STATE_CONNECTED;
 import static at.tugraz.ist.swe.cheat.dto.Provider.STATE_CONNECTING;
+import static at.tugraz.ist.swe.cheat.dto.Provider.STATE_LISTEN;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.not;
 import static org.junit.Assert.assertEquals;
@@ -190,6 +191,8 @@ public class ConnectEspressoTest {
         assertEquals(bluetoothDeviceManager.getBluetoothDeviceProvider().getCurrentState(), Provider.STATE_LISTEN);
 
 
+        assertEquals(STATE_LISTEN, toastFragment.getMessage().getState());
+        assertEquals("is disconnected from Dummy Device", toastFragment.getToastString());
 
     }
 
