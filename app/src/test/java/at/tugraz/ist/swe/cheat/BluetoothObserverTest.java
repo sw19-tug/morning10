@@ -36,7 +36,7 @@ public class BluetoothObserverTest {
         CustomMessage message  = this.basicObserver.getMessage();
 
         assertEquals(message.getState(),STATE_CONNECTING);
-        assertEquals(message.getDevice().getDevice_name(),"TEST DUMMY");
+        assertEquals(message.getDevice().getDevice_name(),"Dummy Device");
     }
 
     @Test
@@ -47,7 +47,7 @@ public class BluetoothObserverTest {
         CustomMessage message  = this.basicObserver.getMessage();
 
         assertEquals(message.getState(),STATE_CONNECTED);
-        assertEquals(message.getDevice().getDevice_name(),"TEST DUMMY");
+        assertEquals(message.getDevice().getDevice_name(),"Dummy Device");
     }
 
     @Test
