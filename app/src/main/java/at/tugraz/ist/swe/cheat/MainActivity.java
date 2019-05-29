@@ -1,13 +1,24 @@
 package at.tugraz.ist.swe.cheat;
 
+import android.Manifest;
 import android.app.AlertDialog;
+import android.bluetooth.BluetoothAdapter;
+import android.bluetooth.BluetoothDevice;
 import android.content.DialogInterface;
+import android.content.Intent;
+import android.content.IntentFilter;
+import android.content.pm.PackageManager;
 import android.graphics.drawable.ColorDrawable;
+import android.os.Build;
+import android.os.Handler;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.text.Editable;
@@ -20,19 +31,57 @@ import android.widget.EditText;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.Observable;
+import java.util.Observer;
+
+
+import at.tugraz.ist.swe.cheat.btobservable.DeviceObservable;
+import at.tugraz.ist.swe.cheat.serviceimpl.DummyBluetoothDeviceProvider;
+import at.tugraz.ist.swe.cheat.serviceimpl.RealBluetoothDeviceProvider;
+import at.tugraz.ist.swe.cheat.viewfragments.DeviceListFragment;
+import at.tugraz.ist.swe.cheat.viewfragments.ToastFragment;
 
 public class MainActivity extends AppCompatActivity implements ChatHistoryAdapter.ItemClickListener {
 
-    //private BluetoothDeviceManager bluetoothDeviceManager;
+
+    BluetoothDeviceManager bluetoothDeviceManager;
     AlertDialog.Builder devicesDialogBuilder;
     AlertDialog devicesDialog;
     ArrayAdapter<String> deviceListAdapter;
     ChatHistoryAdapter adapter;
 
+    RecyclerViewMessagesAdapter adapter;
+    DeviceObservable deviceObservable = new DeviceObservable();
+    BluetoothDiscover bluetoothDiscover = new BluetoothDiscover(deviceObservable);
+    ToastFragment toastFragment = new ToastFragment();
+
+    ChatController chatController;
+
+
+    public static final int REQUEST_ENABLE_BLUETOOTH = 1;
+    private static final int MY_PERMISSION_RESPONSE = 2;
     boolean messageColor = true;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
+        //We have to add this
+        if (Build.VERSION.SDK_INT >= 23) {
+            if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION)
+                    != PackageManager.PERMISSION_GRANTED) {
+
+                ActivityCompat.requestPermissions(this,
+                        new String[]{Manifest.permission.ACCESS_COARSE_LOCATION},
+                        MY_PERMISSION_RESPONSE);
+            }
+        }
+
+        if (Build.FINGERPRINT.contains("generic")) {
+            bluetoothDeviceManager = new BluetoothDeviceManager(new DummyBluetoothDeviceProvider());
+        } else {
+            bluetoothDeviceManager = new BluetoothDeviceManager(new RealBluetoothDeviceProvider());
+        }
+
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
@@ -41,6 +90,7 @@ public class MainActivity extends AppCompatActivity implements ChatHistoryAdapte
             .setTitle("Choose your cheating partner")
             .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
                 public void onClick(DialogInterface dialog, int id) {
+                    bluetoothDeviceManager.stopScanning();
                 }
             })
             .setNegativeButton(android.R.string.no, null);
@@ -56,7 +106,22 @@ public class MainActivity extends AppCompatActivity implements ChatHistoryAdapte
         devicesDialogBuilder.setAdapter(deviceListAdapter, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
+                String strName = deviceListAdapter.getItem(which);
+                if(strName != null)
+                {
+                    bluetoothDeviceManager.stopScanning();
+                    String info = strName;
+                    String address = info.substring(info.length() - 17);
+
+                    bluetoothDeviceManager.connectToDevice(address);
+                    Log.d("#######","Show name "+ strName);
+                    Log.d("#######","Show address "+ address);
+                }
+
                 myToolbar.setBackgroundColor(0xff66bb6a);
+                bluetoothDeviceManager.stopScanning();
+                unregisterReceiver(bluetoothDiscover);
+
                 dialog.dismiss();
             }
         });
@@ -113,6 +178,11 @@ public class MainActivity extends AppCompatActivity implements ChatHistoryAdapte
                 tfInput.setText("");
             }
         });
+
+        toastFragment.setMainActivity(this);
+
+        bluetoothDeviceManager.getBluetoothDeviceProvider().addObserver(toastFragment);
+        chatController = new ChatController(bluetoothDeviceManager.getBluetoothDeviceProvider());
     }
   
     @Override
@@ -130,17 +200,33 @@ public class MainActivity extends AppCompatActivity implements ChatHistoryAdapte
         switch (item.getItemId()) {
             case R.id.bt_connect:
                 if(((ColorDrawable)myToolbar.getBackground()).getColor() == 0xff66bb6a) {
+                    //bluetoothDeviceManager.startScanning();
+                    //TODO STOP Connection
                     myToolbar.setBackgroundColor(0xffffffff);
                     btConnect.setIcon(R.drawable.ic_portable_wifi_off_black_24dp);
                 } else {
-                    deviceListAdapter.clear();
-                    deviceListAdapter.add("Davids iPhone");
-                    deviceListAdapter.add("Stefans iPhone");
-                    deviceListAdapter.add("Matzes GalaxyS7Edge");
-                    deviceListAdapter.add("Patricks iPhone");
-                    deviceListAdapter.add("Oskars iPhone");
+                    bluetoothDeviceManager.startScanning();
+
+                    //TODO start scanning
+                    DeviceListFragment deviceListFragment = new DeviceListFragment(deviceListAdapter);
+                    deviceObservable.addObserver(deviceListFragment);
+
+
+                    // Register for broadcasts when a device is discovered
+                    IntentFilter filter = new IntentFilter(BluetoothDevice.ACTION_FOUND);
+                    registerReceiver(bluetoothDiscover, filter);
+
+                    // Register for broadcasts when discovery has finished
+                    filter = new IntentFilter(BluetoothAdapter.ACTION_DISCOVERY_FINISHED);
+                    registerReceiver(bluetoothDiscover, filter);
+
+
+                    //Show Devices
+                    //listen to observer to
+                    //deviceListAdapter.add("TEST");
 
                     devicesDialog = devicesDialogBuilder.show();
+
                     btConnect.setIcon(R.drawable.ic_wifi_tethering_black_24dp);
                 }
                 return true;
@@ -151,10 +237,33 @@ public class MainActivity extends AppCompatActivity implements ChatHistoryAdapte
                 return super.onOptionsItemSelected(item);
         }
     }
-  
+
+
+
     @Override
     public void onItemClick(View view, int position) {
         final EditText tfInput = findViewById(R.id.tf_input);
         tfInput.setText(adapter.getItem(position));
     }
+
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        if (!bluetoothDeviceManager.isOn()) {
+            Intent enableIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
+            startActivityForResult(enableIntent, REQUEST_ENABLE_BLUETOOTH);
+            Intent disoverableIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_DISCOVERABLE);
+            disoverableIntent.putExtra(BluetoothAdapter.EXTRA_DISCOVERABLE_DURATION, 0);
+            startActivity(disoverableIntent);
+
+        } else {
+            Intent disoverableIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_DISCOVERABLE);
+            disoverableIntent.putExtra(BluetoothAdapter.EXTRA_DISCOVERABLE_DURATION, 0);
+            startActivity(disoverableIntent);
+            //TODO Start Chat Controller
+        }
+    }
+
+
 }

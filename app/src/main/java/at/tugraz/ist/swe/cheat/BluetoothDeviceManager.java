@@ -1,23 +1,27 @@
 package at.tugraz.ist.swe.cheat;
 
+import at.tugraz.ist.swe.cheat.dto.Provider;
 import at.tugraz.ist.swe.cheat.services.BluetoothDeviceProvider;
 
 public class BluetoothDeviceManager {
+
+
     public static enum BtState {
         ON,
         OFF,
         SCAN
     }
-    private BluetoothDeviceProvider bluetoothDeviceProvider;
+    private Provider bluetoothDeviceProvider;
 
     private boolean active;
 
     private BtState btState;
 
-    public BluetoothDeviceManager(BluetoothDeviceProvider bluetoothDeviceProvider)
+    public BluetoothDeviceManager(Provider bluetoothDeviceProvider)
     {
         this.active = false;
         this.bluetoothDeviceProvider = bluetoothDeviceProvider;
+
         this.isOn();
     }
     public boolean isOn()
@@ -41,7 +45,7 @@ public class BluetoothDeviceManager {
     }
 
 
-    public BluetoothDeviceProvider getBluetoothDeviceProvider() {
+    public Provider getBluetoothDeviceProvider() {
         return bluetoothDeviceProvider;
     }
 
@@ -61,6 +65,10 @@ public class BluetoothDeviceManager {
             bluetoothDeviceProvider.cancelDiscovery();
         }
         btState = BtState.ON;
+    }
+
+    public void connectToDevice(String address) {
+        bluetoothDeviceProvider.connectToDevice(address);
     }
 }
 
