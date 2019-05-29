@@ -55,6 +55,7 @@ public class MainActivity extends AppCompatActivity implements ChatHistoryAdapte
     ToastFragment toastFragment = new ToastFragment();
 
     ChatController chatController;
+    int editPosition;
 
 
     public static final int REQUEST_ENABLE_BLUETOOTH = 1;
@@ -166,8 +167,12 @@ public class MainActivity extends AppCompatActivity implements ChatHistoryAdapte
         btSend.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                if (btSend.getText() == "Edit")
+                {
+                    adapter.deleteMessage(editPosition);
+                }
 
-                String address;
+                    String address;
                 if (messageColor) {
                     messageColor = false;
                     address = "00:00:00:00:00:00";
@@ -254,6 +259,7 @@ public class MainActivity extends AppCompatActivity implements ChatHistoryAdapte
     // No action on long click
     @Override
     public void onItemLongClick(View view, int position) {
+        editPosition = position;
         final EditText tfInput = findViewById(R.id.tf_input);
         tfInput.setText(adapter.getItem(position));
         final Button btSend = findViewById(R.id.bt_send);

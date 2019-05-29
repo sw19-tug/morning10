@@ -139,10 +139,15 @@ public class ChatHistoryAdapter extends RecyclerView.Adapter<ChatHistoryAdapter.
     }
 
     // Add message to recycler view
-    public void addMessage(ChatMessage message)
-    {
+    public void addMessage(ChatMessage message) {
         messageData.add(message);
         notifyItemInserted(messageData.size());
         manager.scrollToPosition(getItemCount() - 1);
+    }
+
+    // Delete message from recycler view
+    public void deleteMessage(int id) {
+        messageData.remove(messageData.get(id));
+        notifyItemRemoved(messageData.size());
     }
 }
