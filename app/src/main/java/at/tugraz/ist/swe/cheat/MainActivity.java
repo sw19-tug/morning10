@@ -28,10 +28,12 @@ import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.Observable;
 import java.util.Observer;
+
 
 import at.tugraz.ist.swe.cheat.btobservable.DeviceObservable;
 import at.tugraz.ist.swe.cheat.serviceimpl.DummyBluetoothDeviceProvider;
@@ -39,13 +41,14 @@ import at.tugraz.ist.swe.cheat.serviceimpl.RealBluetoothDeviceProvider;
 import at.tugraz.ist.swe.cheat.viewfragments.DeviceListFragment;
 import at.tugraz.ist.swe.cheat.viewfragments.ToastFragment;
 
-public class MainActivity extends AppCompatActivity implements RecyclerViewMessagesAdapter.ItemClickListener {
+public class MainActivity extends AppCompatActivity implements ChatHistoryAdapter.ItemClickListener {
+
 
     BluetoothDeviceManager bluetoothDeviceManager;
     AlertDialog.Builder devicesDialogBuilder;
     AlertDialog devicesDialog;
-
     ArrayAdapter<String> deviceListAdapter;
+    ChatHistoryAdapter adapter;
 
     RecyclerViewMessagesAdapter adapter;
     DeviceObservable deviceObservable = new DeviceObservable();
@@ -57,6 +60,7 @@ public class MainActivity extends AppCompatActivity implements RecyclerViewMessa
 
     public static final int REQUEST_ENABLE_BLUETOOTH = 1;
     private static final int MY_PERMISSION_RESPONSE = 2;
+    boolean messageColor = true;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -122,18 +126,15 @@ public class MainActivity extends AppCompatActivity implements RecyclerViewMessa
             }
         });
 
-        // Dummy dataset for messages
-        ArrayList<ChatMessage> messages = new ArrayList<>();
-        messages.add(new ChatMessage(1, "00-00-00-00-00-00", "Bonjour", new Date() ));
-        messages.add(new ChatMessage(2, "00-00-00-00-00-00", "Hola", new Date()));
-        messages.add(new ChatMessage(3, "00-00-00-00-00-00", "Nǐn hǎo", new Date() ));
-        messages.add(new ChatMessage(4, "00-00-00-00-00-00", "Anyoung haseyo", new Date() ));
-
         // Set up the RecyclerView to display messages (history)
-        RecyclerView recyclerView = findViewById(R.id.rv_messages);
-        recyclerView.setLayoutManager(new LinearLayoutManager(this));
-        adapter = new RecyclerViewMessagesAdapter(this, messages);
+        ArrayList<ChatMessage> messages = null;
+        final RecyclerView recyclerView = findViewById(R.id.rv_chat_history);
+        LinearLayoutManager layoutManager = new LinearLayoutManager(this);
+        layoutManager.setStackFromEnd(true);
+        recyclerView.setLayoutManager(layoutManager);
+        adapter = new ChatHistoryAdapter(messages, "00:00:00:00:00:00", layoutManager);
         adapter.setClickListener(this);
+        recyclerView.setAdapter(adapter);
         recyclerView.setAdapter(adapter);
 
         // Initialize tfInput and btSend
@@ -163,6 +164,17 @@ public class MainActivity extends AppCompatActivity implements RecyclerViewMessa
         btSend.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                String address;
+                if (messageColor) {
+                    messageColor = false;
+                    address = "00:00:00:00:00:00";
+                }
+                else {
+                    messageColor = true;
+                    address = "11:00:00:00:00:00";
+                }
+
+                adapter.addMessage(new ChatMessage(1, address, tfInput.getText().toString(), new Date()));
                 tfInput.setText("");
             }
         });
