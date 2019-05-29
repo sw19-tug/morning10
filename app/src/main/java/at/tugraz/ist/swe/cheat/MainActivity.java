@@ -7,6 +7,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
+import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
@@ -29,6 +30,7 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Date;
 
@@ -205,26 +207,21 @@ public class MainActivity extends AppCompatActivity implements ChatHistoryAdapte
             switch (requestCode){
                 case RESULT_IMAGE_SELECTED:
                     Uri selectedImage = data.getData();
-                    String[] filePathColumn = { MediaStore.Images.Media.DATA };
-                    // Get the cursor
-                    Cursor cursor = getContentResolver().query(selectedImage, filePathColumn, null, null, null);
-                    // Move to first row
-                    cursor.moveToFirst();
-                    int columnIndex = cursor.getColumnIndex(filePathColumn[0]);
-                    //Gets the String value in the column
-                    String imgDecodableString = cursor.getString(columnIndex);
-                    cursor.close();
-                    // Set the Image in ImageView after decoding the String
-                    String address;
-                    if (messageColor) {
-                        messageColor = false;
-                        address = "00:00:00:00:00:00";
+                    try {
+                        Bitmap bitmap = MediaStore.Images.Media.getBitmap(this.getContentResolver(), selectedImage);
+                        String address;
+                        if (messageColor) {
+                            messageColor = false;
+                            address = "00:00:00:00:00:00";
+                        }
+                        else {
+                            messageColor = true;
+                            address = "11:00:00:00:00:00";
+                        }
+                        adapter.addMessage(new ChatMessage(1, address, bitmap, new Date()));
+                    } catch (IOException e) {
+                        e.printStackTrace();
                     }
-                    else {
-                        messageColor = true;
-                        address = "11:00:00:00:00:00";
-                    }
-                    adapter.addMessage(new ChatMessage(1, address, BitmapFactory.decodeFile(imgDecodableString), new Date()));
                     break;
             }
 
