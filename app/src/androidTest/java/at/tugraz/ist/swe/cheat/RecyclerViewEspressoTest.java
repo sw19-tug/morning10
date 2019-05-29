@@ -15,6 +15,7 @@ import static android.support.test.espresso.Espresso.onView;
 import static android.support.test.espresso.action.ViewActions.click;
 import static android.support.test.espresso.action.ViewActions.longClick;
 import static android.support.test.espresso.action.ViewActions.replaceText;
+import static android.support.test.espresso.assertion.ViewAssertions.doesNotExist;
 import static android.support.test.espresso.assertion.ViewAssertions.matches;
 import static android.support.test.espresso.matcher.ViewMatchers.isDisplayed;
 import static android.support.test.espresso.matcher.ViewMatchers.withChild;
@@ -62,6 +63,7 @@ public class RecyclerViewEspressoTest {
 
             onView(withId(R.id.bt_send)).check(matches(withText("Send")));
             onView(allOf(withId(R.id.tv_message), withText(new_message))).check(matches(isDisplayed()));
+            onView(allOf(withId(R.id.tv_message), withText(message))).check(doesNotExist());
         }
 
         // Check if RecyclerView elements have different background colors
