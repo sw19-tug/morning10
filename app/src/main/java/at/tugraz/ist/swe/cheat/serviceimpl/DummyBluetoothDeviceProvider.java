@@ -82,6 +82,7 @@ public class DummyBluetoothDeviceProvider extends Provider implements BluetoothD
 
         setChanged();
         notifyObservers(message);
+        setCurrentState(STATE_LISTEN);
     }
 
     @Override
