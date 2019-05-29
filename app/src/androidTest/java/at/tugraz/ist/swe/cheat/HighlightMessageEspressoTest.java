@@ -45,5 +45,13 @@ public class HighlightMessageEspressoTest {
                 matches(withTagValue(is((Object)R.drawable.rounded_rectangle_orange))));
         onView(allOf(withId(R.id.tv_message), withText(message2))).check(
                 matches(withTagValue(is((Object)R.drawable.rounded_rectangle_orange))));
+
+        onView(allOf(withId(R.id.tv_message), withText(message1))).perform(click());
+        onView(allOf(withId(R.id.tv_message), withText(message2))).perform(click());
+
+        onView(allOf(withId(R.id.tv_message), withText(message1))).check(
+                matches(withTagValue(is((Object)R.drawable.rounded_rectangle_blue))));
+        onView(allOf(withId(R.id.tv_message), withText(message2))).check(
+                matches(withTagValue(is((Object)R.drawable.rounded_rectangle_white))));
     }
 }
