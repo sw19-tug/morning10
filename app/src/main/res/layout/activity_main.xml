@@ -38,7 +38,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_margin="0dp"
-            android:layout_weight="9"
+            android:layout_weight="8"
             android:text=""
             tools:ignore="ButtonStyle" />
         <Button
@@ -46,6 +46,13 @@
             style="@style/Widget.AppCompat.Button"
             android:layout_width="42dp"
             android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Img" />
+        <ImageButton
+            android:id="@+id/bt_sendCameraImage"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_camera_alt_black_24dp"
             android:layout_weight="1"
             android:text="Img" />
         <Button
