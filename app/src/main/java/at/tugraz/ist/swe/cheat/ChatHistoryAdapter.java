@@ -76,8 +76,11 @@ public class ChatHistoryAdapter extends RecyclerView.Adapter<ChatHistoryAdapter.
         if(message_text.isEmpty()) {
             holder.tv_message_img.setImageBitmap(message.getImage());
             holder.tv_message_img.setVisibility(View.VISIBLE);
+            holder.tv_message.setVisibility(View.GONE);
         }
         else {
+            holder.tv_message_img.setVisibility(View.GONE);
+            holder.tv_message.setVisibility(View.VISIBLE);
             holder.tv_message.setText(message_text);
         }
         SimpleDateFormat formatter = new SimpleDateFormat("hh:mm");
