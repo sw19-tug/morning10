@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.net.Uri;
+import android.provider.MediaStore;
 import android.support.test.espresso.intent.rule.IntentsTestRule;
 import android.support.test.runner.AndroidJUnit4;
 
@@ -43,8 +44,49 @@ public class SendCameraImageTests {
 
     private Bitmap mockedImage;
 
+    @Before
+    public void setUp() {
+        createMockedImage();
+        intending(hasAction(MediaStore.ACTION_IMAGE_CAPTURE)).respondWith(getMockedImageResult());
+    }
+
+    private void createMockedImage() {
+        mockedImage = Bitmap.createBitmap(64, 64, Bitmap.Config.ARGB_8888);
+        mockedImage.eraseColor(Color.MAGENTA);
+        File dir = mainActivityTestRule.getActivity().getExternalCacheDir();
+        File file = new File(dir.getPath(), "mockedImage.jpeg");
+        FileOutputStream outStream;
+        try {
+            outStream = new FileOutputStream(file);
+            mockedImage.compress(Bitmap.CompressFormat.JPEG, 100, outStream);
+            outStream.flush();
+            outStream.close();
+
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private Instrumentation.ActivityResult getMockedImageResult() {
+        Intent resultData = new Intent();
+        File dir = mainActivityTestRule.getActivity().getExternalCacheDir();
+        File file = new File(dir.getPath(), "mockedImage.jpeg");
+        Uri uri = Uri.fromFile(file);
+        resultData.setData(uri);
+        return new Instrumentation.ActivityResult(Activity.RESULT_OK, resultData);
+    }
+
+
     @Test  // Test if the button is displayed
     public void testButtonVisible() {
         onView(withId(R.id.bt_sendCameraImage)).check(matches(isDisplayed()));
+    }
+
+    @Test  // Test if gallery intend is shown
+    public void testCameraIntendWasShown() {
+        onView(withId(R.id.bt_sendCameraImage)).perform(click());
+        intended(hasAction(MediaStore.ACTION_IMAGE_CAPTURE));
     }
 }
