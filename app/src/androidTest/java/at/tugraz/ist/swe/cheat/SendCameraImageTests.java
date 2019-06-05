@@ -89,4 +89,10 @@ public class SendCameraImageTests {
         onView(withId(R.id.bt_sendCameraImage)).perform(click());
         intended(hasAction(MediaStore.ACTION_IMAGE_CAPTURE));
     }
+
+    @Test  // Test sent images displayed
+    public void testSentImageDisplayed () {
+        onView(withId(R.id.bt_sendCameraImage)).perform(click());
+        onView(withId(R.id.tv_message_img)).check(matches(withBitmap(mockedImage)));
+    }
 }
