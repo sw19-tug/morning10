@@ -1,5 +1,6 @@
 package at.tugraz.ist.swe.cheat;
 
+import android.os.SystemClock;
 import android.support.test.runner.AndroidJUnit4;
 import android.support.test.rule.ActivityTestRule;
 
@@ -88,12 +89,19 @@ public class RecyclerViewEspressoTest {
         public void testDeleteMessage () {
             final String message = "Hello World";
 
+            final String message2 = "Hello World2";
+
             onView(withId(R.id.tf_input)).perform(replaceText(message));
             onView(withId(R.id.bt_send)).check(matches(withText("Send")));
             onView(withId(R.id.bt_send)).perform(click());
 
+            /*onView(withId(R.id.tf_input)).perform(replaceText(message2));
+            onView(withId(R.id.bt_send)).check(matches(withText("Send")));
+            onView(withId(R.id.bt_send)).perform(click());*/
+
             onView(allOf(withId(R.id.tv_message), withText(message))).perform(longClick());
             onView(withText("Delete")).perform(click());
+            SystemClock.sleep(100);
             onView(allOf(withId(R.id.tv_message), withText(message))).check(doesNotExist());
         }
 

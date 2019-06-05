@@ -341,6 +341,11 @@ public class MainActivity extends AppCompatActivity implements ChatHistoryAdapte
                         final Button btSend = findViewById(R.id.bt_send);
                         btSend.setText("Edit");
                         break;
+                    case 1:
+                        System.out.println("Delete");
+                        editPosition = position;
+                        adapter.deleteMessage(editPosition);
+                        break;
                     default:
                         break;
                 }
