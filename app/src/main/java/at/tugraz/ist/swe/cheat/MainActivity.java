@@ -34,6 +34,7 @@ import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -70,6 +71,7 @@ public class MainActivity extends AppCompatActivity implements ChatHistoryAdapte
     private static final int MY_PERMISSION_RESPONSE = 2;
     boolean messageColor = true;
     final int RESULT_IMAGE_SELECTED = 42;
+    final int RESULT_IMAGE_TAKEN = 69;
 
     private static final int LOCATION_PERMISSION_RESPONSE = 2;
     private static final int READ_PERMISSION_RESPONSE = 3;
@@ -225,6 +227,17 @@ public class MainActivity extends AppCompatActivity implements ChatHistoryAdapte
                 Intent i = new Intent(Intent.ACTION_PICK,android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
                 i.setType("image/*");
                 startActivityForResult(i, RESULT_IMAGE_SELECTED);
+            }
+        });
+
+        final ImageButton btnSendCameraImage = findViewById(R.id.bt_sendCameraImage);
+        btnSendCameraImage.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent i = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+                if (i.resolveActivity(getPackageManager()) != null) {
+                    startActivityForResult(i, RESULT_IMAGE_TAKEN);
+                }
             }
         });
         toastFragment.setMainActivity(this);
