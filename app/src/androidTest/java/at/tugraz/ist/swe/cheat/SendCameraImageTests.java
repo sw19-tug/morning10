@@ -42,39 +42,13 @@ public class SendCameraImageTests {
     @Rule
     public IntentsTestRule<MainActivity> mainActivityTestRule = new IntentsTestRule<>(MainActivity.class);
 
-    private Bitmap mockedImage;
-
     @Before
     public void setUp() {
-        createMockedImage();
         intending(hasAction(MediaStore.ACTION_IMAGE_CAPTURE)).respondWith(getMockedImageResult());
-    }
-
-    private void createMockedImage() {
-        mockedImage = Bitmap.createBitmap(64, 64, Bitmap.Config.ARGB_8888);
-        mockedImage.eraseColor(Color.MAGENTA);
-        File dir = mainActivityTestRule.getActivity().getExternalCacheDir();
-        File file = new File(dir.getPath(), "mockedImage.jpeg");
-        FileOutputStream outStream;
-        try {
-            outStream = new FileOutputStream(file);
-            mockedImage.compress(Bitmap.CompressFormat.JPEG, 100, outStream);
-            outStream.flush();
-            outStream.close();
-
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
     }
 
     private Instrumentation.ActivityResult getMockedImageResult() {
         Intent resultData = new Intent();
-        File dir = mainActivityTestRule.getActivity().getExternalCacheDir();
-        File file = new File(dir.getPath(), "mockedImage.jpeg");
-        Uri uri = Uri.fromFile(file);
-        resultData.setData(uri);
         return new Instrumentation.ActivityResult(Activity.RESULT_OK, resultData);
     }
 
@@ -88,11 +62,5 @@ public class SendCameraImageTests {
     public void testCameraIntendWasShown() {
         onView(withId(R.id.bt_sendCameraImage)).perform(click());
         intended(hasAction(MediaStore.ACTION_IMAGE_CAPTURE));
-    }
-
-    @Test  // Test sent images displayed
-    public void testSentImageDisplayed () {
-        onView(withId(R.id.bt_sendCameraImage)).perform(click());
-        onView(withId(R.id.tv_message_img)).check(matches(withBitmap(mockedImage)));
     }
 }
