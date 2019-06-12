@@ -3,7 +3,10 @@ package at.tugraz.ist.swe.cheat;
 import android.support.test.InstrumentationRegistry;
 import android.support.test.runner.AndroidJUnit4;
 import android.support.test.rule.ActivityTestRule;
+import android.support.v7.widget.Toolbar;
+import android.view.MenuItem;
 
+import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -34,6 +37,14 @@ public class RecyclerViewEspressoTest {
     @Rule
     public ActivityTestRule<MainActivity> mainActivityTestRule = new ActivityTestRule<>(MainActivity.class);
 
+
+    BluetoothDeviceManager bluetoothDeviceManager;
+
+    @Before
+    public void setUp() {
+        bluetoothDeviceManager = mainActivityTestRule.getActivity().bluetoothDeviceManager;
+
+    }
     // Check if RecyclerView is displayed
     @Test
     public void testRecyclerViewVisibility () {

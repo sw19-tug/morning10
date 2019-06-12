@@ -26,7 +26,7 @@ public class BluetoothDiscover extends BroadcastReceiver {
             BluetoothDevice device = intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE);
             if (device.getBondState() != BluetoothDevice.BOND_BONDED) {
                 CustomMessage customMessage = new CustomMessage(5,new Device(device.getName(),device.getAddress()));
-                deviceObservable.setDevice(customMessage);
+                deviceObservable.addDevice(customMessage);
             }
         }
     }

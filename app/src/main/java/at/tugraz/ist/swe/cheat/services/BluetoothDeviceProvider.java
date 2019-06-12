@@ -3,6 +3,8 @@ package at.tugraz.ist.swe.cheat.services;
 import java.io.IOException;
 
 import at.tugraz.ist.swe.BluetoothDeviceState;
+import at.tugraz.ist.swe.cheat.ChatMessage;
+import at.tugraz.ist.swe.cheat.dto.CustomMessage;
 
 public interface BluetoothDeviceProvider {
 
@@ -37,4 +39,8 @@ public interface BluetoothDeviceProvider {
     int getCurrentState();
 
     void disconnected() throws IOException;
+
+    void sendMessage(ChatMessage message) throws IOException;
+
+    void received(CustomMessage customMessage);
 }

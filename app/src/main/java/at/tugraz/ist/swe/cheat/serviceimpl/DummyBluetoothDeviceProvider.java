@@ -1,12 +1,15 @@
 package at.tugraz.ist.swe.cheat.serviceimpl;
 
+import java.io.IOException;
+
 import at.tugraz.ist.swe.BluetoothDeviceState;
+import at.tugraz.ist.swe.cheat.ChatMessage;
 import at.tugraz.ist.swe.cheat.dto.CustomMessage;
 import at.tugraz.ist.swe.cheat.dto.Device;
 import at.tugraz.ist.swe.cheat.dto.Provider;
 import at.tugraz.ist.swe.cheat.services.BluetoothDeviceProvider;
 
-public class DummyBluetoothDeviceProvider extends Provider implements BluetoothDeviceProvider {
+public class DummyBluetoothDeviceProvider extends Provider{
 
     class DeviceDummy {
         private String name = "Dummy Device";
@@ -142,5 +145,17 @@ public class DummyBluetoothDeviceProvider extends Provider implements BluetoothD
 
         setCurrentState(STATE_LISTEN);
 
+    }
+
+    @Override
+    public void sendMessage(ChatMessage message) throws IOException {
+
+    }
+
+    @Override
+    public void received(CustomMessage customMessage) {
+        System.out.println("WHAT we got " + customMessage.getMessage().getMessage());
+        setChanged();
+        notifyObservers(customMessage);
     }
 }

@@ -10,14 +10,13 @@ import at.tugraz.ist.swe.cheat.dto.CustomMessage;
 public class DeviceObservable extends Observable{
 
     private Set<String> deviceLists;
-    private String device;
 
     public DeviceObservable()
     {
         this.deviceLists = new HashSet<>();
     }
 
-    public void setDevice(CustomMessage message) {
+    public void addDevice(CustomMessage message) {
 
         if(!deviceLists.contains(message.getDevice().getDevice_address()))
         {
@@ -25,18 +24,11 @@ public class DeviceObservable extends Observable{
             setChanged();
             notifyObservers(message);
         }
-
-    }
-
-    public String getDevice() {
-        return device;
     }
 
     @Override
     public synchronized void addObserver(Observer o) {
         super.addObserver(o);
-        System.out.print("Registered TO Observer");
-        //this.setDevice("TEST Device");
     }
 
 }

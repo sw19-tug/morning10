@@ -1,9 +1,11 @@
 package at.tugraz.ist.swe.cheat;
 
 import android.graphics.Bitmap;
+
+import java.io.Serializable;
 import java.util.Date;
 
-public class ChatMessage {
+public class ChatMessage implements Serializable {
 
     int message_id;
     String address;
@@ -45,4 +47,7 @@ public class ChatMessage {
 
     public void setImage(Bitmap image) { this.image = image; }
 
+    public void setAddress(String address) {
+        this.address = address;
+    }
 }
