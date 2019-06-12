@@ -64,6 +64,7 @@ public class MainActivity extends AppCompatActivity implements ChatHistoryAdapte
 
     ChatController chatController;
     int editPosition;
+    String partnerDevice = "";
 
 
     public static final int REQUEST_ENABLE_BLUETOOTH = 1;
@@ -145,6 +146,7 @@ public class MainActivity extends AppCompatActivity implements ChatHistoryAdapte
                     bluetoothDeviceManager.connectToDevice(address);
                     Log.d("#######","Show name "+ strName);
                     Log.d("#######","Show address "+ address);
+                    partnerDevice = address;
                 }
 
                 myToolbar.setBackgroundColor(0xff66bb6a);
@@ -163,9 +165,10 @@ public class MainActivity extends AppCompatActivity implements ChatHistoryAdapte
         recyclerView.setLayoutManager(layoutManager);
 
 
-        adapter = new ChatHistoryAdapter(messages, "00:00:00:00:00:00", layoutManager);
+        adapter = new ChatHistoryAdapter(messages, "user", layoutManager);
         adapter.setClickListener(this);
         adapter.setLongClickListener(this);
+        adapter.setMainActivity(this);
         recyclerView.setAdapter(adapter);
         recyclerView.setAdapter(adapter);
 
@@ -202,17 +205,7 @@ public class MainActivity extends AppCompatActivity implements ChatHistoryAdapte
                     adapter.deleteMessage(editPosition);
                 }
 
-                    String address;
-                if (messageColor) {
-                    messageColor = false;
-                    address = "00:00:00:00:00:00";
-                }
-                else {
-                    messageColor = true;
-                    address = "11:00:00:00:00:00";
-                }
-
-                adapter.addMessage(new ChatMessage(1, address, tfInput.getText().toString(), new Date()));
+                adapter.addMessage(new ChatMessage(1, "user", tfInput.getText().toString(), new Date()));
                 tfInput.setText("");
                 btSend.setText("Send");
             }
@@ -230,7 +223,9 @@ public class MainActivity extends AppCompatActivity implements ChatHistoryAdapte
         toastFragment.setMainActivity(this);
 
         bluetoothDeviceManager.getBluetoothDeviceProvider().addObserver(toastFragment);
+        bluetoothDeviceManager.getBluetoothDeviceProvider().addObserver(adapter);
         chatController = new ChatController(bluetoothDeviceManager.getBluetoothDeviceProvider());
+        adapter.setBluetoothDeviceProvider(bluetoothDeviceManager.getBluetoothDeviceProvider());
     }
   
     @Override
@@ -362,16 +357,7 @@ public class MainActivity extends AppCompatActivity implements ChatHistoryAdapte
                     Uri selectedImage = data.getData();
                     try {
                         Bitmap bitmap = MediaStore.Images.Media.getBitmap(this.getContentResolver(), selectedImage);
-                        String address;
-                        if (messageColor) {
-                            messageColor = false;
-                            address = "00:00:00:00:00:00";
-                        }
-                        else {
-                            messageColor = true;
-                            address = "11:00:00:00:00:00";
-                        }
-                        adapter.addMessage(new ChatMessage(1, address, bitmap, new Date()));
+                        adapter.addMessage(new ChatMessage(1, "user", bitmap, new Date()));
                     } catch (IOException e) {
                         e.printStackTrace();
                     }

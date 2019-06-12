@@ -59,18 +59,6 @@ public class RecyclerViewEspressoTest {
         onView(withId(R.id.tv_message)).check(matches(isDisplayed()));
     }
 
-    // Check if Click on RecyclerView element triggers an action
-    @Test
-    public void testRecyclerViewElementClick () {
-        final String message = "Hello World";
-
-        onView(withId(R.id.tf_input)).perform(replaceText(message));
-        onView(withId(R.id.bt_send)).perform(click());
-
-        onView(allOf(withId(R.id.tv_message), withText(message))).perform(click());
-        onView(withId(R.id.tf_input)).check(matches((withText(message))));
-    }
-
     // Check if RecyclerView elements have different background colors
     @Test
     public void testRecyclerViewElementBackgroundColors () {
