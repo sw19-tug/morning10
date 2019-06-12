@@ -17,6 +17,7 @@ import android.provider.MediaStore;
 import android.content.IntentFilter;
 import android.os.Build;
 import android.os.Handler;
+import android.speech.tts.TextToSpeech;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
@@ -34,10 +35,12 @@ import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Toast;
 
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.Locale;
 import java.util.Observable;
 import java.util.Observer;
 
@@ -49,7 +52,7 @@ import at.tugraz.ist.swe.cheat.serviceimpl.RealBluetoothDeviceProvider;
 import at.tugraz.ist.swe.cheat.viewfragments.DeviceListFragment;
 import at.tugraz.ist.swe.cheat.viewfragments.ToastFragment;
 
-public class MainActivity extends AppCompatActivity implements ChatHistoryAdapter.ItemClickListener, ChatHistoryAdapter.ItemLongClickListener {
+public class MainActivity extends AppCompatActivity implements ChatHistoryAdapter.ItemClickListener, ChatHistoryAdapter.ItemLongClickListener, TextToSpeech.OnInitListener {
 
 
     BluetoothDeviceManager bluetoothDeviceManager;
@@ -71,8 +74,11 @@ public class MainActivity extends AppCompatActivity implements ChatHistoryAdapte
     boolean messageColor = true;
     final int RESULT_IMAGE_SELECTED = 42;
 
+    private int RESULT_TTS_AVAILABLE = 99;
+
     private static final int LOCATION_PERMISSION_RESPONSE = 2;
     private static final int READ_PERMISSION_RESPONSE = 3;
+    private TextToSpeech myTTS;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -231,6 +237,11 @@ public class MainActivity extends AppCompatActivity implements ChatHistoryAdapte
 
         bluetoothDeviceManager.getBluetoothDeviceProvider().addObserver(toastFragment);
         chatController = new ChatController(bluetoothDeviceManager.getBluetoothDeviceProvider());
+
+
+        Intent checkTTSIntent = new Intent();
+        checkTTSIntent.setAction(TextToSpeech.Engine.ACTION_CHECK_TTS_DATA);
+        startActivityForResult(checkTTSIntent, RESULT_TTS_AVAILABLE);
     }
   
     @Override
@@ -348,6 +359,7 @@ public class MainActivity extends AppCompatActivity implements ChatHistoryAdapte
                         break;
                     case 2:
                         System.out.println("Read to me");
+                        myTTS.speak(adapter.getItem(position), TextToSpeech.QUEUE_FLUSH, null);
                         break;
                     default:
                         break;
@@ -379,7 +391,18 @@ public class MainActivity extends AppCompatActivity implements ChatHistoryAdapte
                         e.printStackTrace();
                     }
                     break;
+
             }
+        if (requestCode == RESULT_TTS_AVAILABLE) {
+            if (resultCode == TextToSpeech.Engine.CHECK_VOICE_DATA_PASS) {
+                myTTS = new TextToSpeech(this, this);
+            }
+            else {
+                Intent installTTSIntent = new Intent();
+                installTTSIntent.setAction(TextToSpeech.Engine.ACTION_INSTALL_TTS_DATA);
+                startActivity(installTTSIntent);
+            }
+        }
 
     }
 
@@ -402,4 +425,14 @@ public class MainActivity extends AppCompatActivity implements ChatHistoryAdapte
     }
 
 
+    @Override
+    public void onInit(int status) {
+        if (status == TextToSpeech.SUCCESS) {
+            myTTS.setLanguage(Locale.US);
+        }
+        else if (status == TextToSpeech.ERROR) {
+            Toast.makeText(this, "Sorry! Text To Speech failed...", Toast.LENGTH_LONG).show();
+        }
+
+    }
 }

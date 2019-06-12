@@ -41,30 +41,20 @@ public class TextToSpeechTest {
 
             onView(allOf(withId(R.id.tv_message), withText(message))).perform(longClick());
             onView(withText("Read to me")).check(matches(isDisplayed()));
-
         }
 /*
-        // Check if editing a message works
+        // Check if reading a message works
         @Test
         public void testEditMessage () {
             final String message = "Hello World";
-            final String new_message = "Hola El Mundo";
 
             onView(withId(R.id.tf_input)).perform(replaceText(message));
-            onView(withId(R.id.bt_send)).check(matches(withText("Send")));
             onView(withId(R.id.bt_send)).perform(click());
 
             onView(allOf(withId(R.id.tv_message), withText(message))).perform(longClick());
-            onView(withText("Edit")).perform(click());
+            onView(withText("Read to me")).perform(click());
 
-            onView(withId(R.id.bt_send)).check(matches(withText("Edit")));
-            onView(withId(R.id.tf_input)).check(matches(withText(message)));
-            onView(withId(R.id.tf_input)).perform(replaceText(new_message));
-            onView(withId(R.id.bt_send)).perform(click());
 
-            onView(withId(R.id.bt_send)).check(matches(withText("Send")));
-            onView(allOf(withId(R.id.tv_message), withText(new_message))).check(matches(isDisplayed()));
-            onView(allOf(withId(R.id.tv_message), withText(message))).check(doesNotExist());
         }
 */
 
