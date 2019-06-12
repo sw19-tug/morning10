@@ -5,13 +5,15 @@ import android.graphics.Bitmap;
 import java.io.Serializable;
 import java.util.Date;
 
+import at.tugraz.ist.swe.cheat.dto.ProxyBitmap;
+
 public class ChatMessage implements Serializable {
 
     int message_id;
     String address;
     String message;
     Date timeStamp;
-    Bitmap image;
+    ProxyBitmap image;
     // modified
 
     public ChatMessage(int message_id, String address, String message, Date timeStamp) {
@@ -26,7 +28,7 @@ public class ChatMessage implements Serializable {
         this.address =  address;
         this.message_id =  message_id;
         this.timeStamp = timeStamp;
-        this.image = image;
+        this.image = new ProxyBitmap(image);
     }
 
     public String getMessage() {
@@ -43,9 +45,9 @@ public class ChatMessage implements Serializable {
 
     public Date getTimeStamp() { return this.timeStamp; }
 
-    public Bitmap getImage() { return image; }
+    public Bitmap getImage() { return image.getBitmap(); }
 
-    public void setImage(Bitmap image) { this.image = image; }
+    public void setImage(Bitmap image) { this.image = new ProxyBitmap(image); }
 
     public void setAddress(String address) {
         this.address = address;

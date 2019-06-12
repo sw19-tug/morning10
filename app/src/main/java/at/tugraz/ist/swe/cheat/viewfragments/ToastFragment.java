@@ -42,6 +42,8 @@ public class ToastFragment extends Fragment implements Observer {
                         case STATE_LISTEN:
                             toastString = "is disconnected from ";
                             break;
+                        default:
+                            return;
                     }
                     toastString += (String) ((CustomMessage) message).getDevice().getDevice_name();
                     Toast.makeText(mainActivity.getApplicationContext(),

@@ -349,7 +349,7 @@ public class RealBluetoothDeviceProvider extends Provider {
     @Override
     public void sendMessage(ChatMessage message) throws IOException {
 
-        CustomMessage fullmessage = new CustomMessage(STATE_CONNECTED,
+        CustomMessage fullmessage = new CustomMessage(STATE_CHAT,
                 new Device(BluetoothAdapter.getDefaultAdapter().getName(),
                         BluetoothAdapter.getDefaultAdapter().getAddress()),message);
 
@@ -384,7 +384,7 @@ public class RealBluetoothDeviceProvider extends Provider {
 
         public void run() {
             System.out.println("ReadWrite Thread to device ");
-            byte[] buffer = new byte[1024];
+            byte[] buffer = new byte[1024*1024*10];
             int bytes;
 
             // Keep listening to the InputStream
@@ -402,7 +402,8 @@ public class RealBluetoothDeviceProvider extends Provider {
                     }
 
 
-                } catch (IOException e) {
+                } catch (Exception e) {
+                    e.printStackTrace();
                     connectionFailed();
                     break;
                 }
@@ -433,7 +434,7 @@ public class RealBluetoothDeviceProvider extends Provider {
     @Override
     public synchronized void received(CustomMessage customMessage) {
 
-        System.out.println("WHAT we got " + customMessage.getMessage().getMessage());
+        System.out.println("Got the message!");
         setChanged();
         notifyObservers(customMessage);
     }

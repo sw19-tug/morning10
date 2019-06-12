@@ -12,6 +12,7 @@ public abstract class Provider extends Observable implements BluetoothDeviceProv
     public static final int STATE_CONNECTING = 2;
     public static final int STATE_CONNECTED = 3;
     public static final int STATE_CONNECTIONLOST = 4;
+    public static final int STATE_CHAT = 5;
 
 
     public Provider() {

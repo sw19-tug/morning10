@@ -1,5 +1,6 @@
 package at.tugraz.ist.swe.cheat;
 
+import android.os.SystemClock;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -90,11 +91,13 @@ public class ChatHistoryAdapter extends RecyclerView.Adapter<ChatHistoryAdapter.
         ChatMessage message = messageData.get(position);
         String message_text = message.getMessage();
         if(message_text.isEmpty()) {
+            System.out.println("Message is empty!");
             holder.tv_message_img.setImageBitmap(message.getImage());
             holder.tv_message_img.setVisibility(View.VISIBLE);
             holder.tv_message.setVisibility(View.GONE);
         }
         else {
+            System.out.println("Message is: " + message_text);
             holder.tv_message_img.setVisibility(View.GONE);
             holder.tv_message.setVisibility(View.VISIBLE);
             holder.tv_message.setText(message_text);

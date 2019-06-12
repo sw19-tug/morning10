@@ -1,5 +1,7 @@
 package at.tugraz.ist.swe.cheat;
 
+import android.graphics.Bitmap;
+
 import org.junit.Test;
 
 import java.util.Date;
