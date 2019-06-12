@@ -227,7 +227,7 @@ public class MainActivity extends AppCompatActivity implements ChatHistoryAdapte
             }
         });
 
-        final Button btSendImage = findViewById(R.id.bt_sendImage);
+        final ImageButton btSendImage = findViewById(R.id.bt_sendImage);
         btSendImage.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
