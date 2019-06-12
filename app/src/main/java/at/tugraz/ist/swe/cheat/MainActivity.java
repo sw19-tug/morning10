@@ -13,6 +13,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
+import android.os.Environment;
 import android.provider.MediaStore;
 import android.content.IntentFilter;
 import android.os.Build;
@@ -20,6 +21,7 @@ import android.os.Handler;
 import android.speech.tts.TextToSpeech;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
+import android.support.v4.content.FileProvider;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
@@ -35,9 +37,13 @@ import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.Toast;
 
+import java.io.Console;
+import java.io.File;
 import java.io.IOException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.Locale;
@@ -73,12 +79,15 @@ public class MainActivity extends AppCompatActivity implements ChatHistoryAdapte
     private static final int MY_PERMISSION_RESPONSE = 2;
     boolean messageColor = true;
     final int RESULT_IMAGE_SELECTED = 42;
+    final int RESULT_IMAGE_TAKEN = 69;
 
     private int RESULT_TTS_AVAILABLE = 99;
 
     private static final int LOCATION_PERMISSION_RESPONSE = 2;
     private static final int READ_PERMISSION_RESPONSE = 3;
     private TextToSpeech myTTS;
+
+    Uri takenImage = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -224,13 +233,46 @@ public class MainActivity extends AppCompatActivity implements ChatHistoryAdapte
             }
         });
 
-        final Button btSendImage = findViewById(R.id.bt_sendImage);
+        final ImageButton btSendImage = findViewById(R.id.bt_sendImage);
         btSendImage.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent i = new Intent(Intent.ACTION_PICK,android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
                 i.setType("image/*");
                 startActivityForResult(i, RESULT_IMAGE_SELECTED);
+            }
+        });
+
+        final ImageButton btnSendCameraImage = findViewById(R.id.bt_sendCameraImage);
+        btnSendCameraImage.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                File image = null;
+                Intent camera_image_intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+                if (camera_image_intent.resolveActivity(getPackageManager()) != null) {
+                    try {
+                        String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
+                        String imageFileName = "JPEG_" + timeStamp + "_";
+                        File storageDir = getExternalFilesDir(Environment.DIRECTORY_PICTURES);
+                        image = File.createTempFile(
+                                imageFileName,  /* prefix */
+                                ".jpg",         /* suffix */
+                                storageDir      /* directory */
+                        );
+                    } catch (IOException ex) {
+
+                    }
+
+                    if (image != null) {
+                        Uri photoURI = FileProvider.getUriForFile(MainActivity.this,
+                                "com.example.android.fileprovider",
+                                image);
+                        camera_image_intent.putExtra(MediaStore.EXTRA_OUTPUT, photoURI);
+                        takenImage = photoURI;
+                        startActivityForResult(camera_image_intent, RESULT_IMAGE_TAKEN);
+
+                    }
+                }
             }
         });
         toastFragment.setMainActivity(this);
@@ -370,29 +412,34 @@ public class MainActivity extends AppCompatActivity implements ChatHistoryAdapte
     }
 
     public void onActivityResult(int requestCode,int resultCode,Intent data){
+        Uri selectedImage = null;
 
-        if (resultCode == Activity.RESULT_OK)
-            switch (requestCode){
-                case RESULT_IMAGE_SELECTED:
-                    Uri selectedImage = data.getData();
-                    try {
-                        Bitmap bitmap = MediaStore.Images.Media.getBitmap(this.getContentResolver(), selectedImage);
-                        String address;
-                        if (messageColor) {
-                            messageColor = false;
-                            address = "00:00:00:00:00:00";
-                        }
-                        else {
-                            messageColor = true;
-                            address = "11:00:00:00:00:00";
-                        }
-                        adapter.addMessage(new ChatMessage(1, address, bitmap, new Date()));
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
+        if (resultCode == Activity.RESULT_OK) {
+            switch (requestCode) {
+                case RESULT_IMAGE_TAKEN:
+                    selectedImage = takenImage;
                     break;
-
+                case RESULT_IMAGE_SELECTED:
+                    selectedImage = data.getData();
+                    break;
             }
+            if(selectedImage != null) {
+                try {
+                    Bitmap bitmap = MediaStore.Images.Media.getBitmap(this.getContentResolver(), selectedImage);
+                    String address;
+                    if (messageColor) {
+                        messageColor = false;
+                        address = "00:00:00:00:00:00";
+                    } else {
+                        messageColor = true;
+                        address = "11:00:00:00:00:00";
+                    }
+                    adapter.addMessage(new ChatMessage(1, address, bitmap, new Date()));
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
         if (requestCode == RESULT_TTS_AVAILABLE) {
             if (resultCode == TextToSpeech.Engine.CHECK_VOICE_DATA_PASS) {
                 myTTS = new TextToSpeech(this, this);
@@ -403,7 +450,6 @@ public class MainActivity extends AppCompatActivity implements ChatHistoryAdapte
                 startActivity(installTTSIntent);
             }
         }
-
     }
 
     @Override
