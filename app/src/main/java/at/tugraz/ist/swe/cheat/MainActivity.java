@@ -320,7 +320,7 @@ public class MainActivity extends AppCompatActivity implements ChatHistoryAdapte
     @Override
     public void onItemLongClick(View view, final int position) {
 
-        String[] colors = {"Edit", "Delete"};
+        String[] colors = {"Edit", "Delete", "Read to me"};
 
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
 
@@ -345,6 +345,9 @@ public class MainActivity extends AppCompatActivity implements ChatHistoryAdapte
                         System.out.println("Delete");
                         editPosition = position;
                         adapter.deleteMessage(editPosition);
+                        break;
+                    case 2:
+                        System.out.println("Read to me");
                         break;
                     default:
                         break;
