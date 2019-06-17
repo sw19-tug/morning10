@@ -414,7 +414,7 @@ public class MainActivity extends AppCompatActivity implements ChatHistoryAdapte
                     selectedImage = takenImage;
                     break;
                 case RESULT_IMAGE_SELECTED:
-                    Uri selectedImage = data.getData();
+                    selectedImage = data.getData();
                     try {
                         Bitmap bitmap = MediaStore.Images.Media.getBitmap(this.getContentResolver(), selectedImage);
                         Bitmap mockedImage = Bitmap.createBitmap(64, 64, Bitmap.Config.ARGB_8888);
