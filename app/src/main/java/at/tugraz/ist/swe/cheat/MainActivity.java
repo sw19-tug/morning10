@@ -206,7 +206,7 @@ public class MainActivity extends AppCompatActivity implements ChatHistoryAdapte
 
             @Override
             public void afterTextChanged(Editable s) {
-                btSend.setEnabled(s.toString().isEmpty() ? false : true);
+                btSend.setEnabled(bluetoothDeviceManager.getBluetoothDeviceProvider().getCurrentState() == Provider.STATE_CONNECTED);
             }
         });
 
