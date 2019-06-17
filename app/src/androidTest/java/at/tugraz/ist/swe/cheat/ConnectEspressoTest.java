@@ -107,8 +107,14 @@ public class ConnectEspressoTest {
                 deviceObservable.addDevice(customMessage);
             }
         });
-        //Thread.sleep(100);
+
         onView(withText(mainActivityTestRule.getActivity().deviceListAdapter.getItem(0))).perform(click());
+        InstrumentationRegistry.getInstrumentation().runOnMainSync(new Runnable() {
+            @Override
+            public void run() {
+                bluetoothDeviceManager.getBluetoothDeviceProvider().connected();
+            }
+        });
 
         Context context = myToolbar.findViewById(R.id.menu).getContext();
         Drawable connected = context.getResources().getDrawable(R.drawable.ic_wifi_tethering_black_24dp);
@@ -191,11 +197,17 @@ public class ConnectEspressoTest {
         assertEquals(STATE_LISTEN, toastFragment.getMessage().getState());
         assertEquals("is disconnected from Dummy Device", toastFragment.getToastString());
 
+    }                                                              
+
+    @Test
+    public void reconnectTest ()
+    {
+        bluetoothDeviceManager.getBluetoothDeviceProvider().connectToDevice("00:11:22:AA:BB:CC");
+
+        assertEquals(bluetoothDeviceManager.getBluetoothDeviceProvider().getCurrentState(), STATE_CONNECTING);
+        bluetoothDeviceManager.getBluetoothDeviceProvider().connect();
+
+        bluetoothDeviceManager.getBluetoothDeviceProvider().connectionFailed();
+        assertEquals("Dummy Device", toastFragment.getMessage().getDevice().getDevice_name());
     }
-
-
-
-
-
-
 }

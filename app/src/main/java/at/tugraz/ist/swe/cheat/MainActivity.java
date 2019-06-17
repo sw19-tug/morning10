@@ -60,6 +60,8 @@ import at.tugraz.ist.swe.cheat.serviceimpl.RealBluetoothDeviceProvider;
 import at.tugraz.ist.swe.cheat.viewfragments.DeviceListFragment;
 import at.tugraz.ist.swe.cheat.viewfragments.ToastFragment;
 
+import static android.service.autofill.Validators.not;
+
 public class MainActivity extends AppCompatActivity implements ChatHistoryAdapter.ItemClickListener, ChatHistoryAdapter.ItemLongClickListener, TextToSpeech.OnInitListener {
 
 
@@ -168,7 +170,6 @@ public class MainActivity extends AppCompatActivity implements ChatHistoryAdapte
                     partnerDevice = address;
                 }
 
-                myToolbar.setBackgroundColor(0xff66bb6a);
                 bluetoothDeviceManager.stopScanning();
                 unregisterReceiver(bluetoothDiscover);
 
@@ -210,7 +211,7 @@ public class MainActivity extends AppCompatActivity implements ChatHistoryAdapte
 
             @Override
             public void afterTextChanged(Editable s) {
-                btSend.setEnabled(s.toString().isEmpty() ? false : true);
+                btSend.setEnabled((bluetoothDeviceManager.getBluetoothDeviceProvider().getCurrentState() == Provider.STATE_CONNECTED) && !(s.toString().isEmpty()));
             }
         });
 
@@ -218,13 +219,11 @@ public class MainActivity extends AppCompatActivity implements ChatHistoryAdapte
         btSend.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (btSend.getText() == "Edit")
-                {
-
-                    adapter.deleteMessage(editPosition);
+                if (btSend.getText() == "Edit") {
+                    adapter.editMessage(editPosition, tfInput.getText().toString());
+                } else {
+                    adapter.addMessage(new ChatMessage("user", tfInput.getText().toString(), new Date()));
                 }
-
-                adapter.addMessage(new ChatMessage(1, "user", tfInput.getText().toString(), new Date()));
                 tfInput.setText("");
                 btSend.setText("Send");
             }
@@ -310,8 +309,6 @@ public class MainActivity extends AppCompatActivity implements ChatHistoryAdapte
                     } catch (IOException e) {
                         e.printStackTrace();
                     }
-                    myToolbar.setBackgroundColor(0xffffffff);
-                    btConnect.setIcon(R.drawable.ic_portable_wifi_off_black_24dp);
                 } else if(bluetoothDeviceManager.getBluetoothDeviceProvider().getCurrentState() == Provider.STATE_LISTEN ) {
                     bluetoothDeviceManager.startScanning();
 
@@ -334,8 +331,6 @@ public class MainActivity extends AppCompatActivity implements ChatHistoryAdapte
                     //deviceListAdapter.add("TEST");
 
                     devicesDialog = devicesDialogBuilder.show();
-
-                    btConnect.setIcon(R.drawable.ic_wifi_tethering_black_24dp);
                 }
                 return true;
 
@@ -371,6 +366,10 @@ public class MainActivity extends AppCompatActivity implements ChatHistoryAdapte
     @Override
     public void onItemLongClick(View view, final int position) {
 
+        if (adapter.getItem(position).getSenderAddress().equals("partner")) {
+            return;
+        }
+
         String[] colors = {"Edit", "Delete", "Read to me"};
 
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
@@ -388,7 +387,7 @@ public class MainActivity extends AppCompatActivity implements ChatHistoryAdapte
                         System.out.println("Edit");
                         editPosition = position;
                         final EditText tfInput = findViewById(R.id.tf_input);
-                        tfInput.setText(adapter.getItem(position));
+                        tfInput.setText(adapter.getItem(position).getMessage());
                         final Button btSend = findViewById(R.id.bt_send);
                         btSend.setText("Edit");
                         break;
@@ -399,7 +398,7 @@ public class MainActivity extends AppCompatActivity implements ChatHistoryAdapte
                         break;
                     case 2:
                         System.out.println("Read to me");
-                        myTTS.speak(adapter.getItem(position), TextToSpeech.QUEUE_FLUSH, null);
+                        myTTS.speak(adapter.getItem(position).getMessage(), TextToSpeech.QUEUE_FLUSH, null);
                         break;
                     default:
                         break;
@@ -451,15 +450,15 @@ public class MainActivity extends AppCompatActivity implements ChatHistoryAdapte
             Intent enableIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
             startActivityForResult(enableIntent, REQUEST_ENABLE_BLUETOOTH);
             Intent disoverableIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_DISCOVERABLE);
-            //disoverableIntent.putExtra(BluetoothAdapter.ACTION_DISCOVERY_STARTED, 0);
-            startActivityForResult(disoverableIntent, REQUEST_DISCOVERABLE);
-            //startActivity(disoverableIntent);
+            disoverableIntent.putExtra(BluetoothAdapter.ACTION_DISCOVERY_STARTED, 0);
+            //startActivityForResult(disoverableIntent, REQUEST_DISCOVERABLE);
+            startActivity(disoverableIntent);
 
         } else {
             Intent disoverableIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_DISCOVERABLE);
-            //disoverableIntent.putExtra(BluetoothAdapter.EXTRA_DISCOVERABLE_DURATION, 0);
-            startActivityForResult(disoverableIntent, REQUEST_DISCOVERABLE);
-            //startActivity(disoverableIntent);
+            disoverableIntent.putExtra(BluetoothAdapter.EXTRA_DISCOVERABLE_DURATION, 0);
+            //startActivityForResult(disoverableIntent, REQUEST_DISCOVERABLE);
+            startActivity(disoverableIntent);
             //TODO Start Chat Controller
         }
     }

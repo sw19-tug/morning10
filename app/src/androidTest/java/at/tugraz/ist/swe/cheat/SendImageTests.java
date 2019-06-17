@@ -69,6 +69,16 @@ public class SendImageTests {
 
     @Before
     public void setUp() {
+        bluetoothDeviceManager = mainActivityTestRule.getActivity().bluetoothDeviceManager;
+
+        InstrumentationRegistry.getInstrumentation().runOnMainSync(new Runnable() {
+            @Override
+            public void run() {
+                bluetoothDeviceManager.getBluetoothDeviceProvider().connectToDevice("00:11:22:AA:BB:CC");
+                bluetoothDeviceManager.getBluetoothDeviceProvider().connected();
+            }
+        });
+
         createMockedImage();
         intending(hasAction(Intent.ACTION_PICK)).respondWith(getMockedImageResult());
         bluetoothDeviceManager = mainActivityTestRule.getActivity().bluetoothDeviceManager;
@@ -127,7 +137,7 @@ public class SendImageTests {
     {
 
         Bitmap mockedImage = Bitmap.createBitmap(64, 64, Bitmap.Config.ARGB_8888);
-        ChatMessage message = new ChatMessage(1, "User", mockedImage, new Date());
+        ChatMessage message = new ChatMessage("User", mockedImage, new Date());
         CustomMessage fullmessage = new CustomMessage(STATE_CONNECTED,
                 new Device("test", "00:00:00:00"),message);
 

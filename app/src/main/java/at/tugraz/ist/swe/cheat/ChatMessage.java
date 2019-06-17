@@ -11,30 +11,45 @@ import static at.tugraz.ist.swe.cheat.util.ConverterClassByte.convertCompressedB
 
 public class ChatMessage implements Serializable {
 
-    int message_id;
-    String address;
-    String message;
-    Date timeStamp;
-    byte[] image;
-    // modified
 
-    public ChatMessage(int message_id, String address, String message, Date timeStamp) {
+    public enum MessageType { DEFAULT, EDIT, DELETE };
+    private static int id_counter = 0;
+    private int message_id;
+    private String address;
+    private String message;
+    private Date timeStamp;
+    private byte[] image;
+    private MessageType type = MessageType.DEFAULT;
+
+    public ChatMessage(String address, String message, Date timeStamp) {
         this.message  = message;
         this.address =  address;
-        this.message_id =  message_id;
+        this.message_id = id_counter++;
         this.timeStamp = timeStamp;
     }
 
-    public ChatMessage(int message_id, String address, Bitmap image, Date timeStamp) {
+    public ChatMessage(int id, String address, String message, Date timeStamp, MessageType type) {
+        this.message  = message;
+        this.address =  address;
+        this.message_id = id;
+        this.timeStamp = timeStamp;
+        this.type = type;
+    }
+
+    public ChatMessage(String address, Bitmap image, Date timeStamp) {
         this.message  = "";
         this.address =  address;
-        this.message_id =  message_id;
+        this.message_id = id_counter++;
         this.timeStamp = timeStamp;
         this.image = convertBitmapToByteArray(image);
     }
 
     public String getMessage() {
         return this.message;
+    }
+
+    public void setMessage(String msg) {
+        this.message = msg;
     }
 
     public String getSenderAddress() {
@@ -49,9 +64,25 @@ public class ChatMessage implements Serializable {
 
     public Bitmap getImage() { return convertCompressedByteArrayToBitmap(image); }
 
+    public void setTimeStamp(Date date) {
+        this.timeStamp = date;
+    }
+
     public void setImage(Bitmap image) {convertBitmapToByteArray(image);}
 
     public void setAddress(String address) {
         this.address = address;
+    }
+
+    public MessageType getType() {
+        return type;
+    }
+
+    public void setType(MessageType type) {
+        this.type = type;
+    }
+
+    public static void setIdCounter(int counter) {
+        id_counter = counter;
     }
 }

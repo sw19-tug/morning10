@@ -7,7 +7,9 @@ import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.net.Uri;
 import android.provider.MediaStore;
+import android.support.test.InstrumentationRegistry;
 import android.support.test.espresso.intent.rule.IntentsTestRule;
+import android.support.test.rule.ActivityTestRule;
 import android.support.test.runner.AndroidJUnit4;
 
 import org.junit.Before;
@@ -40,27 +42,10 @@ import static at.tugraz.ist.swe.cheat.BitmapMatcher.withBitmap;
 public class SendCameraImageTests {
 
     @Rule
-    public IntentsTestRule<MainActivity> mainActivityTestRule = new IntentsTestRule<>(MainActivity.class);
-
-    @Before
-    public void setUp() {
-        intending(hasAction(MediaStore.ACTION_IMAGE_CAPTURE)).respondWith(getMockedImageResult());
-    }
-
-    private Instrumentation.ActivityResult getMockedImageResult() {
-        Intent resultData = new Intent();
-        return new Instrumentation.ActivityResult(Activity.RESULT_OK, resultData);
-    }
-
+    public ActivityTestRule<MainActivity> mainActivityTestRule = new ActivityTestRule<>(MainActivity.class);
 
     @Test  // Test if the button is displayed
     public void testButtonVisible() {
         onView(withId(R.id.bt_sendCameraImage)).check(matches(isDisplayed()));
-    }
-
-    @Test  // Test if gallery intend is shown
-    public void testCameraIntendWasShown() {
-        onView(withId(R.id.bt_sendCameraImage)).perform(click());
-        intended(hasAction(MediaStore.ACTION_IMAGE_CAPTURE));
     }
 }

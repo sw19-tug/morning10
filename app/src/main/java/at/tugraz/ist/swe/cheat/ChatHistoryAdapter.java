@@ -12,6 +12,7 @@ import android.widget.TextView;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Observable;
 import java.util.Observer;
@@ -102,7 +103,11 @@ public class ChatHistoryAdapter extends RecyclerView.Adapter<ChatHistoryAdapter.
         }
         SimpleDateFormat formatter = new SimpleDateFormat("hh:mm");
         String message_timestamp = formatter.format(message.getTimeStamp());
-        holder.tv_timestamp.setText(message_timestamp);
+        if (message.getType() == ChatMessage.MessageType.EDIT) {
+            holder.tv_timestamp.setText("edited: " + message_timestamp);
+        } else {
+            holder.tv_timestamp.setText(message_timestamp);
+        }
     }
 
     // Return total number of data sets
@@ -120,18 +125,29 @@ public class ChatHistoryAdapter extends RecyclerView.Adapter<ChatHistoryAdapter.
         this.message = (CustomMessage) message;
 
 
-        if(((CustomMessage) message).getDevice() != null)
+        if(((CustomMessage)message).getDevice() != null)
         {
             mainActivity.runOnUiThread(new Runnable()
             {
                 public void run() {
-                    if(((CustomMessage) message).getMessage() != null)
-                        addMessageFromPartner(((CustomMessage) message).getMessage());
+                    ChatMessage msg = ((CustomMessage)message).getMessage();
+
+                    if (msg != null) {
+                        if (msg.getType() == ChatMessage.MessageType.EDIT) {
+                            msg.setAddress("partner");
+                            messageData.set(msg.getId(), msg);
+                            notifyItemChanged(msg.getId());
+                            manager.scrollToPosition(msg.getId());
+                        } else if (msg.getType() == ChatMessage.MessageType.DELETE) {
+                            deleteMessage(msg.getId());
+                        } else {
+                            ChatMessage.setIdCounter(msg.getId() + 1);
+                            addMessageFromPartner(msg);
+                        }
+                    }
                 }
             });
         }
-
-
     }
 
     private void addMessageFromPartner(ChatMessage message) {
@@ -176,8 +192,8 @@ public class ChatHistoryAdapter extends RecyclerView.Adapter<ChatHistoryAdapter.
     }
 
     // Get data at click position (for convenience)
-    String getItem(int id) {
-        return messageData.get(id).getMessage();
+    ChatMessage getItem(int id) {
+        return messageData.get(id);
     }
 
     // Allow click events to be caught
@@ -243,6 +259,22 @@ public class ChatHistoryAdapter extends RecyclerView.Adapter<ChatHistoryAdapter.
     public void deleteMessage(int id) {
         messageData.remove(messageData.get(id));
         notifyItemRemoved(messageData.size());
+    }
+
+    // Edit message from recycler view
+    public void editMessage(int id, String text) {
+        ChatMessage msg = messageData.get(id);
+        msg.setType(ChatMessage.MessageType.EDIT);
+        msg.setTimeStamp(new Date());
+        msg.setMessage(text);
+
+        notifyItemChanged(id);
+
+        try {
+            bluetoothDeviceProvider.sendMessage(messageData.get(id));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
 

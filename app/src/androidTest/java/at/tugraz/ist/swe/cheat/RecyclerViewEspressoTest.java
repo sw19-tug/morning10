@@ -44,6 +44,13 @@ public class RecyclerViewEspressoTest {
     public void setUp() {
         bluetoothDeviceManager = mainActivityTestRule.getActivity().bluetoothDeviceManager;
 
+        InstrumentationRegistry.getInstrumentation().runOnMainSync(new Runnable() {
+            @Override
+            public void run() {
+                bluetoothDeviceManager.getBluetoothDeviceProvider().connectToDevice("00:11:22:AA:BB:CC");
+                bluetoothDeviceManager.getBluetoothDeviceProvider().connected();
+            }
+        });
     }
     // Check if RecyclerView is displayed
     @Test
@@ -68,7 +75,7 @@ public class RecyclerViewEspressoTest {
         onView(withId(R.id.tf_input)).perform(replaceText(text_1));
         onView(withId(R.id.bt_send)).perform(click());
 //            onView(withId(R.id.tf_input)).perform(replaceText(text_2));
-        onView(withId(R.id.bt_send)).perform(click());
+        //onView(withId(R.id.bt_send)).perform(click());
 
         onView(withChild(allOf(withId(R.id.tv_message), withText(text_1)))).check(
                 matches(withResourceName("rv_message_sent")));
@@ -98,7 +105,7 @@ public class RecyclerViewEspressoTest {
 
                 CustomMessage fullmessage = new CustomMessage(STATE_CONNECTED,
                         new Device("Dummy Device","00:11:22:AA:BB:CC"),
-                        new ChatMessage(1,"user", "Dummy Text", new Date()));
+                        new ChatMessage("user", "Dummy Text", new Date()));
 
                 bluetoothDeviceManager.getBluetoothDeviceProvider().received(fullmessage);
             }

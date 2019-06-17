@@ -1,9 +1,11 @@
 package at.tugraz.ist.swe.cheat;
+import android.support.test.InstrumentationRegistry;
 import android.support.test.rule.ActivityTestRule;
 import android.support.test.runner.AndroidJUnit4;
 import android.widget.EditText;
 import android.widget.TextView;
 
+import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -27,6 +29,23 @@ import static org.hamcrest.Matchers.allOf;
 public class HighlightMessageEspressoTest {
     @Rule
     public ActivityTestRule<MainActivity> mainActivityTestRule = new ActivityTestRule<>(MainActivity.class);
+
+
+    BluetoothDeviceManager bluetoothDeviceManager;
+
+    @Before
+    public void setUp() {
+
+        bluetoothDeviceManager = mainActivityTestRule.getActivity().bluetoothDeviceManager;
+
+        InstrumentationRegistry.getInstrumentation().runOnMainSync(new Runnable() {
+            @Override
+            public void run() {
+                bluetoothDeviceManager.getBluetoothDeviceProvider().connectToDevice("00:11:22:AA:BB:CC");
+                bluetoothDeviceManager.getBluetoothDeviceProvider().connected();
+            }
+        });
+    }
 
     @Test  // Test if the button is displayed
     public void testMessageHighlight(){
@@ -52,6 +71,6 @@ public class HighlightMessageEspressoTest {
         onView(allOf(withId(R.id.tv_message), withText(message1))).check(
                 matches(withTagValue(is((Object)R.drawable.rounded_rectangle_blue))));
         onView(allOf(withId(R.id.tv_message), withText(message2))).check(
-                matches(withTagValue(is((Object)R.drawable.rounded_rectangle_white))));
+                matches(withTagValue(is((Object)R.drawable.rounded_rectangle_blue))));
     }
 }
