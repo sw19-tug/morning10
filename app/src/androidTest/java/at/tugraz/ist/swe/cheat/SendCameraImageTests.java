@@ -7,6 +7,7 @@ import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.net.Uri;
 import android.provider.MediaStore;
+import android.support.test.InstrumentationRegistry;
 import android.support.test.espresso.intent.rule.IntentsTestRule;
 import android.support.test.runner.AndroidJUnit4;
 
@@ -42,8 +43,21 @@ public class SendCameraImageTests {
     @Rule
     public IntentsTestRule<MainActivity> mainActivityTestRule = new IntentsTestRule<>(MainActivity.class);
 
+    BluetoothDeviceManager bluetoothDeviceManager;
+
     @Before
     public void setUp() {
+
+        bluetoothDeviceManager = mainActivityTestRule.getActivity().bluetoothDeviceManager;
+
+        InstrumentationRegistry.getInstrumentation().runOnMainSync(new Runnable() {
+            @Override
+            public void run() {
+                bluetoothDeviceManager.getBluetoothDeviceProvider().connectToDevice("00:11:22:AA:BB:CC");
+                bluetoothDeviceManager.getBluetoothDeviceProvider().connected();
+            }
+        });
+
         intending(hasAction(MediaStore.ACTION_IMAGE_CAPTURE)).respondWith(getMockedImageResult());
     }
 
