@@ -426,7 +426,7 @@ public class MainActivity extends AppCompatActivity implements ChatHistoryAdapte
                 try {
                     Bitmap bitmap = MediaStore.Images.Media.getBitmap(this.getContentResolver(), selectedImage);
                     //Bitmap mockedImage = Bitmap.createBitmap(1000, 1000, Bitmap.Config.ARGB_8888);
-                    adapter.addMessage(new ChatMessage(1, "user", bitmap, new Date()));
+                    adapter.addMessage(new ChatMessage("user", bitmap, new Date()));
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
