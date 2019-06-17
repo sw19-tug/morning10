@@ -33,7 +33,7 @@ public class ChatUnitTests {
         final String MESSAGE = "Hello Receiver!";
         final int MESSAGE_ID = 0;
         final Date timeStamp = new Date();
-        ChatMessage messageObj = new ChatMessage(MESSAGE_ID, SENDER_ADDRESS, MESSAGE, timeStamp);
+        ChatMessage messageObj = new ChatMessage(SENDER_ADDRESS, MESSAGE, timeStamp);
         assertEquals(MESSAGE_ID, messageObj.getId());
         assertEquals(SENDER_ADDRESS, messageObj.getSenderAddress());
         assertEquals(MESSAGE, messageObj.getMessage());

@@ -135,7 +135,7 @@ public class SendImageTests {
     {
 
         Bitmap mockedImage = Bitmap.createBitmap(64, 64, Bitmap.Config.ARGB_8888);
-        ChatMessage message = new ChatMessage(1, "User", mockedImage, new Date());
+        ChatMessage message = new ChatMessage("User", mockedImage, new Date());
         CustomMessage fullmessage = new CustomMessage(STATE_CONNECTED,
                 new Device("test", "00:00:00:00"),message);
 

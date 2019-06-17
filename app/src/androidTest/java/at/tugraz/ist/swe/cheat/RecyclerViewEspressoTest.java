@@ -105,7 +105,7 @@ public class RecyclerViewEspressoTest {
 
                 CustomMessage fullmessage = new CustomMessage(STATE_CONNECTED,
                         new Device("Dummy Device","00:11:22:AA:BB:CC"),
-                        new ChatMessage(1,"user", "Dummy Text", new Date()));
+                        new ChatMessage("user", "Dummy Text", new Date()));
 
                 bluetoothDeviceManager.getBluetoothDeviceProvider().received(fullmessage);
             }

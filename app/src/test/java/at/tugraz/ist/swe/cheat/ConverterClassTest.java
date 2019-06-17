@@ -20,7 +20,7 @@ public class ConverterClassTest {
     public void convertTest()
     {
 
-        ChatMessage message = new ChatMessage(1, "User","Message",new Date());
+        ChatMessage message = new ChatMessage("User","Message",new Date());
         CustomMessage fullmessage = new CustomMessage(STATE_CONNECTED,
                 new Device("test", "00:00:00:00"),message);
 
