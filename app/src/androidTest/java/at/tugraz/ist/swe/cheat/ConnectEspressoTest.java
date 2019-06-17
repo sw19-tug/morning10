@@ -107,9 +107,8 @@ public class ConnectEspressoTest {
                 deviceObservable.addDevice(customMessage);
             }
         });
-        //Thread.sleep(100);
-        onView(withText(mainActivityTestRule.getActivity().deviceListAdapter.getItem(0))).perform(click());
 
+        onView(withText(mainActivityTestRule.getActivity().deviceListAdapter.getItem(0))).perform(click());
         Context context = myToolbar.findViewById(R.id.menu).getContext();
         Drawable connected = context.getResources().getDrawable(R.drawable.ic_wifi_tethering_black_24dp);
         Drawable notConnected = context.getResources().getDrawable(R.drawable.ic_portable_wifi_off_black_24dp);
