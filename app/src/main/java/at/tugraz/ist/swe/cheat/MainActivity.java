@@ -58,6 +58,8 @@ import at.tugraz.ist.swe.cheat.serviceimpl.RealBluetoothDeviceProvider;
 import at.tugraz.ist.swe.cheat.viewfragments.DeviceListFragment;
 import at.tugraz.ist.swe.cheat.viewfragments.ToastFragment;
 
+import static android.service.autofill.Validators.not;
+
 public class MainActivity extends AppCompatActivity implements ChatHistoryAdapter.ItemClickListener, ChatHistoryAdapter.ItemLongClickListener, TextToSpeech.OnInitListener {
 
 
@@ -206,7 +208,7 @@ public class MainActivity extends AppCompatActivity implements ChatHistoryAdapte
 
             @Override
             public void afterTextChanged(Editable s) {
-                btSend.setEnabled(bluetoothDeviceManager.getBluetoothDeviceProvider().getCurrentState() == Provider.STATE_CONNECTED);
+                btSend.setEnabled((bluetoothDeviceManager.getBluetoothDeviceProvider().getCurrentState() == Provider.STATE_CONNECTED) && !(s.toString().isEmpty()));
             }
         });
 
