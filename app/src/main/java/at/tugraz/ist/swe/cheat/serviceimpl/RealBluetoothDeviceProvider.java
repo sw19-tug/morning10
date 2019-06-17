@@ -18,7 +18,7 @@ import at.tugraz.ist.swe.cheat.dto.Provider;
 import at.tugraz.ist.swe.cheat.services.BluetoothDeviceProvider;
 import at.tugraz.ist.swe.cheat.util.ConverterClassByte;
 
-public class RealBluetoothDeviceProvider extends Provider {
+public class RealBluetoothDeviceProvider extends Provider implements BluetoothDeviceProvider{
 
 
     private static final String APP_NAME = "Cheating";
@@ -91,12 +91,11 @@ public class RealBluetoothDeviceProvider extends Provider {
             connectThread.cancel();
             connectThread = null;
         }
-
-        // Cancel running thread
-        if (connectedThread != null) {
-            connectedThread.cancel();
-            connectedThread = null;
-        }
+      // Cancel running thread
+       if (connectedThread != null) {
+           connectedThread.cancel();
+           connectedThread = null;
+       }
 
 
         setCurrentState(STATE_LISTEN);
@@ -134,12 +133,12 @@ public class RealBluetoothDeviceProvider extends Provider {
                 connectThread = null;
             }
         }
+      // Cancel running thread
+       if (connectedThread != null) {	
+           connectedThread.cancel();
+           connectedThread = null;
+       }
 
-        // Cancel running thread
-        if (connectedThread != null) {
-            connectedThread.cancel();
-            connectedThread = null;
-        }
 
         // Start the thread to connect with the given device
         connectThread = new ConnectThread();
@@ -164,42 +163,50 @@ public class RealBluetoothDeviceProvider extends Provider {
             connectThread = null;
         }
 
-        // Cancel any running thresd
-        if (connectedThread != null) {
-            connectedThread.cancel();
-            connectedThread = null;
-        }
-
+      // Cancel any running thresd
+       if (connectedThread != null) {
+           connectedThread.cancel();
+           connectedThread = null;
+       }
 
         if (acceptThread != null) {
             acceptThread.cancel();
             acceptThread = null;
         }
 
+      // Start the thread to manage the connection and perform transmissions
+       setCurrentState(STATE_CONNECTED);
+       connectedThread = new ReadWriteThread();
+       connectedThread.start();
 
-        // Start the thread to manage the connection and perform transmissions
-        setCurrentState(STATE_CONNECTED);
-        connectedThread = new ReadWriteThread();
-        connectedThread.start();
 
         CustomMessage message = new CustomMessage(STATE_CONNECTED, new Device(device.getName(),device.getAddress()));
 
         setChanged();
         notifyObservers(message);
 
-
+        setCurrentState(STATE_CONNECTED);
     }
 
     @Override
     public void connectionFailed() {
 
-        CustomMessage message = new CustomMessage(STATE_CONNECTIONLOST, null);
-
-        setChanged();
-        notifyObservers(message);
-
+        CustomMessage message;
         // Start the service over to restart listening mode
-        this.start();
+        if(device != null)
+        {
+            message = new CustomMessage(STATE_CONNECTING, new Device(device.getName(), device.getAddress()));
+            setChanged();
+            notifyObservers(message);
+            this.connect();
+        }
+        else
+        {
+            message = new CustomMessage(STATE_CONNECTIONLOST, null);
+            setChanged();
+            notifyObservers(message);
+            this.start();
+        }
     }
 
     @Override
@@ -334,8 +341,7 @@ public class RealBluetoothDeviceProvider extends Provider {
         setCurrentState(STATE_LISTEN);
 
     }
-
-    public void write(byte[] out) {
+public void write(byte[] out) {
         ReadWriteThread r;
         synchronized (this) {
             if (currentState != STATE_CONNECTED)
@@ -438,6 +444,4 @@ public class RealBluetoothDeviceProvider extends Provider {
         setChanged();
         notifyObservers(customMessage);
     }
-
-
 }
