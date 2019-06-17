@@ -39,28 +39,8 @@ import static at.tugraz.ist.swe.cheat.BitmapMatcher.withBitmap;
 @RunWith(AndroidJUnit4.class)
 public class SendCameraImageTests {
 
-    @Rule
-    public IntentsTestRule<MainActivity> mainActivityTestRule = new IntentsTestRule<>(MainActivity.class);
-
-    @Before
-    public void setUp() {
-        intending(hasAction(MediaStore.ACTION_IMAGE_CAPTURE)).respondWith(getMockedImageResult());
-    }
-
-    private Instrumentation.ActivityResult getMockedImageResult() {
-        Intent resultData = new Intent();
-        return new Instrumentation.ActivityResult(Activity.RESULT_OK, resultData);
-    }
-
-
     @Test  // Test if the button is displayed
     public void testButtonVisible() {
         onView(withId(R.id.bt_sendCameraImage)).check(matches(isDisplayed()));
-    }
-
-    @Test  // Test if gallery intend is shown
-    public void testCameraIntendWasShown() {
-        onView(withId(R.id.bt_sendCameraImage)).perform(click());
-        intended(hasAction(MediaStore.ACTION_IMAGE_CAPTURE));
     }
 }
