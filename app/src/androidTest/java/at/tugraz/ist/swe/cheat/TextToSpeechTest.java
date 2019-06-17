@@ -1,9 +1,11 @@
 package at.tugraz.ist.swe.cheat;
 
 import android.os.SystemClock;
+import android.support.test.InstrumentationRegistry;
 import android.support.test.rule.ActivityTestRule;
 import android.support.test.runner.AndroidJUnit4;
 
+import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -31,6 +33,20 @@ public class TextToSpeechTest {
         @Rule
         public ActivityTestRule<MainActivity> mainActivityTestRule = new ActivityTestRule<>(MainActivity.class);
 
+        BluetoothDeviceManager bluetoothDeviceManager;
+
+        @Before
+        public void setUp() {
+            bluetoothDeviceManager = mainActivityTestRule.getActivity().bluetoothDeviceManager;
+
+            InstrumentationRegistry.getInstrumentation().runOnMainSync(new Runnable() {
+                @Override
+                public void run() {
+                    bluetoothDeviceManager.getBluetoothDeviceProvider().connectToDevice("00:11:22:AA:BB:CC");
+                    bluetoothDeviceManager.getBluetoothDeviceProvider().connected();
+                }
+            });
+        }
 
         // Check if Read to me is visible
         @Test

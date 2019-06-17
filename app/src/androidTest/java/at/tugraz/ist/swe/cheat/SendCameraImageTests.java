@@ -7,6 +7,7 @@ import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.net.Uri;
 import android.provider.MediaStore;
+import android.support.test.InstrumentationRegistry;
 import android.support.test.espresso.intent.rule.IntentsTestRule;
 import android.support.test.runner.AndroidJUnit4;
 
@@ -38,7 +39,6 @@ import static at.tugraz.ist.swe.cheat.BitmapMatcher.withBitmap;
  */
 @RunWith(AndroidJUnit4.class)
 public class SendCameraImageTests {
-
     @Test  // Test if the button is displayed
     public void testButtonVisible() {
         onView(withId(R.id.bt_sendCameraImage)).check(matches(isDisplayed()));
