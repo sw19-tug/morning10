@@ -6,13 +6,17 @@ import android.bluetooth.BluetoothServerSocket;
 import android.bluetooth.BluetoothSocket;
 
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.util.UUID;
 
 import at.tugraz.ist.swe.BluetoothDeviceState;
+import at.tugraz.ist.swe.cheat.ChatMessage;
 import at.tugraz.ist.swe.cheat.dto.CustomMessage;
 import at.tugraz.ist.swe.cheat.dto.Device;
 import at.tugraz.ist.swe.cheat.dto.Provider;
 import at.tugraz.ist.swe.cheat.services.BluetoothDeviceProvider;
+import at.tugraz.ist.swe.cheat.util.ConverterClassByte;
 
 public class RealBluetoothDeviceProvider extends Provider implements BluetoothDeviceProvider{
 
@@ -25,6 +29,7 @@ public class RealBluetoothDeviceProvider extends Provider implements BluetoothDe
 
     private AcceptThread acceptThread;
     private ConnectThread connectThread;
+    private ReadWriteThread connectedThread;
     private int currentState;
 
     BluetoothAdapter bluetoothAdapter;
@@ -86,6 +91,11 @@ public class RealBluetoothDeviceProvider extends Provider implements BluetoothDe
             connectThread.cancel();
             connectThread = null;
         }
+      // Cancel running thread
+       if (connectedThread != null) {
+           connectedThread.cancel();
+           connectedThread = null;
+       }
 
 
         setCurrentState(STATE_LISTEN);
@@ -123,6 +133,11 @@ public class RealBluetoothDeviceProvider extends Provider implements BluetoothDe
                 connectThread = null;
             }
         }
+      // Cancel running thread
+       if (connectedThread != null) {	
+           connectedThread.cancel();
+           connectedThread = null;
+       }
 
 
         // Start the thread to connect with the given device
@@ -148,11 +163,21 @@ public class RealBluetoothDeviceProvider extends Provider implements BluetoothDe
             connectThread = null;
         }
 
+      // Cancel any running thresd
+       if (connectedThread != null) {
+           connectedThread.cancel();
+           connectedThread = null;
+       }
 
         if (acceptThread != null) {
             acceptThread.cancel();
             acceptThread = null;
         }
+
+      // Start the thread to manage the connection and perform transmissions
+       setCurrentState(STATE_CONNECTED);
+       connectedThread = new ReadWriteThread();
+       connectedThread.start();
 
 
         CustomMessage message = new CustomMessage(STATE_CONNECTED, new Device(device.getName(),device.getAddress()));
@@ -316,5 +341,107 @@ public class RealBluetoothDeviceProvider extends Provider implements BluetoothDe
         setCurrentState(STATE_LISTEN);
 
     }
+public void write(byte[] out) {
+        ReadWriteThread r;
+        synchronized (this) {
+            if (currentState != STATE_CONNECTED)
+                return;
+            r = connectedThread;
+        }
+        r.write(out);
+    }
 
+
+    @Override
+    public void sendMessage(ChatMessage message) throws IOException {
+
+        CustomMessage fullmessage = new CustomMessage(STATE_CHAT,
+                new Device(BluetoothAdapter.getDefaultAdapter().getName(),
+                        BluetoothAdapter.getDefaultAdapter().getAddress()),message);
+
+        if(message != null)
+        {
+            byte [] data = ConverterClassByte.toByteArray(fullmessage);
+            write(data);
+        }
+
+    }
+
+
+    /**ReadWrite Thread**/
+    // runs during a connection with a remote device
+    private class ReadWriteThread extends Thread {
+        private final InputStream inputStream;
+        private final OutputStream outputStream;
+
+        public ReadWriteThread() {
+            InputStream tmpIn = null;
+            OutputStream tmpOut = null;
+
+            try {
+                tmpIn = socket.getInputStream();
+                tmpOut = socket.getOutputStream();
+            } catch (IOException e) {
+            }
+
+            inputStream = tmpIn;
+            outputStream = tmpOut;
+        }
+
+        public void run() {
+            System.out.println("ReadWrite Thread to device ");
+            byte[] buffer = new byte[1024*1024*10];
+            int bytes;
+
+            // Keep listening to the InputStream
+            while (true) {
+                try {
+                    // Read from the InputStream
+                    bytes = inputStream.read(buffer);
+                    try {
+                        CustomMessage customMessage = (CustomMessage) ConverterClassByte.toObject(buffer);
+                        received(customMessage);
+
+
+                    } catch (ClassNotFoundException e) {
+                        e.printStackTrace();
+                    }
+
+
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    connectionFailed();
+                    break;
+                }
+            }
+        }
+
+
+
+        // write to OutputStream
+        public void write(byte[] buffer) {
+            System.out.println("Jumped in this Sector");
+            try {
+                outputStream.write(buffer);
+            } catch (IOException e) {
+            }
+        }
+
+        public void cancel() {
+            try {
+                socket.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+
+    @Override
+    public synchronized void received(CustomMessage customMessage) {
+
+        System.out.println("Got the message!");
+        setChanged();
+        notifyObservers(customMessage);
+    }
 }

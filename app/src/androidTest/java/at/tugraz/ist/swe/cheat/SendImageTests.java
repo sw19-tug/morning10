@@ -27,6 +27,12 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.util.Date;
+
+import at.tugraz.ist.swe.cheat.dto.CustomMessage;
+import at.tugraz.ist.swe.cheat.dto.Device;
+import at.tugraz.ist.swe.cheat.dto.ProxyBitmap;
+import at.tugraz.ist.swe.cheat.util.ConverterClassByte;
 
 import static android.support.test.espresso.Espresso.onView;
 import static android.support.test.espresso.action.ViewActions.click;
@@ -40,7 +46,9 @@ import static android.support.test.espresso.matcher.ViewMatchers.isEnabled;
 import static android.support.test.espresso.matcher.ViewMatchers.withId;
 import static android.support.test.espresso.matcher.ViewMatchers.withText;
 import static at.tugraz.ist.swe.cheat.BitmapMatcher.withBitmap;
+import static at.tugraz.ist.swe.cheat.dto.Provider.STATE_CONNECTED;
 import static org.hamcrest.Matchers.not;
+import static org.junit.Assert.assertEquals;
 
 
 /**
@@ -107,6 +115,27 @@ public class SendImageTests {
     public void testSentImageDisplayed () {
         onView(withId(R.id.bt_sendImage)).perform(click());
         onView(withId(R.id.tv_message_img)).check(matches(withBitmap(mockedImage)));
+    }
+
+    @Test
+    public void convertBitmapTest()
+    {
+
+        Bitmap mockedImage = Bitmap.createBitmap(64, 64, Bitmap.Config.ARGB_8888);
+        ChatMessage message = new ChatMessage(1, "User", mockedImage, new Date());
+        CustomMessage fullmessage = new CustomMessage(STATE_CONNECTED,
+                new Device("test", "00:00:00:00"),message);
+
+        try {
+            byte[] buffer = ConverterClassByte.toByteArray(fullmessage);
+            CustomMessage customMessage = (CustomMessage) ConverterClassByte.toObject(buffer);
+
+            assertEquals(fullmessage.getMessage().getImage().getHeight(), customMessage.getMessage().getImage().getHeight());
+            assertEquals(fullmessage.getMessage().getImage().getWidth(), customMessage.getMessage().getImage().getWidth());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
     }
 
 }

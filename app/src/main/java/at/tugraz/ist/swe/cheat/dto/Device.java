@@ -1,8 +1,9 @@
 package at.tugraz.ist.swe.cheat.dto;
 
+import java.io.Serializable;
 import java.util.Objects;
 
-public class Device {
+public class Device  implements Serializable {
     private String device_name;
     private String device_address;
 
