@@ -12,73 +12,11 @@ public abstract class Provider extends Observable implements BluetoothDeviceProv
     public static final int STATE_CONNECTING = 2;
     public static final int STATE_CONNECTED = 3;
     public static final int STATE_CONNECTIONLOST = 4;
+    public static final int STATE_CHAT = 5;
 
 
     public Provider() {
     }
 
-    @Override
-    public void setCurrentState(int state) {
 
-    }
-
-    @Override
-    public boolean isEnabled() {
-        return false;
-    }
-
-    @Override
-    public void setEnabled(boolean enabled) {
-
-    }
-
-    @Override
-    public void startDiscovery() {
-
-    }
-
-    @Override
-    public boolean isDiscovering() {
-        return false;
-    }
-
-    @Override
-    public void cancelDiscovery() {
-
-    }
-
-    @Override
-    public BluetoothDeviceState getState() {
-        return null;
-    }
-
-    @Override
-    public void start() {
-
-    }
-
-    @Override
-    public void connectToDevice(String deviceAddress) {
-
-    }
-
-    @Override
-    public void connect() {
-
-    }
-
-    @Override
-    public void connected() {
-
-    }
-
-    @Override
-    public void connectionFailed() {
-
-    }
-
-    @Override
-    public int getCurrentState() {
-        return 0;
-    }
 }
