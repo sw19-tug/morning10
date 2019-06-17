@@ -106,15 +106,19 @@ public class RecyclerViewEspressoTest {
         onView(allOf(withId(R.id.tv_message), withText(message))).check(doesNotExist());
     }
 
-        onView(withId(R.id.tf_input)).perform(replaceText(text_1));
+    // Check if deleting a message works
+    @Test
+    public void testDeleteMessage () {
+        final String message = "Hello World";
+        onView(withId(R.id.tf_input)).perform(replaceText(message));
+        onView(withId(R.id.bt_send)).check(matches(withText("Send")));
         onView(withId(R.id.bt_send)).perform(click());
-//            onView(withId(R.id.tf_input)).perform(replaceText(text_2));
-        //onView(withId(R.id.bt_send)).perform(click());
 
-        onView(withChild(allOf(withId(R.id.tv_message), withText(text_1)))).check(
-                matches(withResourceName("rv_message_sent")));
-//            onView(withChild(allOf(withId(R.id.tv_message), withText(text_2)))).check(
-//                    matches(withResourceName("rv_message_recieved")));
+        onView(allOf(withId(R.id.tv_message), withText(message))).perform(longClick());
+        onView(withText("Delete")).perform(click());
+        SystemClock.sleep(300);
+        onView(allOf(withId(R.id.tv_message), withText(message))).check(doesNotExist());
+        onView(allOf(withId(R.id.tv_message), withText("This message was deleted"))).check(matches(isDisplayed()));
     }
 
     // Check if RecyclerView displays timestamp

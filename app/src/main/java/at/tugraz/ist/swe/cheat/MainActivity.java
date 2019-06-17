@@ -366,7 +366,8 @@ public class MainActivity extends AppCompatActivity implements ChatHistoryAdapte
     @Override
     public void onItemLongClick(View view, final int position) {
 
-        if (adapter.getItem(position).getSenderAddress().equals("partner")) {
+        if (adapter.getItem(position).getSenderAddress().equals("partner") ||
+                (adapter.getItem(position).getType() == ChatMessage.MessageType.DELETE)) {
             return;
         }
 
