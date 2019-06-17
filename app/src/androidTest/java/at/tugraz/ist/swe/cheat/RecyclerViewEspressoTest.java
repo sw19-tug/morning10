@@ -1,10 +1,9 @@
 package at.tugraz.ist.swe.cheat;
 
+import android.os.SystemClock;
 import android.support.test.InstrumentationRegistry;
 import android.support.test.runner.AndroidJUnit4;
 import android.support.test.rule.ActivityTestRule;
-import android.support.v7.widget.Toolbar;
-import android.view.MenuItem;
 
 import org.junit.Before;
 import org.junit.Rule;
@@ -20,7 +19,9 @@ import at.tugraz.ist.swe.cheat.dto.Device;
 
 import static android.support.test.espresso.Espresso.onView;
 import static android.support.test.espresso.action.ViewActions.click;
+import static android.support.test.espresso.action.ViewActions.longClick;
 import static android.support.test.espresso.action.ViewActions.replaceText;
+import static android.support.test.espresso.assertion.ViewAssertions.doesNotExist;
 import static android.support.test.espresso.assertion.ViewAssertions.matches;
 import static android.support.test.espresso.matcher.ViewMatchers.isDisplayed;
 import static android.support.test.espresso.matcher.ViewMatchers.withChild;
@@ -66,21 +67,20 @@ public class RecyclerViewEspressoTest {
         onView(withId(R.id.tv_message)).check(matches(isDisplayed()));
     }
 
-    // Check if RecyclerView elements have different background colors
+    // Check if deleting a message works
     @Test
-    public void testRecyclerViewElementBackgroundColors () {
-        final String text_1 = "Hola";
-//            final String text_2 = "Bonjour";
+    public void testDeleteMessage () {
+        final String message = "Hello World";
 
-        onView(withId(R.id.tf_input)).perform(replaceText(text_1));
+        onView(withId(R.id.tf_input)).perform(replaceText(message));
+        onView(withId(R.id.bt_send)).check(matches(withText("Send")));
         onView(withId(R.id.bt_send)).perform(click());
-//            onView(withId(R.id.tf_input)).perform(replaceText(text_2));
-        //onView(withId(R.id.bt_send)).perform(click());
 
-        onView(withChild(allOf(withId(R.id.tv_message), withText(text_1)))).check(
-                matches(withResourceName("rv_message_sent")));
-//            onView(withChild(allOf(withId(R.id.tv_message), withText(text_2)))).check(
-//                    matches(withResourceName("rv_message_recieved")));
+        onView(allOf(withId(R.id.tv_message), withText(message))).perform(longClick());
+        onView(withText("Delete")).perform(click());
+        SystemClock.sleep(100);
+        onView(allOf(withId(R.id.tv_message), withText(message))).check(doesNotExist());
+        onView(allOf(withId(R.id.tv_message), withText("This message was deleted"))).check(matches(isDisplayed()));
     }
 
     // Check if RecyclerView displays timestamp
