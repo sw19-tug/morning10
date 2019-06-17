@@ -109,6 +109,13 @@ public class ConnectEspressoTest {
         });
 
         onView(withText(mainActivityTestRule.getActivity().deviceListAdapter.getItem(0))).perform(click());
+        InstrumentationRegistry.getInstrumentation().runOnMainSync(new Runnable() {
+            @Override
+            public void run() {
+                bluetoothDeviceManager.getBluetoothDeviceProvider().connected();
+            }
+        });
+
         Context context = myToolbar.findViewById(R.id.menu).getContext();
         Drawable connected = context.getResources().getDrawable(R.drawable.ic_wifi_tethering_black_24dp);
         Drawable notConnected = context.getResources().getDrawable(R.drawable.ic_portable_wifi_off_black_24dp);

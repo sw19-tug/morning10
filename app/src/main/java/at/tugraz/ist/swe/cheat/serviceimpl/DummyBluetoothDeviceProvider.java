@@ -103,7 +103,6 @@ public class DummyBluetoothDeviceProvider extends Provider implements BluetoothD
         notifyObservers(message);
 
         setCurrentState(STATE_CONNECTING);
-        connected();
 
     }
 
