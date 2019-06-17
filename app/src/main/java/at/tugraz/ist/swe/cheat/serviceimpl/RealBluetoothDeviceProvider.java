@@ -31,6 +31,7 @@ public class RealBluetoothDeviceProvider extends Provider implements BluetoothDe
     private ConnectThread connectThread;
     private ReadWriteThread connectedThread;
     private int currentState;
+    private static String device_address;
 
     BluetoothAdapter bluetoothAdapter;
 
@@ -193,8 +194,9 @@ public class RealBluetoothDeviceProvider extends Provider implements BluetoothDe
 
         CustomMessage message;
         // Start the service over to restart listening mode
-        if(device != null)
+        if(device != null && !device.getAddress().equals(device_address))
         {
+            device_address = device.getAddress();
             message = new CustomMessage(STATE_CONNECTING, new Device(device.getName(), device.getAddress()));
             setChanged();
             notifyObservers(message);
