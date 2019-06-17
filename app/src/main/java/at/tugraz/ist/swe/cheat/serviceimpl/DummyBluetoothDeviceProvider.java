@@ -37,6 +37,7 @@ public class DummyBluetoothDeviceProvider extends Provider implements BluetoothD
 
 
     private DeviceDummy device;
+    private static String device_address;
 
     public DummyBluetoothDeviceProvider() {
         super();
@@ -122,8 +123,9 @@ public class DummyBluetoothDeviceProvider extends Provider implements BluetoothD
     public void connectionFailed() {
         CustomMessage message;
         // Start the service over to restart listening mode
-        if(device != null)
+        if(device != null && !device.getAddress().equals(device_address))
         {
+            device_address = device.getAddress();
             message = new CustomMessage(STATE_CONNECTING, new Device(device.getName(), device.getAddress()));
             setChanged();
             notifyObservers(message);
