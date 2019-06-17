@@ -5,8 +5,8 @@ import android.graphics.Bitmap;
 import java.io.Serializable;
 
 public class ProxyBitmap implements Serializable {
-    private final int[] pixels;
-    private final int width, height;
+    private int[] pixels;
+    private int width, height;
 
     public ProxyBitmap(Bitmap bitmap) {
         width = bitmap.getWidth();

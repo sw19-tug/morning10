@@ -167,4 +167,9 @@ public class DummyBluetoothDeviceProvider extends Provider implements BluetoothD
         setChanged();
         notifyObservers(customMessage);
     }
+
+    @Override
+    public void write(byte[] bytes) {
+
+    }
 }

@@ -1,5 +1,8 @@
 package at.tugraz.ist.swe.cheat.util;
 
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -18,7 +21,12 @@ public class ConverterClassByte {
             oos.writeObject(obj);
             oos.flush();
             bytes = bos.toByteArray();
-        } finally {
+        }
+        catch (Exception ex)
+        {
+            ex.printStackTrace();
+        }
+        finally {
             if (oos != null) {
                 oos.close();
             }
@@ -37,7 +45,12 @@ public class ConverterClassByte {
             bis = new ByteArrayInputStream(bytes);
             ois = new ObjectInputStream(bis);
             obj = ois.readObject();
-        } finally {
+        }
+        catch (Exception ex)
+        {
+            ex.printStackTrace();
+        }
+        finally {
             if (bis != null) {
                 bis.close();
             }
@@ -46,6 +59,41 @@ public class ConverterClassByte {
             }
         }
         return obj;
+    }
+
+
+    public static byte[] convertBitmapToByteArray(Bitmap bitmap){
+        ByteArrayOutputStream baos = null;
+        try {
+            baos = new ByteArrayOutputStream();
+            bitmap.compress(Bitmap.CompressFormat.JPEG, 10, baos);
+            return baos.toByteArray();
+        }
+        catch (Exception ex)
+        {
+            ex.printStackTrace();
+            if(baos != null){
+                try {
+                    baos.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+            return new byte[0];
+        }
+        finally {
+            if(baos != null){
+                try {
+                    baos.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+    }
+
+    public static Bitmap convertCompressedByteArrayToBitmap(byte[] src){
+        return BitmapFactory.decodeByteArray(src, 0, src.length);
     }
 }
 
