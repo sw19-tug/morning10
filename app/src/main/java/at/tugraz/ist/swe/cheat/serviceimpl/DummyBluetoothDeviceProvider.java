@@ -118,14 +118,22 @@ public class DummyBluetoothDeviceProvider extends Provider implements BluetoothD
 
     @Override
     public void connectionFailed() {
-
-        CustomMessage message = new CustomMessage(STATE_CONNECTIONLOST, null);
-
-        setChanged();
-        notifyObservers(message);
-
+        CustomMessage message;
         // Start the service over to restart listening mode
-        this.start();
+        if(device != null)
+        {
+            message = new CustomMessage(STATE_CONNECTING, new Device(device.getName(), device.getAddress()));
+            setChanged();
+            notifyObservers(message);
+            this.connectToDevice(device.getAddress());
+        }
+        else
+        {
+            message = new CustomMessage(STATE_CONNECTIONLOST, null);
+            setChanged();
+            notifyObservers(message);
+            this.start();
+        }
     }
 
     @Override
