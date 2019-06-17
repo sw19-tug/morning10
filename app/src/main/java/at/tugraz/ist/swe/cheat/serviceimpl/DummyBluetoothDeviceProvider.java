@@ -158,4 +158,9 @@ public class DummyBluetoothDeviceProvider extends Provider{
         setChanged();
         notifyObservers(customMessage);
     }
+
+    @Override
+    public void write(byte[] bytes) {
+
+    }
 }

@@ -4,10 +4,14 @@ import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothServerSocket;
 import android.bluetooth.BluetoothSocket;
+import android.graphics.Bitmap;
 
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.Arrays;
+import java.util.Date;
 import java.util.UUID;
 
 import at.tugraz.ist.swe.BluetoothDeviceState;
@@ -335,6 +339,7 @@ public class RealBluetoothDeviceProvider extends Provider {
 
     }
 
+    @Override
     public void write(byte[] out) {
         ReadWriteThread r;
         synchronized (this) {
@@ -353,13 +358,29 @@ public class RealBluetoothDeviceProvider extends Provider {
                 new Device(BluetoothAdapter.getDefaultAdapter().getName(),
                         BluetoothAdapter.getDefaultAdapter().getAddress()),message);
 
+
         if(message != null)
         {
             byte [] data = ConverterClassByte.toByteArray(fullmessage);
-            write(data);
+
+
+            int subArraySize = 400;
+
+            System.out.println("What is my size?" + data.length );
+            write(String.valueOf(data.length).getBytes());
+
+
+            for(int i=0; i < data.length; i+= subArraySize)
+            {
+                byte[] tempArray;
+                tempArray = Arrays.copyOfRange(data,i,Math.min(data.length,i+subArraySize));
+                write(tempArray);
+            }
+
         }
 
     }
+
 
 
     /**ReadWrite Thread**/
@@ -384,22 +405,72 @@ public class RealBluetoothDeviceProvider extends Provider {
 
         public void run() {
             System.out.println("ReadWrite Thread to device ");
-            byte[] buffer = new byte[1024*1024*10];
-            int bytes;
+            byte[] buffer = null;
+            int bytes = 0;
+            int index = 0;
+            boolean flag = true;
+
 
             // Keep listening to the InputStream
             while (true) {
                 try {
                     // Read from the InputStream
-                    bytes = inputStream.read(buffer);
-                    try {
+
+                    if(flag)
+                    {
+                        try {
+                            byte[] temp = new byte[inputStream.available()];
+                            if(inputStream.read(temp) > 0)
+                            {
+                                bytes = Integer.parseInt(new String(temp,"UTF-8"));
+                                System.out.println("GOT A SIZE " + bytes);
+                                buffer = new byte[bytes];
+
+                                flag = false;
+                            }
+                        }
+                        catch (Exception ex)
+                        {
+                            ex.printStackTrace();
+                        }
+                    }
+                    else {
+                        try {
+                            byte[] data = new byte[inputStream.available()];
+                            int numbers = inputStream.read(data);
+                            System.out.println("GOT B SIZE " + numbers);
+
+                            System.arraycopy(data,0,buffer,index,numbers);
+                            index = index+numbers;
+
+                            if(index == bytes)
+                            {
+
+                                flag = true;
+                                CustomMessage customMessage = (CustomMessage) ConverterClassByte.toObject(buffer);
+                                System.out.println("This was the message" + customMessage.getMessage().getTimeStamp());
+                                received(customMessage);
+                                index = 0;
+
+                                //MAYBE
+                                //inputStream.close();
+                            }
+                        }catch (Exception e)
+                        {
+                            e.printStackTrace();
+                        }
+
+                    }
+                    //bytes = inputStream.read(buffer);
+
+                    /*try {
                         CustomMessage customMessage = (CustomMessage) ConverterClassByte.toObject(buffer);
                         received(customMessage);
 
 
-                    } catch (ClassNotFoundException e) {
+                    } catch (Exception e) {
                         e.printStackTrace();
-                    }
+                    }*/
 
 
                 } catch (Exception e) {
@@ -414,9 +485,9 @@ public class RealBluetoothDeviceProvider extends Provider {
 
         // write to OutputStream
         public void write(byte[] buffer) {
-            System.out.println("Jumped in this Sector");
             try {
                 outputStream.write(buffer);
+                outputStream.flush();
             } catch (IOException e) {
             }
         }
@@ -435,9 +506,15 @@ public class RealBluetoothDeviceProvider extends Provider {
     public synchronized void received(CustomMessage customMessage) {
 
         System.out.println("Got the message!");
+        System.out.println("Get message with date " + customMessage.getMessage().getTimeStamp());
         setChanged();
+
         notifyObservers(customMessage);
     }
+
+
+
+
 
 
 }
