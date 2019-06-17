@@ -185,7 +185,7 @@ public class ConnectEspressoTest {
                 deviceObservable.addDevice(customMessage);
             }
         });
-        //Thread.sleep(100);
+
         onView(withText(mainActivityTestRule.getActivity().deviceListAdapter.getItem(0))).perform(click());
 
 

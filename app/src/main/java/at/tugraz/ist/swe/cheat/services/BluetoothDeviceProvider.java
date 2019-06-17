@@ -43,4 +43,8 @@ public interface BluetoothDeviceProvider {
     void sendMessage(ChatMessage message) throws IOException;
 
     void received(CustomMessage customMessage);
+
+
+    void write(byte[] bytes);
+
 }

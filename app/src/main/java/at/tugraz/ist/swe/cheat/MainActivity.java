@@ -40,11 +40,13 @@ import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.Toast;
 
+import java.io.ByteArrayOutputStream;
 import java.io.Console;
 import java.io.File;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.Locale;
 import java.util.Observable;
@@ -80,6 +82,7 @@ public class MainActivity extends AppCompatActivity implements ChatHistoryAdapte
 
     public static final int REQUEST_ENABLE_BLUETOOTH = 1;
     private static final int MY_PERMISSION_RESPONSE = 2;
+    private static final int REQUEST_DISCOVERABLE = 5;
     boolean messageColor = true;
     final int RESULT_IMAGE_SELECTED = 42;
     final int RESULT_IMAGE_TAKEN = 69;
@@ -111,6 +114,7 @@ public class MainActivity extends AppCompatActivity implements ChatHistoryAdapte
         } else {
             bluetoothDeviceManager = new BluetoothDeviceManager(new RealBluetoothDeviceProvider());
         }
+
 
 
         super.onCreate(savedInstanceState);
@@ -415,27 +419,14 @@ public class MainActivity extends AppCompatActivity implements ChatHistoryAdapte
                     break;
                 case RESULT_IMAGE_SELECTED:
                     selectedImage = data.getData();
-                    try {
-                        Bitmap bitmap = MediaStore.Images.Media.getBitmap(this.getContentResolver(), selectedImage);
-                        Bitmap mockedImage = Bitmap.createBitmap(64, 64, Bitmap.Config.ARGB_8888);
-                        adapter.addMessage(new ChatMessage("user", mockedImage, new Date()));
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
                     break;
+
             }
             if(selectedImage != null) {
                 try {
                     Bitmap bitmap = MediaStore.Images.Media.getBitmap(this.getContentResolver(), selectedImage);
-                    String address;
-                    if (messageColor) {
-                        messageColor = false;
-                        address = "00:00:00:00:00:00";
-                    } else {
-                        messageColor = true;
-                        address = "11:00:00:00:00:00";
-                    }
-                    adapter.addMessage(new ChatMessage(address, bitmap, new Date()));
+                    //Bitmap mockedImage = Bitmap.createBitmap(1000, 1000, Bitmap.Config.ARGB_8888);
+                    adapter.addMessage(new ChatMessage(1, "user", bitmap, new Date()));
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
@@ -460,12 +451,14 @@ public class MainActivity extends AppCompatActivity implements ChatHistoryAdapte
             Intent enableIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
             startActivityForResult(enableIntent, REQUEST_ENABLE_BLUETOOTH);
             Intent disoverableIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_DISCOVERABLE);
-            disoverableIntent.putExtra(BluetoothAdapter.EXTRA_DISCOVERABLE_DURATION, 0);
+            disoverableIntent.putExtra(BluetoothAdapter.ACTION_DISCOVERY_STARTED, 0);
+            //startActivityForResult(disoverableIntent, REQUEST_DISCOVERABLE);
             startActivity(disoverableIntent);
 
         } else {
             Intent disoverableIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_DISCOVERABLE);
             disoverableIntent.putExtra(BluetoothAdapter.EXTRA_DISCOVERABLE_DURATION, 0);
+            //startActivityForResult(disoverableIntent, REQUEST_DISCOVERABLE);
             startActivity(disoverableIntent);
             //TODO Start Chat Controller
         }

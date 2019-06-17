@@ -5,9 +5,12 @@ import android.graphics.Bitmap;
 import java.io.Serializable;
 import java.util.Date;
 
-import at.tugraz.ist.swe.cheat.dto.ProxyBitmap;
+
+import static at.tugraz.ist.swe.cheat.util.ConverterClassByte.convertBitmapToByteArray;
+import static at.tugraz.ist.swe.cheat.util.ConverterClassByte.convertCompressedByteArrayToBitmap;
 
 public class ChatMessage implements Serializable {
+
 
     public enum MessageType { DEFAULT, EDIT, DELETE };
     private static int id_counter = 0;
@@ -15,7 +18,7 @@ public class ChatMessage implements Serializable {
     private String address;
     private String message;
     private Date timeStamp;
-    private ProxyBitmap image;
+    private byte[] image;
     private MessageType type = MessageType.DEFAULT;
 
     public ChatMessage(String address, String message, Date timeStamp) {
@@ -38,7 +41,7 @@ public class ChatMessage implements Serializable {
         this.address =  address;
         this.message_id = id_counter++;
         this.timeStamp = timeStamp;
-        this.image = new ProxyBitmap(image);
+        this.image = convertBitmapToByteArray(image);
     }
 
     public String getMessage() {
@@ -59,13 +62,13 @@ public class ChatMessage implements Serializable {
 
     public Date getTimeStamp() { return this.timeStamp; }
 
+    public Bitmap getImage() { return convertCompressedByteArrayToBitmap(image); }
+
     public void setTimeStamp(Date date) {
         this.timeStamp = date;
     }
 
-    public Bitmap getImage() { return image.getBitmap(); }
-
-    public void setImage(Bitmap image) { this.image = new ProxyBitmap(image); }
+    public void setImage(Bitmap image) {convertBitmapToByteArray(image);}
 
     public void setAddress(String address) {
         this.address = address;
