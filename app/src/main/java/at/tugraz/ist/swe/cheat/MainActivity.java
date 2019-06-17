@@ -164,7 +164,6 @@ public class MainActivity extends AppCompatActivity implements ChatHistoryAdapte
                     partnerDevice = address;
                 }
 
-                myToolbar.setBackgroundColor(0xff66bb6a);
                 bluetoothDeviceManager.stopScanning();
                 unregisterReceiver(bluetoothDiscover);
 
@@ -306,8 +305,6 @@ public class MainActivity extends AppCompatActivity implements ChatHistoryAdapte
                     } catch (IOException e) {
                         e.printStackTrace();
                     }
-                    myToolbar.setBackgroundColor(0xffffffff);
-                    btConnect.setIcon(R.drawable.ic_portable_wifi_off_black_24dp);
                 } else if(bluetoothDeviceManager.getBluetoothDeviceProvider().getCurrentState() == Provider.STATE_LISTEN ) {
                     bluetoothDeviceManager.startScanning();
 
@@ -330,8 +327,6 @@ public class MainActivity extends AppCompatActivity implements ChatHistoryAdapte
                     //deviceListAdapter.add("TEST");
 
                     devicesDialog = devicesDialogBuilder.show();
-
-                    btConnect.setIcon(R.drawable.ic_wifi_tethering_black_24dp);
                 }
                 return true;
 
