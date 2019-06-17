@@ -99,12 +99,6 @@ public class ChatHistoryAdapter extends RecyclerView.Adapter<ChatHistoryAdapter.
             holder.tv_message.setVisibility(View.GONE);
         }
         else {
-                if (message.getType() == ChatMessage.MessageType.DELETE) {
-                    holder.tv_message.setBackground(mainActivity.getResources().getDrawable(R.drawable.rounded_rectangle_gray));
-                    holder.tv_message.setTextSize(13);
-                    holder.tv_message.setTypeface(holder.tv_message.getTypeface(), Typeface.ITALIC);
-                    holder.tv_message.setTextColor(Color.DKGRAY);
-                }
             System.out.println("Message is: " + message_text);
 
             holder.tv_message_img.setVisibility(View.GONE);
@@ -154,7 +148,9 @@ public class ChatHistoryAdapter extends RecyclerView.Adapter<ChatHistoryAdapter.
                             notifyItemChanged(msg.getId());
                             manager.scrollToPosition(msg.getId());
                         } else if (msg.getType() == ChatMessage.MessageType.DELETE) {
-                            deleteMessage(msg.getId());
+                            msg.setAddress("partner");
+                            messageData.set(msg.getId(), msg);
+                            notifyItemChanged(msg.getId());
                         } else {
                             ChatMessage.setIdCounter(msg.getId() + 1);
                             addMessageFromPartner(msg);
