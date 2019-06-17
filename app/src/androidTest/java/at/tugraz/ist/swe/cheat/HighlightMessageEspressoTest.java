@@ -52,6 +52,6 @@ public class HighlightMessageEspressoTest {
         onView(allOf(withId(R.id.tv_message), withText(message1))).check(
                 matches(withTagValue(is((Object)R.drawable.rounded_rectangle_blue))));
         onView(allOf(withId(R.id.tv_message), withText(message2))).check(
-                matches(withTagValue(is((Object)R.drawable.rounded_rectangle_white))));
+                matches(withTagValue(is((Object)R.drawable.rounded_rectangle_blue))));
     }
 }
