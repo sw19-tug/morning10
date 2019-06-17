@@ -9,6 +9,7 @@ import android.net.Uri;
 import android.provider.MediaStore;
 import android.support.test.InstrumentationRegistry;
 import android.support.test.espresso.intent.rule.IntentsTestRule;
+import android.support.test.rule.ActivityTestRule;
 import android.support.test.runner.AndroidJUnit4;
 
 import org.junit.Before;
@@ -39,6 +40,10 @@ import static at.tugraz.ist.swe.cheat.BitmapMatcher.withBitmap;
  */
 @RunWith(AndroidJUnit4.class)
 public class SendCameraImageTests {
+
+    @Rule
+    public ActivityTestRule<MainActivity> mainActivityTestRule = new ActivityTestRule<>(MainActivity.class);
+
     @Test  // Test if the button is displayed
     public void testButtonVisible() {
         onView(withId(R.id.bt_sendCameraImage)).check(matches(isDisplayed()));
