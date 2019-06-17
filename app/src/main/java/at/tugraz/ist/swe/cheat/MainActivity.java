@@ -215,13 +215,11 @@ public class MainActivity extends AppCompatActivity implements ChatHistoryAdapte
         btSend.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (btSend.getText() == "Edit")
-                {
-
-                    adapter.deleteMessage(editPosition);
+                if (btSend.getText() == "Edit") {
+                    adapter.editMessage(editPosition, tfInput.getText().toString());
+                } else {
+                    adapter.addMessage(new ChatMessage("user", tfInput.getText().toString(), new Date()));
                 }
-
-                adapter.addMessage(new ChatMessage(1, "user", tfInput.getText().toString(), new Date()));
                 tfInput.setText("");
                 btSend.setText("Send");
             }
@@ -364,6 +362,10 @@ public class MainActivity extends AppCompatActivity implements ChatHistoryAdapte
     @Override
     public void onItemLongClick(View view, final int position) {
 
+        if (adapter.getItem(position).getSenderAddress().equals("partner")) {
+            return;
+        }
+
         String[] colors = {"Edit", "Delete", "Read to me"};
 
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
@@ -381,7 +383,7 @@ public class MainActivity extends AppCompatActivity implements ChatHistoryAdapte
                         System.out.println("Edit");
                         editPosition = position;
                         final EditText tfInput = findViewById(R.id.tf_input);
-                        tfInput.setText(adapter.getItem(position));
+                        tfInput.setText(adapter.getItem(position).getMessage());
                         final Button btSend = findViewById(R.id.bt_send);
                         btSend.setText("Edit");
                         break;
@@ -392,7 +394,7 @@ public class MainActivity extends AppCompatActivity implements ChatHistoryAdapte
                         break;
                     case 2:
                         System.out.println("Read to me");
-                        myTTS.speak(adapter.getItem(position), TextToSpeech.QUEUE_FLUSH, null);
+                        myTTS.speak(adapter.getItem(position).getMessage(), TextToSpeech.QUEUE_FLUSH, null);
                         break;
                     default:
                         break;
@@ -415,7 +417,7 @@ public class MainActivity extends AppCompatActivity implements ChatHistoryAdapte
                     try {
                         Bitmap bitmap = MediaStore.Images.Media.getBitmap(this.getContentResolver(), selectedImage);
                         Bitmap mockedImage = Bitmap.createBitmap(64, 64, Bitmap.Config.ARGB_8888);
-                        adapter.addMessage(new ChatMessage(1, "user", mockedImage, new Date()));
+                        adapter.addMessage(new ChatMessage("user", mockedImage, new Date()));
                     } catch (IOException e) {
                         e.printStackTrace();
                     }
@@ -432,7 +434,7 @@ public class MainActivity extends AppCompatActivity implements ChatHistoryAdapte
                         messageColor = true;
                         address = "11:00:00:00:00:00";
                     }
-                    adapter.addMessage(new ChatMessage(1, address, bitmap, new Date()));
+                    adapter.addMessage(new ChatMessage(address, bitmap, new Date()));
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
