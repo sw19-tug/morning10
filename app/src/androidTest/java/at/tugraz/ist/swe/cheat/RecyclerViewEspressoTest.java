@@ -78,7 +78,7 @@ public class RecyclerViewEspressoTest {
 
         onView(allOf(withId(R.id.tv_message), withText(message))).perform(longClick());
         onView(withText("Delete")).perform(click());
-        SystemClock.sleep(100);
+        SystemClock.sleep(300);
         onView(allOf(withId(R.id.tv_message), withText(message))).check(doesNotExist());
         onView(allOf(withId(R.id.tv_message), withText("This message was deleted"))).check(matches(isDisplayed()));
     }

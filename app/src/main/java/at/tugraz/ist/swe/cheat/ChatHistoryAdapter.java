@@ -1,5 +1,7 @@
 package at.tugraz.ist.swe.cheat;
 
+import android.graphics.Color;
+import android.graphics.Typeface;
 import android.os.SystemClock;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -98,6 +100,15 @@ public class ChatHistoryAdapter extends RecyclerView.Adapter<ChatHistoryAdapter.
             holder.tv_message.setVisibility(View.GONE);
         }
         else {
+            {
+                if(message.getType() == ChatMessage.MessageType.DELETE)
+                {
+                    holder.tv_message.setBackground(mainActivity.getResources().getDrawable(R.drawable.rounded_rectangle_gray));
+                    holder.tv_message.setTextSize(13);
+                    holder.tv_message.setTypeface(holder.tv_message.getTypeface(), Typeface.ITALIC);
+                    holder.tv_message.setTextColor(Color.DKGRAY);
+                }
+            }
             System.out.println("Message is: " + message_text);
             holder.tv_message_img.setVisibility(View.GONE);
             holder.tv_message.setVisibility(View.VISIBLE);
@@ -107,7 +118,12 @@ public class ChatHistoryAdapter extends RecyclerView.Adapter<ChatHistoryAdapter.
         String message_timestamp = formatter.format(message.getTimeStamp());
         if (message.getType() == ChatMessage.MessageType.EDIT) {
             holder.tv_timestamp.setText("edited: " + message_timestamp);
-        } else {
+        }
+        else if(message.getType() == ChatMessage.MessageType.DELETE)
+        {
+            holder.tv_timestamp.setText("");
+        }
+        else {
             holder.tv_timestamp.setText(message_timestamp);
         }
     }
@@ -259,8 +275,18 @@ public class ChatHistoryAdapter extends RecyclerView.Adapter<ChatHistoryAdapter.
 
     // Delete message from recycler view
     public void deleteMessage(int id) {
-        messageData.remove(messageData.get(id));
-        notifyItemRemoved(messageData.size());
+        ChatMessage msg = messageData.get(id);
+        msg.setType(ChatMessage.MessageType.DELETE);
+        msg.setTimeStamp(new Date());
+        msg.setMessage("This message was deleted");
+
+        notifyItemChanged(id);
+
+        try {
+            bluetoothDeviceProvider.sendMessage(messageData.get(id));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     // Edit message from recycler view
