@@ -31,7 +31,7 @@ public class ChatUnitTests {
     @Test
     public void messageConstructor() {
         final String MESSAGE = "Hello Receiver!";
-        final int MESSAGE_ID = 0;
+        final int MESSAGE_ID = ChatMessage.getIdCounter();
         final Date timeStamp = new Date();
         ChatMessage messageObj = new ChatMessage(SENDER_ADDRESS, MESSAGE, timeStamp);
         assertEquals(MESSAGE_ID, messageObj.getId());

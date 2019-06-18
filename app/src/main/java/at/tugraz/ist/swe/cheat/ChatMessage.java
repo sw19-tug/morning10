@@ -19,21 +19,14 @@ public class ChatMessage implements Serializable {
     private String message;
     private Date timeStamp;
     private byte[] image;
-    private MessageType type = MessageType.DEFAULT;
+    private MessageType type;
 
     public ChatMessage(String address, String message, Date timeStamp) {
         this.message  = message;
         this.address =  address;
         this.message_id = id_counter++;
         this.timeStamp = timeStamp;
-    }
-
-    public ChatMessage(int id, String address, String message, Date timeStamp, MessageType type) {
-        this.message  = message;
-        this.address =  address;
-        this.message_id = id;
-        this.timeStamp = timeStamp;
-        this.type = type;
+        this.type = MessageType.DEFAULT;
     }
 
     public ChatMessage(String address, Bitmap image, Date timeStamp) {
@@ -42,6 +35,7 @@ public class ChatMessage implements Serializable {
         this.message_id = id_counter++;
         this.timeStamp = timeStamp;
         this.image = convertBitmapToByteArray(image);
+        this.type = MessageType.DEFAULT;
     }
 
     public String getMessage() {
@@ -85,4 +79,9 @@ public class ChatMessage implements Serializable {
     public static void setIdCounter(int counter) {
         id_counter = counter;
     }
+
+    static public int getIdCounter() {
+        return id_counter;
+    }
+
 }
