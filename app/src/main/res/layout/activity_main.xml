@@ -15,13 +15,14 @@
         app:popupTheme="@style/ThemeOverlay.AppCompat.Light" />
 
     <android.support.v7.widget.RecyclerView
-        android:id="@+id/rv_messages"
+        android:id="@+id/rv_chat_history"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_above="@+id/ll_main"
         android:layout_below="@+id/menu"
         android:layout_marginTop="0dp"
-        android:layout_marginBottom="0dp" />
+        android:layout_marginBottom="0dp"
+        android:longClickable="true"/>
 
     <LinearLayout
         android:id="@+id/ll_main"
@@ -37,17 +38,44 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_margin="0dp"
-            android:layout_weight="10"
+            android:layout_weight="8"
             android:text=""
+            android:layout_marginRight="6dp"
             tools:ignore="ButtonStyle" />
+        <ImageButton
+            android:id="@+id/bt_sendImage"
+            style="@style/Widget.AppCompat.Button"
+            android:layout_width="24dp"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_image_black_24dp"
+            android:background="@drawable/rounded_icon"
+            android:layout_weight="1"
+            android:layout_marginRight="3dp"
+            android:text="Image"
+            android:layout_gravity="bottom" />
 
+        <ImageButton
+            android:id="@+id/bt_sendCameraImage"
+            style="@style/Widget.AppCompat.Button"
+            android:layout_width="24dp"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_camera_alt_black_24dp"
+            android:background="@drawable/rounded_icon"
+            android:layout_weight="1"
+            android:layout_marginRight="5dp"
+            android:text="Camera"
+            android:layout_gravity="bottom" />
         <Button
             android:id="@+id/bt_send"
             style="@style/Widget.AppCompat.Button"
-            android:layout_width="42dp"
+            android:layout_width="36dp"
             android:layout_height="wrap_content"
+            android:background="@drawable/rounded_icon_primary"
             android:layout_weight="2"
-            android:text="Send" />
+            android:textColor="@color/white"
+            android:textSize="17dp"
+            android:text="Send"
+            android:layout_gravity="bottom" />
 
     </LinearLayout>
 
